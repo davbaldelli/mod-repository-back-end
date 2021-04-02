@@ -6,14 +6,13 @@ type Mod struct {
 
 type Car struct {
 	Mod
-	Brand CarBrand
-	ModelName string
+	Brand      CarBrand
+	ModelName  string
 	Categories []string
 }
 
-
 type CarBrand struct {
-	Name string
+	Name   string
 	Nation Nation
 }
 
@@ -23,16 +22,17 @@ type Nation struct {
 
 type Track struct {
 	Mod
-	layouts []Layout
-	location Location
+	Name     string
+	Layouts  []Layout
+	Location Location
 }
 
 type Location struct {
-	locationName string
-	nation Nation
+	LocationName string
+	Nation       Nation
 }
 
 type Layout struct {
-	lengthKm float32
-	layoutType string
+	LengthKm   float32
+	LayoutType string
 }

@@ -16,22 +16,22 @@ type TrackController interface {
 	getAllTracks() []models.Track
 	getTracksByNation(string) []models.Track
 	getTracksByLayoutType(string) []models.Track
-	getTrackByName(string) []models.Track
+	getTrackByName(string) (models.Track, error)
 
-	addNewTrack(name string, downloadUrl string, layouts []models.Layout, locationName string, nation models.Nation)
+	addNewTrack(name string, downloadUrl string, layouts []models.Layout, locationName string, nation models.Nation) error
 }
 
 type BrandController interface {
-	getAllBrands(string) []models.CarBrand
+	getAllBrands() []models.CarBrand
 	getBrandByNation(string) []models.CarBrand
-	getBrandByName(string) models.CarBrand
+	getBrandByName(string) (models.CarBrand, error)
 
 	addNewBrand(name string, nation models.Nation) error
 }
 
 type NationController interface {
 	getAllNations() []models.Nation
-	getNationByName(string) models.Nation
+	getNationByName(string) (models.Nation, error)
 
-	addNewNation(string)
+	addNewNation(string) error
 }

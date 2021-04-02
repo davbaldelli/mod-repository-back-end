@@ -8,16 +8,16 @@ type CarRepository interface {
 }
 
 type TrackRepository interface {
-	addNewTrack(track models.Track) error
-	getAllTracks() []models.Track
+	AddNewTrack(track models.Track) error
+	GetAllTracks() []models.Track
 }
 
 type NationRepository interface {
-	addNewNation(nation models.Nation) error
-	getAllNations() []models.Nation
+	AddNewNation(nation models.Nation) error
+	GetAllNations() []models.Nation
 }
 
 type BrandRepository interface {
-	addNewBrand(brand models.CarBrand)
-	getAllBrands() []models.CarBrand
+	AddNewBrand(brand models.CarBrand) error
+	GetAllBrands() []models.CarBrand
 }
