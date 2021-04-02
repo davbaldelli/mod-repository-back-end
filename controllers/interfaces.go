@@ -3,35 +3,33 @@ package controllers
 import "github.com/davide/ModRepository/models"
 
 type CarController interface {
-	getAllCars() []models.Car
-	getCarsByNation(string) []models.Car
-	getCarByModel(string) (error, models.Car)
-	getCarsByBrand(string) []models.Car
-	getCarsByType(string) []models.Car
+	GetAllCars() []models.Car
+	GetCarsByNation(string) []models.Car
+	GetCarByModel(string) []models.Car
+	GetCarsByBrand(string) []models.Car
+	GetCarsByType(string) []models.Car
 
-	addCar(modelName string, downloadUrl string, brand models.CarBrand, categories []string) error
+	AddCar(modelName string, downloadUrl string, brand models.CarBrand, categories []string) error
 }
 
 type TrackController interface {
-	getAllTracks() []models.Track
-	getTracksByNation(string) []models.Track
-	getTracksByLayoutType(string) []models.Track
-	getTrackByName(string) (models.Track, error)
+	GetAllTracks() []models.Track
+	GetTracksByNation(string) []models.Track
+	GetTracksByLayoutType(string) []models.Track
+	GetTracksByName(string) []models.Track
 
-	addNewTrack(name string, downloadUrl string, layouts []models.Layout, locationName string, nation models.Nation) error
+	AddTrack(name string, downloadUrl string, layouts []models.Layout, location models.Location) error
 }
 
 type BrandController interface {
-	getAllBrands() []models.CarBrand
-	getBrandByNation(string) []models.CarBrand
-	getBrandByName(string) (models.CarBrand, error)
+	GetAllBrands() []models.CarBrand
+	GetBrandByNation(string) []models.CarBrand
+	GetBrandByName(string) []models.CarBrand
 
-	addNewBrand(name string, nation models.Nation) error
+	AddBrand(name string, nation models.Nation) error
 }
 
 type NationController interface {
-	getAllNations() []models.Nation
-	getNationByName(string) (models.Nation, error)
-
-	addNewNation(string) error
+	GetAllTracksNations() []models.Nation
+	GetAllBrandsNations() []models.Nation
 }

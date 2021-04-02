@@ -1,22 +1,14 @@
 package main
 
 import (
-	"context"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"time"
+	"github.com/davide/ModRepository/controllers"
+	"github.com/davide/ModRepository/repositories"
+	"github.com/davide/ModRepository/routes"
+	"github.com/davide/ModRepository/routes/handlers"
 )
 
 func main() {
-	client, err := mongo.NewClient(options.Client().ApplyURI("<ATLAS_URI_HERE>"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Disconnect(ctx)
+
+	web := routes.Web{CarHandler: handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: repositories.CarRepositoryImpl{}}}}
+	web.Listen("8080")
 }
