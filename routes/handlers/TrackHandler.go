@@ -24,7 +24,7 @@ func (t TrackHandlerImpl) GETTracksByNation(writer http.ResponseWriter, request 
 }
 
 func (t TrackHandlerImpl) GETTracksByLayoutType(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("layout-type", func(s string) []models.Track { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
+	t.getTrackByParamResponse("layoutType", func(s string) []models.Track { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {

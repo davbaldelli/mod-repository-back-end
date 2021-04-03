@@ -33,6 +33,7 @@ type Location struct {
 }
 
 type Layout struct {
-	LengthKm   float32
-	LayoutType string
+	Name     string
+	LengthKm float32
+	Type     string
 }

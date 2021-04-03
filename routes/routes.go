@@ -12,7 +12,8 @@ type Route interface {
 }
 
 type Web struct {
-	CarHandler handlers.CarsHandler
+	CarHandler    handlers.CarsHandler
+	TracksHandler handlers.TracksHandler
 }
 
 func (w Web) Listen(port string) {
@@ -21,6 +22,14 @@ func (w Web) Listen(port string) {
 	router.HandleFunc("/car/all", w.CarHandler.GETAllCars).Methods("GET")
 	router.HandleFunc("/car/nation/{nation}", w.CarHandler.GETCarsByNation).Methods("GET")
 	router.HandleFunc("/car/model/{model}", w.CarHandler.GETCarByModel).Methods("GET")
+	router.HandleFunc("/car/brand/{brand}", w.CarHandler.GETCarsByBrand).Methods("GET")
+	router.HandleFunc("/car/category/{category}", w.CarHandler.GETCarsByType).Methods("GET")
+
+	router.HandleFunc("/track/new", w.TracksHandler.POSTNewTrack).Methods("POST")
+	router.HandleFunc("/track/all", w.TracksHandler.GETAllTracks).Methods("GET")
+	router.HandleFunc("/track/nation/{nation}", w.TracksHandler.GETTracksByNation).Methods("GET")
+	router.HandleFunc("/track/layout/type/{layoutType}", w.TracksHandler.GETTracksByLayoutType).Methods("GET")
+	router.HandleFunc("/track/name/{name}", w.TracksHandler.GETTrackByName).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

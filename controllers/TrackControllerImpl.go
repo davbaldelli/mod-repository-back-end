@@ -6,27 +6,27 @@ import (
 )
 
 type TrackControllerImpl struct {
-	repo repositories.TrackRepository
+	Repo repositories.TrackRepository
 }
 
 func (t TrackControllerImpl) GetAllTracks() []models.Track {
-	return t.repo.GetAllTracks()
+	return t.Repo.GetAllTracks()
 }
 
 func (t TrackControllerImpl) GetTracksByNation(nationName string) []models.Track {
-	return t.repo.GetTracksByNation(nationName)
+	return t.Repo.GetTracksByNation(nationName)
 }
 
 func (t TrackControllerImpl) GetTracksByLayoutType(category string) []models.Track {
-	return t.repo.GetTracksByLayoutType(category)
+	return t.Repo.GetTracksByLayoutType(category)
 }
 
 func (t TrackControllerImpl) GetTracksByName(name string) []models.Track {
-	return t.repo.GetTracksByName(name)
+	return t.Repo.GetTracksByName(name)
 }
 
 func (t TrackControllerImpl) AddTrack(name string, downloadUrl string, layouts []models.Layout, location models.Location) error {
-	return t.repo.AddNewTrack(models.Track{
+	return t.Repo.AddNewTrack(models.Track{
 		Mod:      models.Mod{DownloadLink: downloadUrl},
 		Layouts:  layouts,
 		Location: location,
