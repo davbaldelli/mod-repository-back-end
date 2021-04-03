@@ -35,6 +35,7 @@ func main() {
 		CarHandler:    handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: repositories.CarRepositoryImpl{CarCollection: carsCollection}}},
 		TracksHandler: handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: repositories.TrackRepositoryImpl{TrackCollection: tracksCollection}}},
 		NationHandler: handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: repositories.NationsRepositoryImpl{CarsCollection: carsCollection, TracksCollection: tracksCollection}}},
+		BrandsHandler: handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: repositories.BrandRepositoryImpl{CarCollection: carsCollection}}},
 	}
 	web.Listen("8080")
 }

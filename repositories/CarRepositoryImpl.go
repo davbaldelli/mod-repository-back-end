@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"github.com/davide/ModRepository/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -32,10 +31,6 @@ func (c CarRepositoryImpl) GetAllCars() []models.Car {
 	if err = cursor.All(ctx, &cars); err != nil {
 		panic(err)
 	}
-
-	values, _ := c.CarCollection.Distinct(ctx, "brand.nation.name", bson.M{})
-
-	fmt.Println(values)
 
 	return cars
 }
