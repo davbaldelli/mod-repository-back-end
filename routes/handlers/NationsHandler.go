@@ -6,13 +6,13 @@ import (
 )
 
 type NationsHandlerImpl struct {
-	ctrlNations controllers.NationController
+	CtrlNations controllers.NationController
 }
 
 func (n NationsHandlerImpl) GETAllTracksNations(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, n.ctrlNations.GetAllTracksNations())
+	respondJSON(writer, http.StatusOK, n.CtrlNations.GetAllTracksNations())
 }
 
 func (n NationsHandlerImpl) GETAllBrandsNations(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, n.ctrlNations.GetAllBrandsNations())
+	respondJSON(writer, http.StatusOK, n.CtrlNations.GetAllBrandsNations())
 }

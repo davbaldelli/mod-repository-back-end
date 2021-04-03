@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"github.com/davide/ModRepository/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +16,6 @@ type CarRepositoryImpl struct {
 func (c CarRepositoryImpl) AddNewCar(car models.Car) error {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	_, err := c.CarCollection.InsertOne(ctx, car)
-
 	if err != nil {
 		return err
 	}
@@ -32,6 +32,11 @@ func (c CarRepositoryImpl) GetAllCars() []models.Car {
 	if err = cursor.All(ctx, &cars); err != nil {
 		panic(err)
 	}
+
+	values, _ := c.CarCollection.Distinct(ctx, "brand.nation.name", bson.M{})
+
+	fmt.Println(values)
+
 	return cars
 }
 

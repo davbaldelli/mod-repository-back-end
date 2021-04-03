@@ -28,9 +28,13 @@ func main() {
 	}
 	defer client.Disconnect(ctx)
 
+	tracksCollection := client.Database("mod_repo").Collection("tracks")
+	carsCollection := client.Database("mod_repo").Collection("cars")
+
 	web := routes.Web{
-		CarHandler:    handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: repositories.CarRepositoryImpl{CarCollection: client.Database("mod_repo").Collection("cars")}}},
-		TracksHandler: handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: repositories.TrackRepositoryImpl{TrackCollection: client.Database("mod_repo").Collection("tracks")}}},
+		CarHandler:    handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: repositories.CarRepositoryImpl{CarCollection: carsCollection}}},
+		TracksHandler: handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: repositories.TrackRepositoryImpl{TrackCollection: tracksCollection}}},
+		NationHandler: handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: repositories.NationsRepositoryImpl{CarsCollection: carsCollection, TracksCollection: tracksCollection}}},
 	}
 	web.Listen("8080")
 }

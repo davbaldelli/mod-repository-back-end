@@ -6,13 +6,13 @@ import (
 )
 
 type NationControllerImpl struct {
-	repo repositories.NationRepository
+	Repo repositories.NationRepository
 }
 
 func (n NationControllerImpl) GetAllTracksNations() []models.Nation {
-	return n.repo.GetAllTrackNations()
+	return n.Repo.GetAllTrackNations()
 }
 
 func (n NationControllerImpl) GetAllBrandsNations() []models.Nation {
-	return n.repo.GetAllBrandsNations()
+	return n.Repo.GetAllBrandsNations()
 }
