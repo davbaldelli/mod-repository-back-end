@@ -1,35 +1,37 @@
 package controllers
 
-import "github.com/davide/ModRepository/models"
+import (
+	"github.com/davide/ModRepository/models/entities"
+)
 
 type CarController interface {
-	GetAllCars() []models.Car
-	GetCarsByNation(string) []models.Car
-	GetCarByModel(string) []models.Car
-	GetCarsByBrand(string) []models.Car
-	GetCarsByType(string) []models.Car
+	GetAllCars() []entities.Car
+	GetCarsByNation(string) []entities.Car
+	GetCarByModel(string) []entities.Car
+	GetCarsByBrand(string) []entities.Car
+	GetCarsByType(string) []entities.Car
 
-	AddCar(modelName string, downloadUrl string, brand models.CarBrand, categories []string) error
+	AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []string) error
 }
 
 type TrackController interface {
-	GetAllTracks() []models.Track
-	GetTracksByNation(string) []models.Track
-	GetTracksByLayoutType(string) []models.Track
-	GetTracksByName(string) []models.Track
+	GetAllTracks() []entities.Track
+	GetTracksByNation(string) []entities.Track
+	GetTracksByLayoutType(string) []entities.Track
+	GetTracksByName(string) []entities.Track
 
-	AddTrack(name string, downloadUrl string, layouts []models.Layout, location models.Location) error
+	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location entities.Location) error
 }
 
 type BrandController interface {
-	GetAllBrands() []models.CarBrand
-	GetBrandByNation(string) []models.CarBrand
-	GetBrandByName(string) []models.CarBrand
+	GetAllBrands() []entities.CarBrand
+	GetBrandByNation(string) []entities.CarBrand
+	GetBrandByName(string) []entities.CarBrand
 
-	AddBrand(name string, nation models.Nation) error
+	AddBrand(name string, nation entities.Nation) error
 }
 
 type NationController interface {
-	GetAllTracksNations() []models.Nation
-	GetAllBrandsNations() []models.Nation
+	GetAllTracksNations() []entities.Nation
+	GetAllBrandsNations() []entities.Nation
 }

@@ -1,32 +1,34 @@
 package repositories
 
-import "github.com/davide/ModRepository/models"
+import (
+	"github.com/davide/ModRepository/models/entities"
+)
 
 type CarRepository interface {
-	AddNewCar(car models.Car) error
-	GetAllCars() []models.Car
-	GetCarsByNation(string) []models.Car
-	GetCarByModel(string) []models.Car
-	GetCarsByBrand(string) []models.Car
-	GetCarsByType(string) []models.Car
+	AddNewCar(car entities.Car) error
+	GetAllCars() []entities.Car
+	GetCarsByNation(string) []entities.Car
+	GetCarByModel(string) []entities.Car
+	GetCarsByBrand(string) []entities.Car
+	GetCarsByType(string) []entities.Car
 }
 
 type TrackRepository interface {
-	GetAllTracks() []models.Track
-	GetTracksByNation(string) []models.Track
-	GetTracksByLayoutType(string) []models.Track
-	GetTracksByName(string) []models.Track
-	AddNewTrack(track models.Track) error
+	GetAllTracks() []entities.Track
+	GetTracksByNation(string) []entities.Track
+	GetTracksByLayoutType(string) []entities.Track
+	GetTracksByName(string) []entities.Track
+	AddNewTrack(track entities.Track) error
 }
 
 type NationRepository interface {
-	GetAllBrandsNations() []models.Nation
-	GetAllTrackNations() []models.Nation
+	GetAllBrandsNations() []entities.Nation
+	GetAllTrackNations() []entities.Nation
 }
 
 type BrandRepository interface {
-	AddNewBrand(brand models.CarBrand) error
-	GetAllBrands() []models.CarBrand
-	GetBrandByNation(string) []models.CarBrand
-	GetBrandByName(string) []models.CarBrand
+	AddNewBrand(brand entities.CarBrand) error
+	GetAllBrands() []entities.CarBrand
+	GetBrandByNation(string) []entities.CarBrand
+	GetBrandByName(string) []entities.CarBrand
 }

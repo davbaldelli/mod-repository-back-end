@@ -3,7 +3,8 @@ package handlers
 import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models"
+	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"net/http"
@@ -13,22 +14,22 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
-type getTracksByParam func(string) []models.Track
+type getTracksByParam func(string) []entities.Track
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, t.TrackCtrl.GetAllTracks())
+	respondJSON(writer, http.StatusOK, presentation.OfAllTracks(t.TrackCtrl.GetAllTracks()))
 }
 
 func (t TrackHandlerImpl) GETTracksByNation(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("nation", func(s string) []models.Track { return t.TrackCtrl.GetTracksByNation(s) }, writer, request)
+	t.getTrackByParamResponse("nation", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByNation(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) GETTracksByLayoutType(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("layoutType", func(s string) []models.Track { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
+	t.getTrackByParamResponse("layoutType", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("name", func(s string) []models.Track { return t.TrackCtrl.GetTracksByName(s) }, writer, request)
+	t.getTrackByParamResponse("name", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByName(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http.Request) {
@@ -37,7 +38,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 
-	track := models.Track{}
+	track := entities.Track{}
 
 	decoder := schema.NewDecoder()
 	if err := decoder.Decode(&track, request.PostForm); err != nil {
@@ -62,5 +63,5 @@ func (t TrackHandlerImpl) getTrackByParamResponse(paramString string, getTracks 
 		return
 	}
 
-	respondJSON(writer, http.StatusOK, getTracks(param))
+	respondJSON(writer, http.StatusOK, presentation.OfAllTracks(getTracks(param)))
 }

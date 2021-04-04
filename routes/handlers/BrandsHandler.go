@@ -3,28 +3,29 @@ package handlers
 import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models"
+	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"net/http"
 )
 
-type getBrandsByParam func(string) []models.CarBrand
+type getBrandsByParam func(string) []entities.CarBrand
 
 type BrandsHandlerImpl struct {
 	BrandCtrl controllers.BrandController
 }
 
 func (b BrandsHandlerImpl) GETAllBrands(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, b.BrandCtrl.GetAllBrands())
+	respondJSON(writer, http.StatusOK, presentation.OfAllBrands(b.BrandCtrl.GetAllBrands()))
 }
 
 func (b BrandsHandlerImpl) GETBrandByNation(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("nation", func(s string) []models.CarBrand { return b.BrandCtrl.GetBrandByNation(s) }, writer, request)
+	b.getBrandByParamResponse("nation", func(s string) []entities.CarBrand { return b.BrandCtrl.GetBrandByNation(s) }, writer, request)
 }
 
 func (b BrandsHandlerImpl) GETBrandByName(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("name", func(s string) []models.CarBrand { return b.BrandCtrl.GetBrandByName(s) }, writer, request)
+	b.getBrandByParamResponse("name", func(s string) []entities.CarBrand { return b.BrandCtrl.GetBrandByName(s) }, writer, request)
 }
 
 func (b BrandsHandlerImpl) POSTNewBrand(writer http.ResponseWriter, request *http.Request) {
@@ -33,7 +34,7 @@ func (b BrandsHandlerImpl) POSTNewBrand(writer http.ResponseWriter, request *htt
 		return
 	}
 
-	brand := models.CarBrand{}
+	brand := entities.CarBrand{}
 
 	decoder := schema.NewDecoder()
 	if err := decoder.Decode(&brand, request.PostForm); err != nil {
@@ -58,5 +59,5 @@ func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands
 		return
 	}
 
-	respondJSON(w, http.StatusOK, getBrands(param))
+	respondJSON(w, http.StatusOK, presentation.OfAllBrands(getBrands(param)))
 }

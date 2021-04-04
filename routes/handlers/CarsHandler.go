@@ -3,7 +3,8 @@ package handlers
 import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models"
+	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"net/http"
@@ -13,26 +14,26 @@ type CarsHandlerImpl struct {
 	CarCtrl controllers.CarController
 }
 
-type getCarsByParam func(string) []models.Car
+type getCarsByParam func(string) []entities.Car
 
 func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, c.CarCtrl.GetAllCars())
+	respondJSON(writer, http.StatusOK, presentation.OfAllCars(c.CarCtrl.GetAllCars()))
 }
 
 func (c CarsHandlerImpl) GETCarsByNation(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("nation", func(s string) []models.Car { return c.CarCtrl.GetCarsByNation(s) }, writer, request)
+	c.getCarsByParamResponse("nation", func(s string) []entities.Car { return c.CarCtrl.GetCarsByNation(s) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarByModel(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("model", func(s string) []models.Car { return c.CarCtrl.GetCarByModel(s) }, writer, request)
+	c.getCarsByParamResponse("model", func(s string) []entities.Car { return c.CarCtrl.GetCarByModel(s) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarsByBrand(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("brand", func(s string) []models.Car { return c.CarCtrl.GetCarsByBrand(s) }, writer, request)
+	c.getCarsByParamResponse("brand", func(s string) []entities.Car { return c.CarCtrl.GetCarsByBrand(s) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarsByType(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("category", func(s string) []models.Car { return c.CarCtrl.GetCarsByType(s) }, writer, request)
+	c.getCarsByParamResponse("category", func(s string) []entities.Car { return c.CarCtrl.GetCarsByType(s) }, writer, request)
 }
 
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {
@@ -42,7 +43,7 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	car := models.Car{}
+	car := entities.Car{}
 
 	decoder := schema.NewDecoder()
 	if err := decoder.Decode(&car, request.PostForm); err != nil {
@@ -68,5 +69,5 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 		return
 	}
 
-	respondJSON(writer, http.StatusOK, getCars(param))
+	respondJSON(writer, http.StatusOK, presentation.OfAllCars(getCars(param)))
 }

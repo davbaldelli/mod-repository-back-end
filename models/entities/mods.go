@@ -1,4 +1,4 @@
-package models
+package entities
 
 type Mod struct {
 	DownloadLink string
