@@ -29,6 +29,6 @@ func (c CarControllerImpl) GetCarsByType(categoryName string) []entities.Car {
 	return c.Repo.GetCarsByType(categoryName)
 }
 
-func (c CarControllerImpl) AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []string) error {
+func (c CarControllerImpl) AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory) error {
 	return c.Repo.AddNewCar(entities.Car{ModelName: modelName, Brand: brand, Categories: categories, Mod: entities.Mod{DownloadLink: downloadUrl}})
 }

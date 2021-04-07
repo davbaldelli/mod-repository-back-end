@@ -74,8 +74,8 @@ func ofTrack(track entities.Track) TrackPresentation {
 	return TrackPresentation{
 		Name:         track.Name,
 		DownloadLink: track.DownloadLink,
-		Location:     track.Location.LocationName,
-		Nation:       track.Location.Nation.Name,
+		Location:     track.Location,
+		Nation:       track.Nation.Name,
 	}
 }
 func OfAllTracks(tracks []entities.Track) []TrackPresentation {

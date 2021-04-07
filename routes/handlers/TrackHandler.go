@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
 	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/schema"
 	"net/http"
 )
 
@@ -33,20 +33,15 @@ func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *ht
 }
 
 func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http.Request) {
-	if err := request.ParseForm(); err != nil {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("error parsing request to post form: %v ", err))
-		return
-	}
-
 	track := entities.Track{}
 
-	decoder := schema.NewDecoder()
-	if err := decoder.Decode(&track, request.PostForm); err != nil {
+	decoder := json.NewDecoder(request.Body)
+	if err := decoder.Decode(&track); err != nil {
 		respondError(writer, http.StatusBadRequest, fmt.Errorf("error converting post form to entiy: %v ", err))
 		return
 	}
 
-	if err := t.TrackCtrl.AddTrack(track.Name, track.DownloadLink, track.Layouts, track.Location); err != nil {
+	if err := t.TrackCtrl.AddTrack(track.Name, track.DownloadLink, track.Layouts, track.Location, track.Nation); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}

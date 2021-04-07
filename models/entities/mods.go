@@ -8,7 +8,15 @@ type Car struct {
 	Mod
 	Brand      CarBrand
 	ModelName  string
-	Categories []string
+	Categories []CarCategory
+}
+
+type CarCategory struct {
+	Name string
+}
+
+type TrackCategory struct {
+	Name string
 }
 
 type CarBrand struct {
@@ -24,16 +32,12 @@ type Track struct {
 	Mod
 	Name     string
 	Layouts  []Layout
-	Location Location
-}
-
-type Location struct {
-	LocationName string
-	Nation       Nation
+	Location string
+	Nation   Nation
 }
 
 type Layout struct {
 	Name     string
 	LengthKm float32
-	Type     string
+	Category TrackCategory
 }

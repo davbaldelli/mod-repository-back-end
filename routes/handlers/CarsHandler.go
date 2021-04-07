@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
 	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/schema"
 	"net/http"
 )
 
@@ -37,16 +37,10 @@ func (c CarsHandlerImpl) GETCarsByType(writer http.ResponseWriter, request *http
 }
 
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {
-
-	if err := request.ParseForm(); err != nil {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("error parsing request to post form: %v ", err))
-		return
-	}
-
 	car := entities.Car{}
 
-	decoder := schema.NewDecoder()
-	if err := decoder.Decode(&car, request.PostForm); err != nil {
+	decoder := json.NewDecoder(request.Body)
+	if err := decoder.Decode(&car); err != nil {
 		respondError(writer, http.StatusBadRequest, fmt.Errorf("error converting post form to entiy: %v ", err))
 		return
 	}
