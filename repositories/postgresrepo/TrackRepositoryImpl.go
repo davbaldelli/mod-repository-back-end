@@ -1,6 +1,7 @@
 package postgresrepo
 
 import (
+	"fmt"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -12,19 +13,127 @@ type TrackRepositoryImpl struct {
 }
 
 func (t TrackRepositoryImpl) GetAllTracks() []entities.Track {
-	panic("implement me")
+	var dbTracks []db.Track
+	var tracks []entities.Track
+	if result := t.Db.Find(&dbTracks); result.Error != nil {
+		//return error
+	}
+	for _, dbTrack := range dbTracks {
+		var dbLayouts []db.Layout
+		var layouts []entities.Layout
+		if result := t.Db.Where("track = ?", dbTrack.Name).Find(&dbLayouts); result.Error != nil {
+			//return result.Error
+		}
+		for _, dbLayout := range dbLayouts {
+			layouts = append(layouts, entities.Layout{
+				Name:     dbLayout.Name,
+				LengthKm: dbLayout.LengthKm,
+				Category: entities.TrackCategory{Name: dbLayout.Category},
+			})
+		}
+		tracks = append(tracks, entities.Track{
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink},
+			Name:     dbTrack.Name,
+			Layouts:  layouts,
+			Location: dbTrack.Location,
+			Nation:   entities.Nation{Name: dbTrack.Nation},
+		})
+	}
+	fmt.Println(tracks)
+	return tracks
 }
 
-func (t TrackRepositoryImpl) GetTracksByNation(s string) []entities.Track {
-	panic("implement me")
+func (t TrackRepositoryImpl) GetTracksByNation(nation string) []entities.Track {
+	var dbTracks []db.Track
+	var tracks []entities.Track
+	if result := t.Db.Where("nation = ?", nation).Find(&dbTracks); result.Error != nil {
+		//return error
+	}
+	for _, dbTrack := range dbTracks {
+		var dbLayouts []db.Layout
+		var layouts []entities.Layout
+		if result := t.Db.Where("track = ?", dbTrack.Name).Find(&dbLayouts); result.Error != nil {
+			//return result.Error
+		}
+		for _, dbLayout := range dbLayouts {
+			layouts = append(layouts, entities.Layout{
+				Name:     dbLayout.Name,
+				LengthKm: dbLayout.LengthKm,
+				Category: entities.TrackCategory{Name: dbLayout.Category},
+			})
+		}
+		tracks = append(tracks, entities.Track{
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink},
+			Name:     dbTrack.Name,
+			Layouts:  layouts,
+			Location: dbTrack.Location,
+			Nation:   entities.Nation{Name: dbTrack.Nation},
+		})
+	}
+	fmt.Println(tracks)
+	return tracks
 }
 
-func (t TrackRepositoryImpl) GetTracksByLayoutType(s string) []entities.Track {
-	panic("implement me")
+func (t TrackRepositoryImpl) GetTracksByLayoutType(category string) []entities.Track {
+	var dbTracks []db.Track
+	var tracks []entities.Track
+	if result := t.Db.Model(&db.Track{}).Select("tracks.*").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&dbTracks); result.Error != nil {
+		//return error
+	}
+	for _, dbTrack := range dbTracks {
+		var dbLayouts []db.Layout
+		var layouts []entities.Layout
+		if result := t.Db.Where("track = ?", dbTrack.Name).Find(&dbLayouts); result.Error != nil {
+			//return result.Error
+		}
+		for _, dbLayout := range dbLayouts {
+			layouts = append(layouts, entities.Layout{
+				Name:     dbLayout.Name,
+				LengthKm: dbLayout.LengthKm,
+				Category: entities.TrackCategory{Name: dbLayout.Category},
+			})
+		}
+		tracks = append(tracks, entities.Track{
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink},
+			Name:     dbTrack.Name,
+			Layouts:  layouts,
+			Location: dbTrack.Location,
+			Nation:   entities.Nation{Name: dbTrack.Nation},
+		})
+	}
+	fmt.Println(tracks)
+	return tracks
 }
 
-func (t TrackRepositoryImpl) GetTracksByName(s string) []entities.Track {
-	panic("implement me")
+func (t TrackRepositoryImpl) GetTracksByName(name string) []entities.Track {
+	var dbTracks []db.Track
+	var tracks []entities.Track
+	if result := t.Db.Where("name = ?", name).Find(&dbTracks); result.Error != nil {
+		//return error
+	}
+	for _, dbTrack := range dbTracks {
+		var dbLayouts []db.Layout
+		var layouts []entities.Layout
+		if result := t.Db.Where("track = ?", dbTrack.Name).Find(&dbLayouts); result.Error != nil {
+			//return result.Error
+		}
+		for _, dbLayout := range dbLayouts {
+			layouts = append(layouts, entities.Layout{
+				Name:     dbLayout.Name,
+				LengthKm: dbLayout.LengthKm,
+				Category: entities.TrackCategory{Name: dbLayout.Category},
+			})
+		}
+		tracks = append(tracks, entities.Track{
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink},
+			Name:     dbTrack.Name,
+			Layouts:  layouts,
+			Location: dbTrack.Location,
+			Nation:   entities.Nation{Name: dbTrack.Nation},
+		})
+	}
+	fmt.Println(tracks)
+	return tracks
 }
 
 func (t TrackRepositoryImpl) AddNewTrack(track entities.Track) error {

@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -40,5 +41,12 @@ func (w Web) Listen(port string) {
 	router.HandleFunc("/brand/name/{name}", w.BrandsHandler.GETBrandByName).Methods("GET")
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowCredentials: true,
+	})
+
+	handler := c.Handler(router)
+
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
