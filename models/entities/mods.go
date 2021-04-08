@@ -9,6 +9,7 @@ type Car struct {
 	Brand      CarBrand
 	ModelName  string
 	Categories []CarCategory
+	Year uint
 }
 
 type CarCategory struct {
@@ -34,10 +35,11 @@ type Track struct {
 	Layouts  []Layout
 	Location string
 	Nation   Nation
+	Year uint
 }
 
 type Layout struct {
 	Name     string
-	LengthKm float32
+	LengthM  float32
 	Category TrackCategory
 }

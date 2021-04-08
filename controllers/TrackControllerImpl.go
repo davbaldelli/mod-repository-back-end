@@ -25,12 +25,13 @@ func (t TrackControllerImpl) GetTracksByName(name string) []entities.Track {
 	return t.Repo.GetTracksByName(name)
 }
 
-func (t TrackControllerImpl) AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation) error {
+func (t TrackControllerImpl) AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint) error {
 	return t.Repo.AddNewTrack(entities.Track{
 		Mod:      entities.Mod{DownloadLink: downloadUrl},
 		Layouts:  layouts,
 		Location: location,
 		Nation:   nation,
 		Name:     name,
+		Year: year,
 	})
 }

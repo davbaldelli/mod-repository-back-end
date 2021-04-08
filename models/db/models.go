@@ -23,6 +23,7 @@ func allCarCategoryFromEntity(categories []entities.CarCategory) []CarCategory {
 type Car struct {
 	DownloadLink string
 	ModelName    string `gorm:"primaryKey"`
+	Year 		uint
 	Brand        string
 	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;"`
 }
@@ -34,6 +35,7 @@ func CarFromEntity(car entities.Car) Car {
 		ModelName:    car.ModelName,
 		Brand:        car.Brand.Name,
 		Categories:   allCarCategoryFromEntity(car.Categories),
+		Year: car.Year,
 	}
 }
 
@@ -68,6 +70,7 @@ type Track struct {
 	Layouts      []Layout `gorm:"foreignKey:Track"`
 	Location     string
 	Nation       string
+	Year uint
 }
 
 func TrackFromEntity(track entities.Track) Track {
@@ -77,6 +80,7 @@ func TrackFromEntity(track entities.Track) Track {
 		Layouts:      allLayoutFromEntity(track.Layouts, track.Name),
 		Location:     track.Location,
 		Nation:       track.Nation.Name,
+		Year: track.Year,
 	}
 }
 
@@ -90,7 +94,7 @@ type Layout struct {
 func layoutFromEntity(layout entities.Layout, track string) Layout {
 	return Layout{
 		Name:     layout.Name,
-		LengthKm: layout.LengthKm,
+		LengthKm: layout.LengthM,
 		Category: layout.Category.Name,
 		Track:    track,
 	}

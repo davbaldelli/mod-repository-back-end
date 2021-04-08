@@ -27,7 +27,7 @@ func (t TrackRepositoryImpl) GetAllTracks() []entities.Track {
 		for _, dbLayout := range dbLayouts {
 			layouts = append(layouts, entities.Layout{
 				Name:     dbLayout.Name,
-				LengthKm: dbLayout.LengthKm,
+				LengthM:  dbLayout.LengthKm,
 				Category: entities.TrackCategory{Name: dbLayout.Category},
 			})
 		}
@@ -58,7 +58,7 @@ func (t TrackRepositoryImpl) GetTracksByNation(nation string) []entities.Track {
 		for _, dbLayout := range dbLayouts {
 			layouts = append(layouts, entities.Layout{
 				Name:     dbLayout.Name,
-				LengthKm: dbLayout.LengthKm,
+				LengthM:  dbLayout.LengthKm,
 				Category: entities.TrackCategory{Name: dbLayout.Category},
 			})
 		}
@@ -89,7 +89,7 @@ func (t TrackRepositoryImpl) GetTracksByLayoutType(category string) []entities.T
 		for _, dbLayout := range dbLayouts {
 			layouts = append(layouts, entities.Layout{
 				Name:     dbLayout.Name,
-				LengthKm: dbLayout.LengthKm,
+				LengthM:  dbLayout.LengthKm,
 				Category: entities.TrackCategory{Name: dbLayout.Category},
 			})
 		}
@@ -120,7 +120,7 @@ func (t TrackRepositoryImpl) GetTracksByName(name string) []entities.Track {
 		for _, dbLayout := range dbLayouts {
 			layouts = append(layouts, entities.Layout{
 				Name:     dbLayout.Name,
-				LengthKm: dbLayout.LengthKm,
+				LengthM:  dbLayout.LengthKm,
 				Category: entities.TrackCategory{Name: dbLayout.Category},
 			})
 		}
