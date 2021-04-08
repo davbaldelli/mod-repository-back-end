@@ -27,8 +27,6 @@ type BrandController interface {
 	GetAllBrands() []entities.CarBrand
 	GetBrandByNation(string) []entities.CarBrand
 	GetBrandByName(string) []entities.CarBrand
-
-	AddBrand(name string, nation entities.Nation) error
 }
 
 type NationController interface {

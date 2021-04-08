@@ -6,7 +6,6 @@ import (
 	"github.com/davide/ModRepository/models/entities"
 	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/schema"
 	"net/http"
 )
 
@@ -28,27 +27,6 @@ func (b BrandsHandlerImpl) GETBrandByName(writer http.ResponseWriter, request *h
 	b.getBrandByParamResponse("name", func(s string) []entities.CarBrand { return b.BrandCtrl.GetBrandByName(s) }, writer, request)
 }
 
-func (b BrandsHandlerImpl) POSTNewBrand(writer http.ResponseWriter, request *http.Request) {
-	if err := request.ParseForm(); err != nil {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("error parsing request to post form: %v ", err))
-		return
-	}
-
-	brand := entities.CarBrand{}
-
-	decoder := schema.NewDecoder()
-	if err := decoder.Decode(&brand, request.PostForm); err != nil {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("error converting post form to entiy: %v ", err))
-		return
-	}
-
-	if err := b.BrandCtrl.AddBrand(brand.Name, brand.Nation); err != nil {
-		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
-		return
-	}
-
-	respondJSON(writer, http.StatusCreated, brand)
-}
 
 func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands getBrandsByParam, w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)

@@ -21,9 +21,3 @@ func (b BrandControllerImpl) GetBrandByName(name string) []entities.CarBrand {
 	return b.Repo.GetBrandByName(name)
 }
 
-func (b BrandControllerImpl) AddBrand(name string, nation entities.Nation) error {
-	return b.Repo.AddNewBrand(entities.CarBrand{
-		Name:   name,
-		Nation: nation,
-	})
-}

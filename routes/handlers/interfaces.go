@@ -32,6 +32,4 @@ type BrandsHandler interface {
 	GETAllBrands(http.ResponseWriter, *http.Request)
 	GETBrandByNation(http.ResponseWriter, *http.Request)
 	GETBrandByName(http.ResponseWriter, *http.Request)
-
-	POSTNewBrand(http.ResponseWriter, *http.Request)
 }

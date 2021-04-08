@@ -27,7 +27,6 @@ type NationRepository interface {
 }
 
 type BrandRepository interface {
-	AddNewBrand(brand entities.CarBrand) error
 	GetAllBrands() []entities.CarBrand
 	GetBrandByNation(string) []entities.CarBrand
 	GetBrandByName(string) []entities.CarBrand
