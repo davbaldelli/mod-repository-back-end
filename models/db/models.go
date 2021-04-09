@@ -91,6 +91,7 @@ type Layout struct {
 	Track    string
 }
 
+
 func layoutFromEntity(layout entities.Layout, track string) Layout {
 	return Layout{
 		Name:     layout.Name,

@@ -32,6 +32,7 @@ func (b BrandRepositoryImpl) GetBrandByNation(nation string) []entities.CarBrand
 		//return result.Error
 	}
 	for _, dbBrand := range dbBrands {
+
 		brands = append(brands, entities.CarBrand{
 			Name:   dbBrand.Name,
 			Nation: entities.Nation{Name: dbBrand.Nation},

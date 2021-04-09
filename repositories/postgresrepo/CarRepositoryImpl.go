@@ -40,125 +40,171 @@ func (c CarRepositoryImpl) AddNewCar(car entities.Car) error {
 
 func (c CarRepositoryImpl) GetAllCars() []entities.Car {
 	var cars []entities.Car
-	var result []rawCar
-	c.Db.Model(&db.Car{}).Select("*").Joins("join car_brands on cars.brand = car_brands.name ").Scan(&result)
-	for _, row := range result {
-		var dbCategories []db.CarCategory
-		var categories []entities.CarCategory
-		c.Db.Model(&db.CarCategory{}).Select("car_categories.*").Joins("join cars_categories_ass on cars_categories_ass.car_category_name = name").Where("car_model_name = ?", row.ModelName).Scan(&dbCategories)
-		for _, dbCategory := range dbCategories {
-			categories = append(categories, entities.CarCategory{Name: dbCategory.Name})
-		}
+	var dbCars []db.Car
+
+	if result := c.Db.Preload("Categories").Find(&dbCars); result.Error != nil{
+		//return result.Error
+	}
+	var dbBrands []db.CarBrand
+	if result := c.Db.Find(&dbBrands); result.Error != nil {
+		//return result.Error
+	}
+	brandsNation := make(map[string]string)
+	for _, brand := range dbBrands {
+		brandsNation[brand.Name] = brand.Nation
+	}
+
+	for _, dbCar := range dbCars {
 		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: row.DownloadLink},
+			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
 			Brand: entities.CarBrand{
-				Name:   row.Brand,
-				Nation: entities.Nation{Name: row.Nation},
+				Name:   dbCar.Brand,
+				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
 			},
-			ModelName:  row.ModelName,
-			Categories: categories,
+			ModelName:  dbCar.ModelName,
+			Categories: allCategoriesToEntity(dbCar.Categories),
 		})
 	}
-	fmt.Println(result)
+	fmt.Println(cars)
 	return cars
 }
 
+func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory{
+	var cats []entities.CarCategory
+	for _,dbCat := range  dbCategories {
+		cats = append(cats, entities.CarCategory{Name: dbCat.Name})
+	}
+	return cats
+}
+
+
 func (c CarRepositoryImpl) GetCarsByNation(nation string) []entities.Car {
 	var cars []entities.Car
-	var result []rawCar
-	c.Db.Model(&db.Car{}).Select("*").Joins("join car_brands on cars.brand = car_brands.name ").Where("nation = ?", nation).Scan(&result)
-	for _, row := range result {
-		var dbCategories []db.CarCategory
-		var categories []entities.CarCategory
-		c.Db.Model(&db.CarCategory{}).Select("car_categories.*").Joins("join cars_categories_ass on cars_categories_ass.car_category_name = name").Where("car_model_name = ?", row.ModelName).Scan(&dbCategories)
-		for _, dbCategory := range dbCategories {
-			categories = append(categories, entities.CarCategory{Name: dbCategory.Name})
-		}
+	var dbCars []db.Car
+
+	if result := c.Db.Preload("Categories").Joins("join car_brands on cars.brand = car_brands.name").Where("car_brands.nation = ?",nation).Find(&dbCars); result.Error != nil{
+		//return result.Error
+	}
+	var dbBrands []db.CarBrand
+	if result := c.Db.Find(&dbBrands,"nation = ?",nation); result.Error != nil {
+		//return result.Error
+	}
+	brandsNation := make(map[string]string)
+	for _, brand := range dbBrands {
+		brandsNation[brand.Name] = brand.Nation
+	}
+
+	for _, dbCar := range dbCars {
 		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: row.DownloadLink},
+			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
 			Brand: entities.CarBrand{
-				Name:   row.Brand,
-				Nation: entities.Nation{Name: row.Nation},
+				Name:   dbCar.Brand,
+				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
 			},
-			ModelName:  row.ModelName,
-			Categories: categories,
+			ModelName:  dbCar.ModelName,
+			Categories: allCategoriesToEntity(dbCar.Categories),
 		})
 	}
-	fmt.Println(result)
+	fmt.Println(cars)
 	return cars
 }
 
 func (c CarRepositoryImpl) GetCarByModel(model string) []entities.Car {
 	var cars []entities.Car
-	var result []rawCar
-	c.Db.Model(&db.Car{}).Select("*").Joins("join car_brands on cars.brand = car_brands.name ").Where("model_name = ?", model).Scan(&result)
-	for _, row := range result {
-		var dbCategories []db.CarCategory
-		var categories []entities.CarCategory
-		c.Db.Model(&db.CarCategory{}).Select("car_categories.*").Joins("join cars_categories_ass on cars_categories_ass.car_category_name = name").Where("car_model_name = ?", row.ModelName).Scan(&dbCategories)
-		for _, dbCategory := range dbCategories {
-			categories = append(categories, entities.CarCategory{Name: dbCategory.Name})
-		}
+	var dbCars []db.Car
+
+	if result := c.Db.Preload("Categories").Find(&dbCars,"model_name = ?", model); result.Error != nil{
+		//return result.Error
+	}
+
+	var brandsNames []string
+	for _, car := range dbCars {
+		brandsNames = append(brandsNames, car.Brand)
+	}
+	
+	var dbBrands []db.CarBrand
+	if result := c.Db.Find(&dbBrands, "name IN ?", brandsNames); result.Error != nil {
+		//return result.Error
+	}
+	brandsNation := make(map[string]string)
+	for _, brand := range dbBrands {
+		brandsNation[brand.Name] = brand.Nation
+	}
+
+	for _, dbCar := range dbCars {
 		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: row.DownloadLink},
+			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
 			Brand: entities.CarBrand{
-				Name:   row.Brand,
-				Nation: entities.Nation{Name: row.Nation},
+				Name:   dbCar.Brand,
+				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
 			},
-			ModelName:  row.ModelName,
-			Categories: categories,
+			ModelName:  dbCar.ModelName,
+			Categories: allCategoriesToEntity(dbCar.Categories),
 		})
 	}
-	fmt.Println(result)
+	fmt.Println(cars)
 	return cars
 }
 
-func (c CarRepositoryImpl) GetCarsByBrand(brand string) []entities.Car {
+func (c CarRepositoryImpl) GetCarsByBrand(brandName string) []entities.Car {
 	var cars []entities.Car
-	var result []rawCar
-	c.Db.Model(&db.Car{}).Select("*").Joins("join car_brands on cars.brand = car_brands.name ").Where("brand = ?", brand).Scan(&result)
-	for _, row := range result {
-		var dbCategories []db.CarCategory
-		var categories []entities.CarCategory
-		c.Db.Model(&db.CarCategory{}).Select("car_categories.*").Joins("join cars_categories_ass on cars_categories_ass.car_category_name = name").Where("car_model_name = ?", row.ModelName).Scan(&dbCategories)
-		for _, dbCategory := range dbCategories {
-			categories = append(categories, entities.CarCategory{Name: dbCategory.Name})
-		}
+	var dbCars []db.Car
+
+	if result := c.Db.Preload("Categories").Find(&dbCars,"brand = ?",brandName); result.Error != nil{
+		//return result.Error
+	}
+	dbBrand := db.CarBrand{Name: brandName}
+	if result := c.Db.Find(&dbBrand); result.Error != nil {
+		//return result.Error
+	}
+
+	for _, dbCar := range dbCars {
 		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: row.DownloadLink},
+			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
 			Brand: entities.CarBrand{
-				Name:   row.Brand,
-				Nation: entities.Nation{Name: row.Nation},
+				Name:   dbCar.Brand,
+				Nation: entities.Nation{Name: dbBrand.Nation},
 			},
-			ModelName:  row.ModelName,
-			Categories: categories,
+			ModelName:  dbCar.ModelName,
+			Categories: allCategoriesToEntity(dbCar.Categories),
 		})
 	}
-	fmt.Println(result)
+	fmt.Println(cars)
 	return cars
 }
 
 func (c CarRepositoryImpl) GetCarsByType(category string) []entities.Car {
+	
 	var cars []entities.Car
-	var result []rawCar
-	c.Db.Model(&db.Car{}).Select("cars.* ", "car_brands.*").Joins("join car_brands on cars.brand = car_brands.name ").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Scan(&result)
-	for _, row := range result {
-		var dbCategories []db.CarCategory
-		var categories []entities.CarCategory
-		c.Db.Model(&db.CarCategory{}).Select("car_categories.*").Joins("join cars_categories_ass on cars_categories_ass.car_category_name = name").Where("car_model_name = ?", row.ModelName).Scan(&dbCategories)
-		for _, dbCategory := range dbCategories {
-			categories = append(categories, entities.CarCategory{Name: dbCategory.Name})
-		}
+	var dbCars []db.Car
+
+	if result := c.Db.Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&dbCars); result.Error != nil{
+		//return result.Error
+	}
+	var brandsNames []string
+	for _, car := range dbCars {
+		brandsNames = append(brandsNames, car.Brand)
+	}
+
+	var dbBrands []db.CarBrand
+	if result := c.Db.Find(&dbBrands, "name IN ?", brandsNames); result.Error != nil {
+		//return result.Error
+	}
+	brandsNation := make(map[string]string)
+	for _, brand := range dbBrands {
+		brandsNation[brand.Name] = brand.Nation
+	}
+	for _, dbCar := range dbCars {
 		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: row.DownloadLink},
+			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
 			Brand: entities.CarBrand{
-				Name:   row.Brand,
-				Nation: entities.Nation{Name: row.Nation},
+				Name:   dbCar.Brand,
+				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
 			},
-			ModelName:  row.ModelName,
-			Categories: categories,
+			ModelName:  dbCar.ModelName,
+			Categories: allCategoriesToEntity(dbCar.Categories),
 		})
 	}
-	fmt.Println(result)
+	fmt.Println(cars)
 	return cars
 }
