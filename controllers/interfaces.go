@@ -5,31 +5,33 @@ import (
 )
 
 type CarController interface {
-	GetAllCars() []entities.Car
-	GetCarsByNation(string) []entities.Car
-	GetCarByModel(string) []entities.Car
-	GetCarsByBrand(string) []entities.Car
-	GetCarsByType(string) []entities.Car
+	GetAllCars() ([]entities.Car, error)
+	GetCarsByNation(string) ([]entities.Car, error)
+	GetCarByModel(string) ([]entities.Car, error)
+	GetCarsByBrand(string) ([]entities.Car, error)
+	GetCarsByType(string) ([]entities.Car, error)
+	GetAllCarCategories() ([]entities.CarCategory, error)
 
 	AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint) error
 }
 
 type TrackController interface {
-	GetAllTracks() []entities.Track
-	GetTracksByNation(string) []entities.Track
-	GetTracksByLayoutType(string) []entities.Track
-	GetTracksByName(string) []entities.Track
+	GetAllTracks() ([]entities.Track,error)
+	GetTracksByNation(string) ([]entities.Track,error)
+	GetTracksByLayoutType(string) ([]entities.Track,error)
+	GetTracksByName(string) ([]entities.Track,error)
+	GetAllTrackCategories() ([]entities.TrackCategory, error)
 
 	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint) error
 }
 
 type BrandController interface {
-	GetAllBrands() []entities.CarBrand
-	GetBrandByNation(string) []entities.CarBrand
-	GetBrandByName(string) []entities.CarBrand
+	GetAllBrands() ([]entities.CarBrand, error)
+	GetBrandsByNation(string) ([]entities.CarBrand, error)
+	GetBrandsByName(string) ([]entities.CarBrand, error)
 }
 
 type NationController interface {
-	GetAllTracksNations() []entities.Nation
-	GetAllBrandsNations() []entities.Nation
+	GetAllTracksNations() ([]entities.Nation, error)
+	GetAllBrandsNations() ([]entities.Nation, error)
 }

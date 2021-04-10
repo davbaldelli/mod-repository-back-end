@@ -9,26 +9,30 @@ type CarControllerImpl struct {
 	Repo repositories.CarRepository
 }
 
-func (c CarControllerImpl) GetAllCars() []entities.Car {
-	return c.Repo.GetAllCars()
+func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error) {
+	return c.Repo.SelectAllCarCategories()
 }
 
-func (c CarControllerImpl) GetCarsByNation(nationName string) []entities.Car {
-	return c.Repo.GetCarsByNation(nationName)
+func (c CarControllerImpl) GetAllCars() ([]entities.Car, error){
+	return c.Repo.SelectAllCars()
 }
 
-func (c CarControllerImpl) GetCarByModel(model string) []entities.Car {
-	return c.Repo.GetCarByModel(model)
+func (c CarControllerImpl) GetCarsByNation(nationName string) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByNation(nationName)
 }
 
-func (c CarControllerImpl) GetCarsByBrand(brandName string) []entities.Car {
-	return c.Repo.GetCarsByBrand(brandName)
+func (c CarControllerImpl) GetCarByModel(model string) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByModelName(model)
 }
 
-func (c CarControllerImpl) GetCarsByType(categoryName string) []entities.Car {
-	return c.Repo.GetCarsByType(categoryName)
+func (c CarControllerImpl) GetCarsByBrand(brandName string) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByBrand(brandName)
+}
+
+func (c CarControllerImpl) GetCarsByType(categoryName string) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByType(categoryName)
 }
 
 func (c CarControllerImpl) AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint) error {
-	return c.Repo.AddNewCar(entities.Car{ModelName: modelName, Brand: brand, Categories: categories, Mod: entities.Mod{DownloadLink: downloadUrl}, Year: year})
+	return c.Repo.InsertCar(entities.Car{ModelName: modelName, Brand: brand, Categories: categories, Mod: entities.Mod{DownloadLink: downloadUrl}, Year: year})
 }

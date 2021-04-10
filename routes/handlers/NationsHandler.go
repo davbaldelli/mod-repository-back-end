@@ -11,9 +11,17 @@ type NationsHandlerImpl struct {
 }
 
 func (n NationsHandlerImpl) GETAllTracksNations(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, presentation.OfAllNations(n.CtrlNations.GetAllTracksNations()))
+	if nations, err := n.CtrlNations.GetAllTracksNations(); err != nil{
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
+	}
 }
 
 func (n NationsHandlerImpl) GETAllBrandsNations(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, presentation.OfAllNations(n.CtrlNations.GetAllBrandsNations()))
+	if nations, err := n.CtrlNations.GetAllBrandsNations(); err != nil{
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
+	}
 }

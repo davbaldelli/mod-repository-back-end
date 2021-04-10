@@ -11,27 +11,27 @@ type NationsRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func (n NationsRepositoryImpl) GetAllBrandsNations() []entities.Nation {
+func (n NationsRepositoryImpl) SelectAllBrandsNations() ([]entities.Nation, error) {
 	var dbNations []db.Nation
 	var nations []entities.Nation
 	if result := n.Db.Distinct("nations.name").Joins("inner join car_brands on car_brands.nation = nations.name").Find(&dbNations); result.Error != nil {
-		//return result.Error
+		return nil,result.Error
 	}
 	for _, dbNation := range dbNations {
 		nations = append(nations, entities.Nation{Name: dbNation.Name})
 	}
 	fmt.Println(nations)
-	return nations
+	return nations,nil
 }
 
-func (n NationsRepositoryImpl) GetAllTrackNations() []entities.Nation {
+func (n NationsRepositoryImpl) SelectAllTrackNations() ([]entities.Nation, error) {
 	var dbNations []db.Nation
 	var nations []entities.Nation
 	if result := n.Db.Distinct("nations.name").Joins("inner join tracks on tracks.nation = nations.name").Find(&dbNations); result.Error != nil {
-		//return result.Error
+		return nil,result.Error
 	}
 	for _, dbNation := range dbNations {
 		nations = append(nations, entities.Nation{Name: dbNation.Name})
 	}
-	return nations
+	return nations,nil
 }

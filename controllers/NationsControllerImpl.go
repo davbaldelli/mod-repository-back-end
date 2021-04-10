@@ -9,10 +9,10 @@ type NationControllerImpl struct {
 	Repo repositories.NationRepository
 }
 
-func (n NationControllerImpl) GetAllTracksNations() []entities.Nation {
-	return n.Repo.GetAllTrackNations()
+func (n NationControllerImpl) GetAllTracksNations() ([]entities.Nation,error) {
+	return n.Repo.SelectAllTrackNations()
 }
 
-func (n NationControllerImpl) GetAllBrandsNations() []entities.Nation {
-	return n.Repo.GetAllBrandsNations()
+func (n NationControllerImpl) GetAllBrandsNations() ([]entities.Nation,error) {
+	return n.Repo.SelectAllBrandsNations()
 }

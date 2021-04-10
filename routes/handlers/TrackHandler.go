@@ -14,22 +14,35 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
-type getTracksByParam func(string) []entities.Track
+func (t TrackHandlerImpl) GETAllLayoutTypes(writer http.ResponseWriter, request *http.Request) {
+	if categories, err := t.TrackCtrl.GetAllTrackCategories(); err != nil {
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, categories)
+	}
+}
+
+type getTracksByParam func(string) ([]entities.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, presentation.OfAllTracks(t.TrackCtrl.GetAllTracks()))
+	if tracks, err := t.TrackCtrl.GetAllTracks(); err != nil {
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, presentation.OfAllTracks(tracks))
+	}
+
 }
 
 func (t TrackHandlerImpl) GETTracksByNation(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("nation", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByNation(s) }, writer, request)
+	t.getTrackByParamResponse("nation", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByNation(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) GETTracksByLayoutType(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("layoutType", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
+	t.getTrackByParamResponse("layoutType", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("name", func(s string) []entities.Track { return t.TrackCtrl.GetTracksByName(s) }, writer, request)
+	t.getTrackByParamResponse("name", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByName(s) }, writer, request)
 }
 
 func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http.Request) {
@@ -58,5 +71,10 @@ func (t TrackHandlerImpl) getTrackByParamResponse(paramString string, getTracks 
 		return
 	}
 
-	respondJSON(writer, http.StatusOK, presentation.OfAllTracks(getTracks(param)))
+	if tracks, err := getTracks(param); err != nil {
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, presentation.OfAllTracks(tracks))
+	}
+
 }

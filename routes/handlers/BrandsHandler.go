@@ -9,22 +9,26 @@ import (
 	"net/http"
 )
 
-type getBrandsByParam func(string) []entities.CarBrand
+type getBrandsByParam func(string) ([]entities.CarBrand, error)
 
 type BrandsHandlerImpl struct {
 	BrandCtrl controllers.BrandController
 }
 
 func (b BrandsHandlerImpl) GETAllBrands(writer http.ResponseWriter, request *http.Request) {
-	respondJSON(writer, http.StatusOK, presentation.OfAllBrands(b.BrandCtrl.GetAllBrands()))
+	if brands, err := b.BrandCtrl.GetAllBrands(); err != nil {
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, presentation.OfAllBrands(brands))
+	}
 }
 
 func (b BrandsHandlerImpl) GETBrandByNation(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("nation", func(s string) []entities.CarBrand { return b.BrandCtrl.GetBrandByNation(s) }, writer, request)
+	b.getBrandByParamResponse("nation", func(s string) ([]entities.CarBrand, error) { return b.BrandCtrl.GetBrandsByNation(s) }, writer, request)
 }
 
 func (b BrandsHandlerImpl) GETBrandByName(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("name", func(s string) []entities.CarBrand { return b.BrandCtrl.GetBrandByName(s) }, writer, request)
+	b.getBrandByParamResponse("name", func(s string) ([]entities.CarBrand, error) { return b.BrandCtrl.GetBrandsByName(s) }, writer, request)
 }
 
 
@@ -37,5 +41,9 @@ func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands
 		return
 	}
 
-	respondJSON(w, http.StatusOK, presentation.OfAllBrands(getBrands(param)))
+	if brands, err := getBrands(param); err!=nil{
+		respondError(w, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(w, http.StatusOK, presentation.OfAllBrands(brands))
+	}
 }

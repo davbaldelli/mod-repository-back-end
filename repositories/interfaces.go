@@ -5,29 +5,31 @@ import (
 )
 
 type CarRepository interface {
-	AddNewCar(car entities.Car) error
-	GetAllCars() []entities.Car
-	GetCarsByNation(string) []entities.Car
-	GetCarByModel(string) []entities.Car
-	GetCarsByBrand(string) []entities.Car
-	GetCarsByType(string) []entities.Car
+	InsertCar(car entities.Car) error
+	SelectAllCars() ([]entities.Car, error)
+	SelectCarsByNation(string) ([]entities.Car, error)
+	SelectCarsByModelName(string) ([]entities.Car, error)
+	SelectCarsByBrand(string) ([]entities.Car, error)
+	SelectCarsByType(string) ([]entities.Car, error)
+	SelectAllCarCategories() ([]entities.CarCategory, error)
 }
 
 type TrackRepository interface {
-	GetAllTracks() []entities.Track
-	GetTracksByNation(string) []entities.Track
-	GetTracksByLayoutType(string) []entities.Track
-	GetTracksByName(string) []entities.Track
-	AddNewTrack(track entities.Track) error
+	SelectAllTracks() ([]entities.Track,error)
+	SelectTracksByNation(string) ([]entities.Track,error)
+	SelectTracksByLayoutType(string) ([]entities.Track,error)
+	SelectTracksByName(string) ([]entities.Track,error)
+	SelectAllTrackCategories() ([]entities.TrackCategory, error)
+	InsertTrack(track entities.Track) error
 }
 
 type NationRepository interface {
-	GetAllBrandsNations() []entities.Nation
-	GetAllTrackNations() []entities.Nation
+	SelectAllBrandsNations() ([]entities.Nation, error)
+	SelectAllTrackNations() ([]entities.Nation, error)
 }
 
 type BrandRepository interface {
-	GetAllBrands() []entities.CarBrand
-	GetBrandByNation(string) []entities.CarBrand
-	GetBrandByName(string) []entities.CarBrand
+	SelectAllBrands() ([]entities.CarBrand, error)
+	SelectBrandsByNation(string) ([]entities.CarBrand, error)
+	SelectBrandsByName(string) ([]entities.CarBrand, error)
 }

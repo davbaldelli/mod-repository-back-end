@@ -9,15 +9,15 @@ type BrandControllerImpl struct {
 	Repo repositories.BrandRepository
 }
 
-func (b BrandControllerImpl) GetAllBrands() []entities.CarBrand {
-	return b.Repo.GetAllBrands()
+func (b BrandControllerImpl) GetAllBrands() ([]entities.CarBrand,error) {
+	return b.Repo.SelectAllBrands()
 }
 
-func (b BrandControllerImpl) GetBrandByNation(nationName string) []entities.CarBrand {
-	return b.Repo.GetBrandByNation(nationName)
+func (b BrandControllerImpl) GetBrandsByNation(nationName string) ([]entities.CarBrand, error) {
+	return b.Repo.SelectBrandsByNation(nationName)
 }
 
-func (b BrandControllerImpl) GetBrandByName(name string) []entities.CarBrand {
-	return b.Repo.GetBrandByName(name)
+func (b BrandControllerImpl) GetBrandsByName(name string) ([]entities.CarBrand, error) {
+	return b.Repo.SelectBrandsByName(name)
 }
 
