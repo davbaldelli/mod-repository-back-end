@@ -1,7 +1,6 @@
 package postgresrepo
 
 import (
-	"fmt"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -20,7 +19,6 @@ func (n NationsRepositoryImpl) SelectAllBrandsNations() ([]entities.Nation, erro
 	for _, dbNation := range dbNations {
 		nations = append(nations, entities.Nation{Name: dbNation.Name})
 	}
-	fmt.Println(nations)
 	return nations,nil
 }
 

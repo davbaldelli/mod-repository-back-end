@@ -1,7 +1,6 @@
 package postgresrepo
 
 import (
-	"fmt"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -92,6 +91,5 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 			Nation:   entities.Nation{Name: dbTrack.Nation},
 		})
 	}
-	fmt.Println(tracks)
 	return tracks,nil
 }

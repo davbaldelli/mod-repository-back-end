@@ -35,3 +35,7 @@ type NationController interface {
 	GetAllTracksNations() ([]entities.Nation, error)
 	GetAllBrandsNations() ([]entities.Nation, error)
 }
+
+type LoginController interface {
+	Login(username string, password string) error
+}
