@@ -43,3 +43,9 @@ type Layout struct {
 	LengthM  float32
 	Category TrackCategory
 }
+
+type User struct {
+	Username string
+	Password string
+	IsAdmin bool
+}

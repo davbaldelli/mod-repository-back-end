@@ -113,3 +113,9 @@ type TrackCategory struct {
 	Name    string   `gorm:"primaryKey"`
 	Layouts []Layout `gorm:"foreignKey:Category"`
 }
+
+type User struct {
+	Username string `gorm:"primaryKey"`
+	Password string
+	IsAdmin bool
+}

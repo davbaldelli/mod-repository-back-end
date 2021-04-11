@@ -32,6 +32,11 @@ type NationsHandler interface {
 
 type BrandsHandler interface {
 	GETAllBrands(http.ResponseWriter, *http.Request)
+	GETAllBrandsGroupedByNation(http.ResponseWriter, *http.Request)
 	GETBrandByNation(http.ResponseWriter, *http.Request)
 	GETBrandByName(http.ResponseWriter, *http.Request)
+}
+
+type UsersHandler interface {
+	POSTLogin(http.ResponseWriter, *http.Request)
 }

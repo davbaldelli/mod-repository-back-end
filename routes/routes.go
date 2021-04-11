@@ -17,6 +17,7 @@ type Web struct {
 	TracksHandler handlers.TracksHandler
 	NationHandler handlers.NationsHandler
 	BrandsHandler handlers.BrandsHandler
+	UsersHandler handlers.UsersHandler
 }
 
 func (w Web) Listen(port string) {
@@ -40,11 +41,14 @@ func (w Web) Listen(port string) {
 	router.HandleFunc("/nation/track/all", w.NationHandler.GETAllTracksNations).Methods("GET")
 
 	router.HandleFunc("/brand/all", w.BrandsHandler.GETAllBrands).Methods("GET")
+	router.HandleFunc("/brand/all/grouped/nation", w.BrandsHandler.GETAllBrandsGroupedByNation).Methods("GET")
 	router.HandleFunc("/brand/name/{name}", w.BrandsHandler.GETBrandByName).Methods("GET")
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
 
+	router.HandleFunc("/login",w.UsersHandler.POSTLogin).Methods("POST")
+
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
 	})
 

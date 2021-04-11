@@ -37,5 +37,5 @@ type NationController interface {
 }
 
 type LoginController interface {
-	Login(username string, password string) error
+	Login(username string, password string) (entities.User,error)
 }

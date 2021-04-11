@@ -33,3 +33,7 @@ type BrandRepository interface {
 	SelectBrandsByNation(string) ([]entities.CarBrand, error)
 	SelectBrandsByName(string) ([]entities.CarBrand, error)
 }
+
+type UserRepository interface {
+	Login(user entities.User) (entities.User, error)
+}
