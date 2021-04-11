@@ -88,7 +88,7 @@ type Layout struct {
 	Name     string `gorm:"primaryKey"`
 	LengthKm float32
 	Category string
-	Track    string
+	Track    string `gorm:"primaryKey"`
 }
 
 
