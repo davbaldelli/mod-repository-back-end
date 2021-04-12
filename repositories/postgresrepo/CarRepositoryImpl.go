@@ -39,6 +39,8 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBr
 			},
 			ModelName:  dbCar.ModelName,
 			Categories: allCategoriesToEntity(dbCar.Categories),
+			Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
+			GearType: entities.GearType(dbCar.GearType),
 		})
 	}
 	return cars,nil

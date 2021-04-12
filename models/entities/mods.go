@@ -1,5 +1,20 @@
 package entities
 
+type Drivetrain string
+
+type GearType string
+
+const (
+	RearWheelDrive Drivetrain = "RWD"
+	FrontWheelDrive = "FWD"
+	AllWheelDrive = "AWD"
+)
+
+const (
+	Sequential GearType = "SEQUENTIAL"
+	Manual = "MANUAL"
+)
+
 type Mod struct {
 	DownloadLink string
 }
@@ -10,6 +25,8 @@ type Car struct {
 	ModelName  string
 	Categories []CarCategory
 	Year uint
+	Drivetrain Drivetrain
+	GearType GearType
 }
 
 type CarCategory struct {

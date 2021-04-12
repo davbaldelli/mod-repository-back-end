@@ -12,7 +12,7 @@ type CarController interface {
 	GetCarsByType(string) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
 
-	AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint) error
+	AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint, drivetrain entities.Drivetrain, gearType entities.GearType) error
 }
 
 type TrackController interface {

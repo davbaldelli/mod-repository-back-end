@@ -3,7 +3,7 @@ package db
 import "github.com/davide/ModRepository/models/entities"
 
 type CarCategory struct {
-	Name string `gorm:"primaryKey"`
+	Name string `gorm:"primaryKey:not null"`
 }
 
 func carCategoryFromEntity(category entities.CarCategory) CarCategory {
@@ -26,6 +26,8 @@ type Car struct {
 	Year 		uint
 	Brand        string
 	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;"`
+	GearType string
+	Drivetrain string
 }
 
 func CarFromEntity(car entities.Car) Car {
@@ -35,7 +37,9 @@ func CarFromEntity(car entities.Car) Car {
 		ModelName:    car.ModelName,
 		Brand:        car.Brand.Name,
 		Categories:   allCarCategoryFromEntity(car.Categories),
-		Year: car.Year,
+		Year:         car.Year,
+		Drivetrain: string(car.Drivetrain),
+		GearType: string(car.GearType),
 	}
 }
 

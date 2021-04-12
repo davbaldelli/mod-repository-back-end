@@ -57,6 +57,7 @@ func (w Web) Listen(port string) {
 
 	handler := c.Handler(router)
 
+
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mods.davidebaldelli.it"),
