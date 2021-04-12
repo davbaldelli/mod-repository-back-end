@@ -1,9 +1,11 @@
 package routes
 
 import (
+	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -54,5 +56,22 @@ func (w Web) Listen(port string) {
 
 	handler := c.Handler(router)
 
+	certManager := autocert.Manager{
+		Prompt: autocert.AcceptTOS,
+		Cache:  autocert.DirCache("certs"),
+	}
+
+	server := &http.Server{
+		Addr:    ":443",
+		Handler: handler,
+		TLSConfig: &tls.Config{
+			GetCertificate: certManager.GetCertificate,
+		},
+	}
+
+	err := server.ListenAndServeTLS("", "")
+	if err != nil {
+		panic(err)
+	}
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

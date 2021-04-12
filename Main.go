@@ -38,7 +38,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dsn := "host=localhost user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
+	dsn := "host=127.0.0.1 user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
 	dbase, err3 := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err3 != nil {
@@ -58,5 +58,5 @@ func main() {
 		BrandsHandler: handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
 		UsersHandler: handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
 	}
-	web.Listen("6316")
+	web.Listen("80")
 }
