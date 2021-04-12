@@ -11,7 +11,7 @@ import (
 )
 
 type Route interface {
-	Listen(string)
+	Listen()
 }
 
 type Web struct {
@@ -22,7 +22,7 @@ type Web struct {
 	UsersHandler handlers.UsersHandler
 }
 
-func (w Web) Listen(port string) {
+func (w Web) Listen() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/car/new", w.CarHandler.POSTNewCar).Methods("POST")
 	router.HandleFunc("/car/all", w.CarHandler.GETAllCars).Methods("GET")
@@ -81,6 +81,6 @@ func (w Web) Listen(port string) {
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
 
-	//log.Fatal(http.ListenAndServe(":"+port, handler))
+	//log.Fatal(http.ListenAndServe(":6316", handler))
 
 }
