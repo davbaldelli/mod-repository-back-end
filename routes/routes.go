@@ -1,9 +1,11 @@
 package routes
 
 import (
+	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -17,7 +19,7 @@ type Web struct {
 	TracksHandler handlers.TracksHandler
 	NationHandler handlers.NationsHandler
 	BrandsHandler handlers.BrandsHandler
-	UsersHandler handlers.UsersHandler
+	UsersHandler  handlers.UsersHandler
 }
 
 func (w Web) Listen() {
@@ -45,8 +47,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/brand/name/{name}", w.BrandsHandler.GETBrandByName).Methods("GET")
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
 
-	router.HandleFunc("/login",w.UsersHandler.POSTLogin).Methods("POST")
-
+	router.HandleFunc("/login", w.UsersHandler.POSTLogin).Methods("POST")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -55,7 +56,6 @@ func (w Web) Listen() {
 
 	handler := c.Handler(router)
 
-	/*
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mods.davidebaldelli.it"),
@@ -63,7 +63,7 @@ func (w Web) Listen() {
 
 	// create the server itself
 	server := &http.Server{
-		Addr: ":https",
+		Addr:    ":https",
 		Handler: handler,
 		TLSConfig: &tls.Config{
 			GetCertificate: certManager.GetCertificate,
@@ -78,8 +78,7 @@ func (w Web) Listen() {
 	}()
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
-	 */
 
-	log.Fatal(http.ListenAndServe(":6316", handler))
+	//log.Fatal(http.ListenAndServe(":6316", handler))
 
 }

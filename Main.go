@@ -34,11 +34,11 @@ func main() {
 
 	var cred Credentials
 
-	if err2 := json.Unmarshal(byteValue, &cred); err2 != nil{
+	if err2 := json.Unmarshal(byteValue, &cred); err2 != nil {
 		log.Fatal(err)
 	}
 
-	dsn := "host=api.mods.davidebaldelli.it user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
+	dsn := "host=127.0.0.1 user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
 	dbase, err3 := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err3 != nil {
@@ -56,7 +56,7 @@ func main() {
 		TracksHandler: handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}},
 		NationHandler: handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler: handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
-		UsersHandler: handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
+		UsersHandler:  handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
 	}
 	web.Listen()
 }
