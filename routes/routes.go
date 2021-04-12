@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
+	"github.com/foomo/simplecert"
+	"github.com/foomo/tlsconfig"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -56,22 +56,29 @@ func (w Web) Listen(port string) {
 
 	handler := c.Handler(router)
 
-	certManager := autocert.Manager{
-		Prompt: autocert.AcceptTOS,
-		Cache:  autocert.DirCache("certs"),
-	}
-
-	server := &http.Server{
-		Addr:    ":443",
-		Handler: handler,
-		TLSConfig: &tls.Config{
-			GetCertificate: certManager.GetCertificate,
-		},
-	}
-
-	err := server.ListenAndServeTLS("", "")
+	cfg := simplecert.Default
+	cfg.Domains = []string{"api.mods.davidebaldelli.it"}
+	cfg.CacheDir = "/etc/letsencrypt/live/api.mods.davidebaldelli.it"
+	cfg.SSLEmail = "davbaldelli@gmail.com"
+	cfg.DNSProvider = "aruba"
+	certReloader, err := simplecert.Init(cfg, nil)
 	if err != nil {
-		panic(err)
+		log.Fatal("simplecert init failed: ", err)
 	}
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+
+
+	log.Println("starting HTTP Listener on Port 80")
+	go http.ListenAndServe(":80", handler)
+	//log.Fatal(http.ListenAndServe(":"+port, handler))
+
+	tlsconf := tlsconfig.NewServerTLSConfig(tlsconfig.TLSModeServerStrict)
+	
+	tlsconf.GetCertificate = certReloader.GetCertificateFunc()
+
+	s := &http.Server{
+		Addr:      ":443",
+		TLSConfig: tlsconf,
+	}
+
+	log.Fatal(s.ListenAndServeTLS("", ""))
 }
