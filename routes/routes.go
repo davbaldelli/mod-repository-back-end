@@ -48,7 +48,7 @@ func (w Web) Listen(port string) {
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
 
 	router.HandleFunc("/login",w.UsersHandler.POSTLogin).Methods("POST")
-	
+
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -65,6 +65,7 @@ func (w Web) Listen(port string) {
 	// create the server itself
 	server := &http.Server{
 		Addr: ":https",
+		Handler: handler,
 		TLSConfig: &tls.Config{
 			GetCertificate: certManager.GetCertificate,
 		},
@@ -73,7 +74,7 @@ func (w Web) Listen(port string) {
 	log.Printf("Serving http/https for domains: api.mods.davidebaldelli.it")
 	go func() {
 		// serve HTTP, which will redirect automatically to HTTPS
-		h := certManager.HTTPHandler(handler)
+		h := certManager.HTTPHandler(nil)
 		log.Fatal(http.ListenAndServe(":http", h))
 	}()
 
