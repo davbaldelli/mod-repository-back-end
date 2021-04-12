@@ -39,6 +39,7 @@ require (
 	github.com/transip/gotransip/v6 v6.6.1 // indirect
 	go.mongodb.org/mongo-driver v1.5.1
 	go.uber.org/ratelimit v0.2.0 // indirect
+	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1 // indirect
 	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72 // indirect
 	golang.org/x/text v0.3.6 // indirect

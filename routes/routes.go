@@ -1,11 +1,11 @@
 package routes
 
 import (
+	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
-	"github.com/foomo/simplecert"
-	"github.com/foomo/tlsconfig"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -48,6 +48,7 @@ func (w Web) Listen(port string) {
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
 
 	router.HandleFunc("/login",w.UsersHandler.POSTLogin).Methods("POST")
+	
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -56,29 +57,28 @@ func (w Web) Listen(port string) {
 
 	handler := c.Handler(router)
 
-	cfg := simplecert.Default
-	cfg.Domains = []string{"api.mods.davidebaldelli.it"}
-	cfg.CacheDir = "/etc/letsencrypt/live/api.mods.davidebaldelli.it"
-	cfg.SSLEmail = "davbaldelli@gmail.com"
-	cfg.DNSProvider = "aruba"
-	certReloader, err := simplecert.Init(cfg, nil)
-	if err != nil {
-		log.Fatal("simplecert init failed: ", err)
+	certManager := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist("api.mods.davidebaldelli.it"),
 	}
 
+	// create the server itself
+	server := &http.Server{
+		Addr: ":https",
+		TLSConfig: &tls.Config{
+			GetCertificate: certManager.GetCertificate,
+		},
+	}
 
-	log.Println("starting HTTP Listener on Port 80")
-	go http.ListenAndServe(":80", handler)
+	log.Printf("Serving http/https for domains: api.mods.davidebaldelli.it")
+	go func() {
+		// serve HTTP, which will redirect automatically to HTTPS
+		h := certManager.HTTPHandler(handler)
+		log.Fatal(http.ListenAndServe(":http", h))
+	}()
+
+	log.Fatal(server.ListenAndServeTLS("", ""))
+
 	//log.Fatal(http.ListenAndServe(":"+port, handler))
 
-	tlsconf := tlsconfig.NewServerTLSConfig(tlsconfig.TLSModeServerStrict)
-	
-	tlsconf.GetCertificate = certReloader.GetCertificateFunc()
-
-	s := &http.Server{
-		Addr:      ":443",
-		TLSConfig: tlsconf,
-	}
-
-	log.Fatal(s.ListenAndServeTLS("", ""))
 }
