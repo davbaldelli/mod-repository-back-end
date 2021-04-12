@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
-	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -28,7 +27,7 @@ func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Re
 	if cars, err := c.CarCtrl.GetAllCars(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllCars(cars))
+		respondJSON(writer, http.StatusOK, cars)
 	}
 }
 
@@ -78,6 +77,6 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 	if cars, err := getCars(param) ; err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllCars(cars))
+		respondJSON(writer, http.StatusOK, cars)
 	}
 }
