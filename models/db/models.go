@@ -28,6 +28,7 @@ type Car struct {
 	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;"`
 	GearType string
 	Drivetrain string
+	Premium bool
 }
 
 func CarFromEntity(car entities.Car) Car {
@@ -40,6 +41,7 @@ func CarFromEntity(car entities.Car) Car {
 		Year:         car.Year,
 		Drivetrain: string(car.Drivetrain),
 		GearType: string(car.GearType),
+		Premium: car.Premium,
 	}
 }
 
@@ -75,6 +77,7 @@ type Track struct {
 	Location     string
 	Nation       string
 	Year uint
+	Premium bool
 }
 
 func TrackFromEntity(track entities.Track) Track {
@@ -85,6 +88,7 @@ func TrackFromEntity(track entities.Track) Track {
 		Location:     track.Location,
 		Nation:       track.Nation.Name,
 		Year: track.Year,
+		Premium: track.Premium,
 	}
 }
 
