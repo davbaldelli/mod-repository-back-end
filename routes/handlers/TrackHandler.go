@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
-	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -20,7 +19,7 @@ func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http
 	if tracks, err := t.TrackCtrl.GetAllTracks(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllTracks(tracks))
+		respondJSON(writer, http.StatusOK, tracks)
 	}
 
 }
@@ -66,7 +65,7 @@ func (t TrackHandlerImpl) getTrackByParamResponse(paramString string, getTracks 
 	if tracks, err := getTracks(param); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllTracks(tracks))
+		respondJSON(writer, http.StatusOK, tracks)
 	}
 
 }

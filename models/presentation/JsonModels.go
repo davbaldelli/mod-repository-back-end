@@ -70,35 +70,3 @@ func OfAllBrandsGroupedByNation(brands []entities.CarBrand) []NationBrands {
 	}
 	return nationsBrands
 }
-
-func ofCars(car entities.Car) CarPresentation {
-	return CarPresentation{
-		DownloadLink: car.DownloadLink,
-		Brand:        car.Brand.Name,
-		Model:        car.ModelName,
-	}
-}
-
-func OfAllCars(cars []entities.Car) []CarPresentation {
-	var presCars []CarPresentation
-	for _, car := range cars {
-		presCars = append(presCars, ofCars(car))
-	}
-	return presCars
-}
-
-func ofTrack(track entities.Track) TrackPresentation {
-	return TrackPresentation{
-		Name:         track.Name,
-		DownloadLink: track.DownloadLink,
-		Location:     track.Location,
-		Nation:       track.Nation.Name,
-	}
-}
-func OfAllTracks(tracks []entities.Track) []TrackPresentation {
-	var tracksPres []TrackPresentation
-	for _, track := range tracks {
-		tracksPres = append(tracksPres, ofTrack(track))
-	}
-	return tracksPres
-}
