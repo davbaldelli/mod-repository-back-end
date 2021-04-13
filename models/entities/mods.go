@@ -2,17 +2,46 @@ package entities
 
 type Drivetrain string
 
+func ToTrackTags(strings []string) []TrackTag{
+	var tags []TrackTag
+	for _, s := range strings {
+		tags = append(tags, TrackTag(s))
+	}
+	return tags
+}
+
 type GearType string
+
+type TrackTag string
+
+type LayoutType string
+
+const (
+	F1 TrackTag = "F1"
+	Touge TrackTag = "Touge"
+	NASCAR  TrackTag = "NASCAR"
+	Rally TrackTag = "Rally"
+	CityTrack TrackTag = "City Track"
+	Drift TrackTag = "Drift"
+	Historic TrackTag = "Historic"
+	OpenWorld TrackTag = "Open World"
+)
+
+const (
+	RoadCourse LayoutType = "Road Course"
+	Oval LayoutType = "Oval"
+	AToB LayoutType = "A to B"
+)
 
 const (
 	RearWheelDrive Drivetrain = "RWD"
-	FrontWheelDrive = "FWD"
-	AllWheelDrive = "AWD"
+	FrontWheelDrive  Drivetrain = "FWD"
+	AllWheelDrive Drivetrain = "AWD"
 )
 
 const (
 	Sequential GearType = "SEQUENTIAL"
-	Manual = "MANUAL"
+	Manual GearType = "MANUAL"
 )
 
 type Mod struct {
@@ -34,10 +63,6 @@ type CarCategory struct {
 	Name string
 }
 
-type TrackCategory struct {
-	Name string
-}
-
 type CarBrand struct {
 	Name   string
 	Nation Nation
@@ -50,6 +75,7 @@ type Nation struct {
 type Track struct {
 	Mod
 	Name     string
+	Tags []TrackTag
 	Layouts  []Layout
 	Location string
 	Nation   Nation
@@ -59,7 +85,7 @@ type Track struct {
 type Layout struct {
 	Name     string
 	LengthM  float32
-	Category TrackCategory
+	Category LayoutType
 }
 
 type User struct {

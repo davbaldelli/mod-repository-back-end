@@ -14,14 +14,6 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
-func (t TrackHandlerImpl) GETAllLayoutTypes(writer http.ResponseWriter, request *http.Request) {
-	if categories, err := t.TrackCtrl.GetAllTrackCategories(); err != nil {
-		respondError(writer, http.StatusInternalServerError, err)
-	} else {
-		respondJSON(writer, http.StatusOK, categories)
-	}
-}
-
 type getTracksByParam func(string) ([]entities.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
@@ -54,7 +46,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 
-	if err := t.TrackCtrl.AddTrack(track.Name, track.DownloadLink, track.Layouts, track.Location, track.Nation, track.Year); err != nil {
+	if err := t.TrackCtrl.AddTrack(track.Name, track.DownloadLink, track.Layouts, track.Location, track.Nation, track.Year, track.Tags); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}

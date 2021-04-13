@@ -20,9 +20,8 @@ type TrackController interface {
 	GetTracksByNation(string) ([]entities.Track,error)
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
-	GetAllTrackCategories() ([]entities.TrackCategory, error)
 
-	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint) error
+	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag) error
 }
 
 type BrandController interface {
