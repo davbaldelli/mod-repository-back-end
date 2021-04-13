@@ -17,6 +17,7 @@ const (
 
 type Mod struct {
 	DownloadLink string
+	Premium bool
 }
 
 type Car struct {

@@ -84,7 +84,7 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 	}
 	for _, dbTrack := range dbTracks {
 		tracks = append(tracks, entities.Track{
-			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink},
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink, Premium: dbTrack.Premium},
 			Name:     dbTrack.Name,
 			Layouts:  allLayoutsToEntity(dbTrack.Layouts),
 			Location: dbTrack.Location,

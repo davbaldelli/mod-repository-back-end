@@ -15,6 +15,21 @@ type CarRepositoryImpl struct {
 type selectFromCarsQuery func(*[]db.Car) *gorm.DB
 type selectFromBrandsQuery func(*[]db.CarBrand) *gorm.DB
 
+func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
+	return entities.Car{
+		Mod: entities.Mod{DownloadLink: dbCar.DownloadLink, Premium: dbCar.Premium},
+		Brand: entities.CarBrand{
+			Name:   dbCar.Brand,
+			Nation: entities.Nation{Name: nation},
+		},
+		ModelName:  dbCar.ModelName,
+		Categories: allCategoriesToEntity(dbCar.Categories),
+		Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
+		GearType: entities.GearType(dbCar.GearType),
+		Year: dbCar.Year,
+	}
+}
+
 func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBrandsQuery) ([]entities.Car, error){
 	var cars []entities.Car
 	var dbCars []db.Car
@@ -31,17 +46,7 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBr
 		brandsNation[brand.Name] = brand.Nation
 	}
 	for _, dbCar := range dbCars {
-		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
-			Brand: entities.CarBrand{
-				Name:   dbCar.Brand,
-				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
-			},
-			ModelName:  dbCar.ModelName,
-			Categories: allCategoriesToEntity(dbCar.Categories),
-			Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
-			GearType: entities.GearType(dbCar.GearType),
-		})
+		cars = append(cars, dbCarToEntity(dbCar, brandsNation[dbCar.Brand]))
 	}
 	return cars,nil
 }
@@ -137,15 +142,7 @@ func (c CarRepositoryImpl) SelectCarsByType(category string) ([]entities.Car,err
 		brandsNation[brand.Name] = brand.Nation
 	}
 	for _, dbCar := range dbCars {
-		cars = append(cars, entities.Car{
-			Mod: entities.Mod{DownloadLink: dbCar.DownloadLink},
-			Brand: entities.CarBrand{
-				Name:   dbCar.Brand,
-				Nation: entities.Nation{Name: brandsNation[dbCar.Brand]},
-			},
-			ModelName:  dbCar.ModelName,
-			Categories: allCategoriesToEntity(dbCar.Categories),
-		})
+		cars = append(cars, dbCarToEntity(dbCar, brandsNation[dbCar.Brand]))
 	}
 	fmt.Println(cars)
 	return cars, nil
