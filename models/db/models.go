@@ -1,6 +1,9 @@
 package db
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models/entities"
+	"github.com/lib/pq"
+)
 
 type CarCategory struct {
 	Name string `gorm:"primaryKey:not null"`
@@ -76,7 +79,7 @@ type Track struct {
 	Layouts      []Layout `gorm:"foreignKey:Track"`
 	Location     string
 	Nation       string
-	Tags 		 []string
+	Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
 	Year 		 uint
 	Premium 	 bool
 }
@@ -100,7 +103,7 @@ func TrackFromEntity(track entities.Track) Track {
 
 type Layout struct {
 	Name     string `gorm:"primaryKey"`
-	LengthKm float32
+	LengthM float32
 	Category string
 	Track    string `gorm:"primaryKey"`
 }
@@ -109,7 +112,7 @@ type Layout struct {
 func layoutFromEntity(layout entities.Layout, track string) Layout {
 	return Layout{
 		Name:     layout.Name,
-		LengthKm: layout.LengthM,
+		LengthM: layout.LengthM,
 		Category: string(layout.Category),
 		Track:    track,
 	}

@@ -21,7 +21,7 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 	for _,dbLayout := range dbLayouts{
 		layouts = append(layouts, entities.Layout{
 			Name:     dbLayout.Name,
-			LengthM:  dbLayout.LengthKm,
+			LengthM:  dbLayout.LengthM,
 			Category: entities.LayoutType(dbLayout.Category),
 		})
 	}
@@ -56,11 +56,11 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	dbTrack := db.TrackFromEntity(track)
 	dbNation := db.NationFromEntity(track.Nation)
 
-	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
+	if res := t.Db.Model(&db.Nation{}).Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error
 	}
 
-	if res := t.Db.Create(&dbTrack); res.Error != nil {
+	if res := t.Db.Model(&db.Track{}).Create(&dbTrack); res.Error != nil {
 		return res.Error
 	}
 	return nil
@@ -79,7 +79,6 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 			Layouts:  allLayoutsToEntity(dbTrack.Layouts),
 			Location: dbTrack.Location,
 			Nation:   entities.Nation{Name: dbTrack.Nation},
-			Tags: entities.ToTrackTags(dbTrack.Tags),
 		})
 	}
 	return tracks,nil
