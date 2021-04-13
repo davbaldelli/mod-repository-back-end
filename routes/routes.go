@@ -58,7 +58,8 @@ func (w Web) Listen() {
 
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("api.mods.davidebaldelli.it"),
+		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it"),
+		Cache:      autocert.DirCache("certs"),
 	}
 
 	// create the server itself
@@ -70,7 +71,7 @@ func (w Web) Listen() {
 		},
 	}
 
-	log.Printf("Serving http/https for domains: api.mods.davidebaldelli.it")
+	log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
 	go func() {
 		// serve HTTP, which will redirect automatically to HTTPS
 		h := certManager.HTTPHandler(nil)
