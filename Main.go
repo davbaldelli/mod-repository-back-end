@@ -38,7 +38,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dsn := "host=api.mod.davidebaldelli.it user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
+	dsn := "host=127.0.0.1 user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
 	dbase, err3 := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err3 != nil {
