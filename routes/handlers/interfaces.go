@@ -19,7 +19,6 @@ type TracksHandler interface {
 	GETAllTracks(http.ResponseWriter, *http.Request)
 	GETTracksByNation(http.ResponseWriter, *http.Request)
 	GETTracksByLayoutType(http.ResponseWriter, *http.Request)
-	GETAllLayoutTypes(http.ResponseWriter, *http.Request)
 	GETTrackByName(http.ResponseWriter, *http.Request)
 
 	POSTNewTrack(http.ResponseWriter, *http.Request)

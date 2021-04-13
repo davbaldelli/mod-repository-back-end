@@ -14,17 +14,7 @@ type TrackRepositoryImpl struct {
 type selectFromTrackQuery func(*[]db.Track) *gorm.DB
 
 
-func (t TrackRepositoryImpl) SelectAllTrackCategories() ([]entities.TrackCategory, error) {
-	var dbCategories []db.TrackCategory
-	if result := t.Db.Find(&dbCategories) ; result.Error != nil{
-		return  nil, result.Error
-	}
-	var categories []entities.TrackCategory
-	for _, category := range dbCategories{
-		categories = append(categories, entities.TrackCategory{Name: category.Name})
-	}
-	return categories, nil
-}
+
 
 func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 	var layouts []entities.Layout
@@ -32,7 +22,7 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 		layouts = append(layouts, entities.Layout{
 			Name:     dbLayout.Name,
 			LengthM:  dbLayout.LengthKm,
-			Category: entities.TrackCategory{Name: dbLayout.Category},
+			Category: entities.LayoutType(dbLayout.Category),
 		})
 	}
 	return layouts
@@ -89,6 +79,7 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 			Layouts:  allLayoutsToEntity(dbTrack.Layouts),
 			Location: dbTrack.Location,
 			Nation:   entities.Nation{Name: dbTrack.Nation},
+			Tags: entities.ToTrackTags(dbTrack.Tags),
 		})
 	}
 	return tracks,nil

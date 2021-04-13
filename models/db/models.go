@@ -76,17 +76,23 @@ type Track struct {
 	Layouts      []Layout `gorm:"foreignKey:Track"`
 	Location     string
 	Nation       string
-	Year uint
-	Premium bool
+	Tags 		 []string
+	Year 		 uint
+	Premium 	 bool
 }
 
 func TrackFromEntity(track entities.Track) Track {
+	var tags []string
+	for _, tag := range track.Tags {
+		tags = append(tags, string(tag))
+	}
 	return Track{
 		DownloadLink: track.DownloadLink,
 		Name:         track.Name,
 		Layouts:      allLayoutFromEntity(track.Layouts, track.Name),
 		Location:     track.Location,
 		Nation:       track.Nation.Name,
+		Tags: tags,
 		Year: track.Year,
 		Premium: track.Premium,
 	}
@@ -104,7 +110,7 @@ func layoutFromEntity(layout entities.Layout, track string) Layout {
 	return Layout{
 		Name:     layout.Name,
 		LengthKm: layout.LengthM,
-		Category: layout.Category.Name,
+		Category: string(layout.Category),
 		Track:    track,
 	}
 }
@@ -115,11 +121,6 @@ func allLayoutFromEntity(layouts []entities.Layout, track string) []Layout {
 		dbLayouts = append(dbLayouts, layoutFromEntity(layout, track))
 	}
 	return dbLayouts
-}
-
-type TrackCategory struct {
-	Name    string   `gorm:"primaryKey"`
-	Layouts []Layout `gorm:"foreignKey:Category"`
 }
 
 type User struct {
