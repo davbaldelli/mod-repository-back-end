@@ -21,7 +21,7 @@ type TrackController interface {
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
 
-	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag) error
+	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag, premium bool) error
 }
 
 type BrandController interface {
