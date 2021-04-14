@@ -106,7 +106,7 @@ func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,err
 
 func (c CarRepositoryImpl) SelectCarsByModelName(model string) ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("model_name ASC").Preload("Categories").Find(&cars,"model_name = ?", model).Find(&cars)
+		return c.Db.Order("model_name ASC").Preload("Categories").Find(&cars,"LOWER(model_name) LIKE LOWER(?)", "%"+model+"%").Find(&cars)
 	}, func(brands *[]db.CarBrand) *gorm.DB {
 		return c.Db.Joins("right join cars on cars.brand = car_brands.name").Find(&brands,"cars.model_name = ?",model)
 	})

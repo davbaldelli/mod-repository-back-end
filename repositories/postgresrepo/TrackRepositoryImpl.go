@@ -48,7 +48,7 @@ func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string) ([]entiti
 
 func (t TrackRepositoryImpl) SelectTracksByName(name string) ([]entities.Track,error) {
 	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"tracks.name = ?",name)
+		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"LOWER(tracks.name) LIKE LOWER(?)","%"+name+"%")
 	})
 }
 
