@@ -50,6 +50,7 @@ const (
 type Mod struct {
 	DownloadLink string
 	Premium bool
+	Image string
 }
 
 type Car struct {

@@ -32,6 +32,7 @@ type Car struct {
 	GearType string
 	Drivetrain string
 	Premium bool
+	Image string
 }
 
 func CarFromEntity(car entities.Car) Car {
@@ -45,6 +46,7 @@ func CarFromEntity(car entities.Car) Car {
 		Drivetrain: string(car.Drivetrain),
 		GearType: string(car.GearType),
 		Premium: car.Premium,
+		Image: car.Image,
 	}
 }
 
@@ -82,6 +84,7 @@ type Track struct {
 	Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
 	Year 		 uint
 	Premium 	 bool
+	Image string
 }
 
 func TrackFromEntity(track entities.Track) Track {
@@ -98,6 +101,7 @@ func TrackFromEntity(track entities.Track) Track {
 		Tags: tags,
 		Year: track.Year,
 		Premium: track.Premium,
+		Image: track.Image,
 	}
 }
 

@@ -12,7 +12,7 @@ type CarController interface {
 	GetCarsByType(string) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
 
-	AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint, drivetrain entities.Drivetrain, gearType entities.GearType) error
+	AddCar(modelName string, brand entities.CarBrand, categories []entities.CarCategory, year uint, drivetrain entities.Drivetrain, gearType entities.GearType, mod entities.Mod) error
 }
 
 type TrackController interface {
@@ -21,7 +21,7 @@ type TrackController interface {
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
 
-	AddTrack(name string, downloadUrl string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag, premium bool) error
+	AddTrack(name string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag, mod entities.Mod) error
 }
 
 type BrandController interface {

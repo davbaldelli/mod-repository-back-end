@@ -33,6 +33,6 @@ func (c CarControllerImpl) GetCarsByType(categoryName string) ([]entities.Car, e
 	return c.Repo.SelectCarsByType(categoryName)
 }
 
-func (c CarControllerImpl) AddCar(modelName string, downloadUrl string, brand entities.CarBrand, categories []entities.CarCategory, year uint, drivetrain entities.Drivetrain, gearType entities.GearType) error {
-	return c.Repo.InsertCar(entities.Car{ModelName: modelName, Brand: brand, Categories: categories, Mod: entities.Mod{DownloadLink: downloadUrl}, Year: year, Drivetrain: drivetrain, GearType: gearType})
+func (c CarControllerImpl) AddCar(modelName string, brand entities.CarBrand, categories []entities.CarCategory, year uint, drivetrain entities.Drivetrain, gearType entities.GearType,mod entities.Mod) error {
+	return c.Repo.InsertCar(entities.Car{ModelName: modelName, Brand: brand, Categories: categories, Mod: mod, Year: year, Drivetrain: drivetrain, GearType: gearType})
 }

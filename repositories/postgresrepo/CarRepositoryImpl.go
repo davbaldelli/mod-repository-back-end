@@ -17,7 +17,7 @@ type selectFromBrandsQuery func(*[]db.CarBrand) *gorm.DB
 
 func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
 	return entities.Car{
-		Mod: entities.Mod{DownloadLink: dbCar.DownloadLink, Premium: dbCar.Premium},
+		Mod: entities.Mod{DownloadLink: dbCar.DownloadLink, Premium: dbCar.Premium, Image: dbCar.Image},
 		Brand: entities.CarBrand{
 			Name:   dbCar.Brand,
 			Nation: entities.Nation{Name: nation},
