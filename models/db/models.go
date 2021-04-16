@@ -26,17 +26,17 @@ func allCarCategoryFromEntity(categories []entities.CarCategory) []CarCategory {
 type Car struct {
 	DownloadLink string
 	ModelName    string `gorm:"primaryKey"`
-	Year 		uint
+	Year         uint
 	Brand        string
 	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;"`
-	GearType string
-	Drivetrain string
-	Premium bool
-	Image string
-	BHP uint
-	Torque uint
-	Weight uint
-	TopSpeed uint
+	Transmission string
+	Drivetrain   string
+	Premium      bool
+	Image        string
+	BHP          uint
+	Torque       uint
+	Weight       uint
+	TopSpeed     uint
 }
 
 func CarFromEntity(car entities.Car) Car {
@@ -47,14 +47,14 @@ func CarFromEntity(car entities.Car) Car {
 		Brand:        car.Brand.Name,
 		Categories:   allCarCategoryFromEntity(car.Categories),
 		Year:         car.Year,
-		Drivetrain: string(car.Drivetrain),
-		GearType: string(car.GearType),
-		Premium: car.Premium,
-		Image: car.Image,
-		BHP: car.BHP,
-		Torque: car.Torque,
-		Weight: car.Weight,
-		TopSpeed: car.TopSpeed,
+		Drivetrain:   string(car.Drivetrain),
+		Transmission: string(car.Transmission),
+		Premium:      car.Premium,
+		Image:        car.Image,
+		BHP:          car.BHP,
+		Torque:       car.Torque,
+		Weight:       car.Weight,
+		TopSpeed:     car.TopSpeed,
 	}
 }
 

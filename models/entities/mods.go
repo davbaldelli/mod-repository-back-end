@@ -10,7 +10,7 @@ func ToTrackTags(strings []string) []TrackTag{
 	return tags
 }
 
-type GearType string
+type Transmission string
 
 type TrackTag string
 
@@ -28,6 +28,7 @@ const (
 	Drift TrackTag = "Drift"
 	Historic TrackTag = "Historic"
 	OpenWorld TrackTag = "Open World"
+	Karting TrackTag = "Karting"
 )
 
 const (
@@ -43,8 +44,8 @@ const (
 )
 
 const (
-	Sequential GearType = "SEQUENTIAL"
-	Manual GearType = "MANUAL"
+	Sequential Transmission = "Sequential"
+	Manual     Transmission = "Manual"
 )
 
 type Mod struct {
@@ -55,16 +56,16 @@ type Mod struct {
 
 type Car struct {
 	Mod
-	Brand      CarBrand
-	ModelName  string
-	Categories []CarCategory
-	Year uint
-	Drivetrain Drivetrain
-	GearType GearType
-	BHP uint
-	TopSpeed uint
-	Weight uint
-	Torque uint
+	Brand        CarBrand
+	ModelName    string
+	Categories   []CarCategory
+	Year         uint
+	Drivetrain   Drivetrain
+	Transmission Transmission
+	BHP          uint
+	TopSpeed     uint
+	Weight       uint
+	Torque       uint
 
 }
 
