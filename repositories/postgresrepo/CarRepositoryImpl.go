@@ -25,7 +25,7 @@ func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
 		ModelName:  dbCar.ModelName,
 		Categories: allCategoriesToEntity(dbCar.Categories),
 		Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
-		GearType: entities.GearType(dbCar.GearType),
+		Transmission: entities.Transmission(dbCar.Transmission),
 		Year: dbCar.Year,
 		Torque: dbCar.Torque,
 		TopSpeed: dbCar.TopSpeed,
@@ -111,7 +111,7 @@ func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,err
 
 func (c CarRepositoryImpl) SelectCarsByModelName(model string) ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("model_name ASC").Preload("Categories").Find(&cars,"LOWER(model_name) LIKE LOWER(?)", "%"+model+"%").Find(&cars)
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"LOWER(concat(brand,' ',model_name)) LIKE LOWER(?)", "%"+model+"%").Find(&cars)
 	}, func(brands *[]db.CarBrand) *gorm.DB {
 		return c.Db.Joins("right join cars on cars.brand = car_brands.name").Find(&brands,"cars.model_name = ?",model)
 	})
