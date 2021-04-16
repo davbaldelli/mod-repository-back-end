@@ -85,7 +85,7 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 
 func (c CarRepositoryImpl) SelectAllCars() ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("model_name ASC").Preload("Categories").Find(&cars)
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars)
 	}, func(brands *[]db.CarBrand) *gorm.DB {
 		return c.Db.Find(&brands)
 	})
@@ -102,7 +102,7 @@ func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory
 
 func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("model_name ASC").Preload("Categories").Joins("join car_brands on cars.brand = car_brands.name").Where("car_brands.nation = ?",nation).Find(&cars)
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join car_brands on cars.brand = car_brands.name").Where("car_brands.nation = ?",nation).Find(&cars)
 	}, func(brands *[]db.CarBrand) *gorm.DB {
 		return c.Db.Find(&brands,"nation = ?",nation)
 	})
@@ -119,7 +119,7 @@ func (c CarRepositoryImpl) SelectCarsByModelName(model string) ([]entities.Car,e
 
 func (c CarRepositoryImpl) SelectCarsByBrand(brandName string) ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("model_name ASC").Preload("Categories").Find(&cars,"brand = ?",brandName)
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"brand = ?",brandName)
 	}, func(brands *[]db.CarBrand) *gorm.DB {
 		return  c.Db.Find(&brands,"name = ?", brandName)
 	})
@@ -130,7 +130,7 @@ func (c CarRepositoryImpl) SelectCarsByType(category string) ([]entities.Car,err
 	var cars []entities.Car
 	var dbCars []db.Car
 
-	if result := c.Db.Order("model_name ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&dbCars); result.Error != nil{
+	if result := c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&dbCars); result.Error != nil{
 		return nil,result.Error
 	}
 	var brandsNames []string
