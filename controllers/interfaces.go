@@ -21,7 +21,7 @@ type TrackController interface {
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
 
-	AddTrack(name string, layouts []entities.Layout, location string, nation entities.Nation, year uint, tags []entities.TrackTag, mod entities.Mod) error
+	AddTrack(car entities.Car) error
 }
 
 type BrandController interface {

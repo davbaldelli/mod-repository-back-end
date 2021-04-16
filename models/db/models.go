@@ -33,6 +33,10 @@ type Car struct {
 	Drivetrain string
 	Premium bool
 	Image string
+	BHP uint
+	Torque uint
+	Weight uint
+	TopSpeed uint
 }
 
 func CarFromEntity(car entities.Car) Car {
@@ -47,6 +51,10 @@ func CarFromEntity(car entities.Car) Car {
 		GearType: string(car.GearType),
 		Premium: car.Premium,
 		Image: car.Image,
+		BHP: car.BHP,
+		Torque: car.Torque,
+		Weight: car.Weight,
+		TopSpeed: car.TopSpeed,
 	}
 }
 

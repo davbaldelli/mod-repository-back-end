@@ -61,6 +61,11 @@ type Car struct {
 	Year uint
 	Drivetrain Drivetrain
 	GearType GearType
+	BHP uint
+	TopSpeed uint
+	Weight uint
+	Torque uint
+
 }
 
 type CarCategory struct {

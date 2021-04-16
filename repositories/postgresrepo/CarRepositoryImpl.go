@@ -27,6 +27,11 @@ func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
 		Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
 		GearType: entities.GearType(dbCar.GearType),
 		Year: dbCar.Year,
+		Torque: dbCar.Torque,
+		TopSpeed: dbCar.TopSpeed,
+		Weight: dbCar.Weight,
+		BHP: dbCar.BHP,
+
 	}
 }
 
