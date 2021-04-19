@@ -42,7 +42,7 @@ func (t TrackRepositoryImpl) SelectTracksByNation(nation string) ([]entities.Tra
 
 func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string) ([]entities.Track,error) {
 	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&tracks)
+		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&tracks)
 	})
 }
 
