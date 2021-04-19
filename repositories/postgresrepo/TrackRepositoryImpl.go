@@ -52,6 +52,12 @@ func (t TrackRepositoryImpl) SelectTracksByName(name string) ([]entities.Track,e
 	})
 }
 
+func (t TrackRepositoryImpl) SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error){
+	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks," ? = ANY (tags)", tag)
+	})
+}
+
 func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	dbTrack := db.TrackFromEntity(track)
 	dbNation := db.NationFromEntity(track.Nation)

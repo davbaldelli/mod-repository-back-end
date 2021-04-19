@@ -20,6 +20,7 @@ type TrackController interface {
 	GetTracksByNation(string) ([]entities.Track,error)
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
+	GetTracksByTag(tag entities.TrackTag) ([]entities.Track, error)
 
 	AddTrack(track entities.Track) error
 }
