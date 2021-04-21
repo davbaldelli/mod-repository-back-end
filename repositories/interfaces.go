@@ -19,6 +19,7 @@ type TrackRepository interface {
 	SelectTracksByNation(string) ([]entities.Track,error)
 	SelectTracksByLayoutType(string) ([]entities.Track,error)
 	SelectTracksByName(string) ([]entities.Track,error)
+	SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error)
 	InsertTrack(track entities.Track) error
 }
 

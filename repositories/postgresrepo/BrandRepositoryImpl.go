@@ -12,19 +12,19 @@ type BrandRepositoryImpl struct {
 
 func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand,error) {
 	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
-		return b.Db.Find(&brands)
+		return b.Db.Order("name ASC").Find(&brands)
 	})
 }
 
 func (b BrandRepositoryImpl) SelectBrandsByNation(nation string) ([]entities.CarBrand, error) {
 	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
-		return b.Db.Find(&brands, "nation = ?", nation)
+		return b.Db.Order("name ASC").Find(&brands, "nation = ?", nation)
 	})
 }
 
 func (b BrandRepositoryImpl) SelectBrandsByName(name string) ([]entities.CarBrand, error) {
 	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
-		return b.Db.Find(&brands, "name = ?", name)
+		return b.Db.Order("name ASC").Find(&brands, "name = ?", name)
 	})
 }
 

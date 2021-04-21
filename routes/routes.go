@@ -37,6 +37,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/track/nation/{nation}", w.TracksHandler.GETTracksByNation).Methods("GET")
 	router.HandleFunc("/track/layout/type/{layoutType}", w.TracksHandler.GETTracksByLayoutType).Methods("GET")
 	router.HandleFunc("/track/name/{name}", w.TracksHandler.GETTrackByName).Methods("GET")
+	router.HandleFunc("/track/tag/{tag}", w.TracksHandler.GETTracksByTag).Methods("GET")
 
 	router.HandleFunc("/nation/brand/all", w.NationHandler.GETAllBrandsNations).Methods("GET")
 	router.HandleFunc("/nation/track/all", w.NationHandler.GETAllTracksNations).Methods("GET")

@@ -42,13 +42,19 @@ func (t TrackRepositoryImpl) SelectTracksByNation(nation string) ([]entities.Tra
 
 func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string) ([]entities.Track,error) {
 	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&tracks)
+		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&tracks)
 	})
 }
 
 func (t TrackRepositoryImpl) SelectTracksByName(name string) ([]entities.Track,error) {
 	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"LOWER(tracks.name) LIKE LOWER(?)","%"+name+"%")
+	})
+}
+
+func (t TrackRepositoryImpl) SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error){
+	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks," ? = ANY (tags)", tag)
 	})
 }
 
@@ -73,12 +79,17 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 		return nil,result.Error
 	}
 	for _, dbTrack := range dbTracks {
+		var tags []entities.TrackTag
+		for _, tag := range dbTrack.Tags {
+			tags = append(tags, entities.TrackTag(tag))
+		}
 		tracks = append(tracks, entities.Track{
-			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink, Premium: dbTrack.Premium},
+			Mod:      entities.Mod{DownloadLink: dbTrack.DownloadLink, Premium: dbTrack.Premium, Image: dbTrack.Image},
 			Name:     dbTrack.Name,
 			Layouts:  allLayoutsToEntity(dbTrack.Layouts),
 			Location: dbTrack.Location,
 			Nation:   entities.Nation{Name: dbTrack.Nation},
+			Tags: tags,
 		})
 	}
 	return tracks,nil

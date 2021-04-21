@@ -13,6 +13,12 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
+func (t TrackHandlerImpl) GETTracksByTag(writer http.ResponseWriter, request *http.Request) {
+	t.getTrackByParamResponse("tag", func(s string) ([]entities.Track, error) {
+		return t.TrackCtrl.GetTracksByTag(entities.TrackTag(s))
+	}, writer,request)
+}
+
 type getTracksByParam func(string) ([]entities.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
@@ -45,7 +51,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 
-	if err := t.TrackCtrl.AddTrack(track.Name, track.DownloadLink, track.Layouts, track.Location, track.Nation, track.Year, track.Tags, track.Premium); err != nil {
+	if err := t.TrackCtrl.AddTrack(track); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}
