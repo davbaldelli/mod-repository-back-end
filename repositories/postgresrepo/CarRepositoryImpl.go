@@ -90,6 +90,10 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 	dbNation := db.NationFromEntity(car.Brand.Nation)
 	dbBrand := db.BrandFromEntity(car.Brand)
 
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&car.Author); res.Error != nil {
+		return res.Error
+	}
+
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error
 	}

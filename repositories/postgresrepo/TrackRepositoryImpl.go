@@ -72,6 +72,10 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	dbTrack := db.TrackFromEntity(track)
 	dbNation := db.NationFromEntity(track.Nation)
 
+	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&track.Author); res.Error != nil {
+		return res.Error
+	}
+
 	if res := t.Db.Model(&db.Nation{}).Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error
 	}
