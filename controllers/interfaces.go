@@ -39,3 +39,9 @@ type NationController interface {
 type LoginController interface {
 	Login(username string, password string) (entities.User,error)
 }
+
+type AuthorController interface {
+	GetAllAuthors() ([]entities.Author, error)
+	GetAllCarAuthors() ([]entities.Author, error)
+	GetAllTrackAuthors() ([]entities.Author, error)
+}

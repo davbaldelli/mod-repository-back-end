@@ -37,3 +37,9 @@ type BrandRepository interface {
 type UserRepository interface {
 	Login(user entities.User) (entities.User, error)
 }
+
+type AuthorRepository interface {
+	SelectAllAuthors() ([]entities.Author, error)
+	SelectAllCarAuthors() ([]entities.Author, error)
+	SelectAllTrackAuthors() ([]entities.Author, error)
+}

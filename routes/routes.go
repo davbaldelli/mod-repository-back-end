@@ -20,6 +20,7 @@ type Web struct {
 	NationHandler handlers.NationsHandler
 	BrandsHandler handlers.BrandsHandler
 	UsersHandler  handlers.UsersHandler
+	AuthorsHandler handlers.AuthorsHandler
 }
 
 func (w Web) Listen() {
@@ -46,6 +47,10 @@ func (w Web) Listen() {
 	router.HandleFunc("/brand/all/grouped/nation", w.BrandsHandler.GETAllBrandsGroupedByNation).Methods("GET")
 	router.HandleFunc("/brand/name/{name}", w.BrandsHandler.GETBrandByName).Methods("GET")
 	router.HandleFunc("/brand/nation/{nation}", w.BrandsHandler.GETBrandByNation).Methods("GET")
+
+	router.HandleFunc("/author/all", w.AuthorsHandler.GETAllAuthors).Methods("GET")
+	router.HandleFunc("/car/author/all", w.AuthorsHandler.GETCarAuthors).Methods("GET")
+	router.HandleFunc("/track/author/all", w.AuthorsHandler.GETTrackAuthors).Methods("GET")
 
 	router.HandleFunc("/login", w.UsersHandler.POSTLogin).Methods("POST")
 
