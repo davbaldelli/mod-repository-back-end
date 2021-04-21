@@ -52,6 +52,12 @@ type Mod struct {
 	DownloadLink string
 	Premium bool
 	Image string
+	Author Author
+}
+
+type Author struct {
+	Name string
+	Link string
 }
 
 type Car struct {
@@ -66,7 +72,6 @@ type Car struct {
 	TopSpeed     uint
 	Weight       uint
 	Torque       uint
-
 }
 
 type CarCategory struct {
