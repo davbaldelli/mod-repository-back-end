@@ -81,7 +81,7 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBr
 
 func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) {
 	dbCar := db.Car{ModelName: model}
-	if result := c.Db.First(&dbCar); result.Error != nil {
+	if result := c.Db.Preload("Categories").First(&dbCar); result.Error != nil {
 		return entities.Car{}, result.Error
 	}
 	dbBrand := db.CarBrand{Name: dbCar.Brand}
