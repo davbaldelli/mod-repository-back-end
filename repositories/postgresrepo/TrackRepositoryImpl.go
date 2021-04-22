@@ -14,7 +14,28 @@ type TrackRepositoryImpl struct {
 type selectFromTrackQuery func(*[]db.Track) *gorm.DB
 type selectFromAuthorsQuery func(*[]db.Author, []string) *gorm.DB
 
-
+func trackToEntity(dbTrack db.Track, author db.Author) entities.Track {
+	var tags []entities.TrackTag
+	for _, tag := range dbTrack.Tags {
+		tags = append(tags, entities.TrackTag(tag))
+	}
+	return entities.Track{
+		Mod:      entities.Mod{
+			DownloadLink: dbTrack.DownloadLink,
+			Premium: dbTrack.Premium,
+			Image: dbTrack.Image,
+			Author: entities.Author{
+				Name: author.Name,
+				Link: author.Link,
+			},
+		},
+		Name:     dbTrack.Name,
+		Layouts:  allLayoutsToEntity(dbTrack.Layouts),
+		Location: dbTrack.Location,
+		Nation:   entities.Nation{Name: dbTrack.Nation},
+		Tags: tags,
+	}
+}
 
 func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 	var layouts []entities.Layout
@@ -26,6 +47,20 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 		})
 	}
 	return layouts
+}
+
+func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, error) {
+	track := db.Track{Name: name}
+	if result := t.Db.Preload("Layouts").First(&track); result.Error != nil{
+		return entities.Track{}, result.Error
+	}
+
+	author := db.Author{Name: track.Author}
+	if result := t.Db.First(&author); result.Error != nil{
+		return entities.Track{}, result.Error
+	}
+
+	return trackToEntity(track, author), nil
 }
 
 func (t TrackRepositoryImpl) SelectAllTracks() ([]entities.Track,error) {
@@ -113,22 +148,7 @@ func selectTracksWithQuery(query selectFromTrackQuery, authorsQuery selectFromAu
 		for _, tag := range dbTrack.Tags {
 			tags = append(tags, entities.TrackTag(tag))
 		}
-		tracks = append(tracks, entities.Track{
-			Mod:      entities.Mod{
-				DownloadLink: dbTrack.DownloadLink,
-				Premium: dbTrack.Premium,
-				Image: dbTrack.Image,
-				Author: entities.Author{
-					Name: authorMap[dbTrack.Author].Name,
-					Link: authorMap[dbTrack.Author].Link,
-				},
-			},
-			Name:     dbTrack.Name,
-			Layouts:  allLayoutsToEntity(dbTrack.Layouts),
-			Location: dbTrack.Location,
-			Nation:   entities.Nation{Name: dbTrack.Nation},
-			Tags: tags,
-		})
+		tracks = append(tracks, trackToEntity(dbTrack, authorMap[dbTrack.Author]))
 	}
 	return tracks,nil
 }

@@ -12,6 +12,8 @@ type CarRepositoryImpl struct {
 	Db *gorm.DB
 }
 
+
+
 type selectFromCarsQuery func(*[]db.Car) *gorm.DB
 type selectFromBrandsQuery func(*[]db.CarBrand) *gorm.DB
 
@@ -75,6 +77,24 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBr
 		cars = append(cars, dbCarToEntity(dbCar, brandsNation[dbCar.Brand], authorsMap[dbCar.Author]))
 	}
 	return cars,nil
+}
+
+func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) {
+	dbCar := db.Car{ModelName: model}
+	if result := c.Db.First(&dbCar); result.Error != nil {
+		return entities.Car{}, result.Error
+	}
+	dbBrand := db.CarBrand{Name: dbCar.Brand}
+	if result := c.Db.Find(&dbBrand); result.Error != nil {
+		return entities.Car{}, result.Error
+	}
+
+	dbAuthor := db.Author{Name: dbCar.Author}
+	if result := c.Db.Find(&dbAuthor); result.Error != nil {
+		return entities.Car{}, result.Error
+	}
+
+	return dbCarToEntity(dbCar, dbBrand.Nation, dbAuthor), nil
 }
 
 func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {

@@ -12,6 +12,7 @@ type CarRepository interface {
 	SelectCarsByBrand(string) ([]entities.Car, error)
 	SelectCarsByType(string) ([]entities.Car, error)
 	SelectAllCarCategories() ([]entities.CarCategory, error)
+	SelectCarByModel(string) (entities.Car, error)
 }
 
 type TrackRepository interface {
@@ -19,7 +20,8 @@ type TrackRepository interface {
 	SelectTracksByNation(string) ([]entities.Track,error)
 	SelectTracksByLayoutType(string) ([]entities.Track,error)
 	SelectTracksByName(string) ([]entities.Track,error)
-	SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error)
+	SelectTrackByTag(entities.TrackTag) ([]entities.Track,error)
+	SelectTrackByName(string) (entities.Track, error)
 	InsertTrack(track entities.Track) error
 }
 

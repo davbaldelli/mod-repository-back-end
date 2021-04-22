@@ -13,6 +13,22 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
+func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+	param := params["name"]
+
+	if param == "" {
+		respondError(writer, http.StatusBadRequest, fmt.Errorf("missing param name"))
+		return
+	}
+
+	if track, err := t.TrackCtrl.GetTrackByName(param); err != nil {
+		respondError(writer, http.StatusInternalServerError, err)
+	} else {
+		respondJSON(writer, http.StatusOK, track)
+	}
+}
+
 func (t TrackHandlerImpl) GETTracksByTag(writer http.ResponseWriter, request *http.Request) {
 	t.getTrackByParamResponse("tag", func(s string) ([]entities.Track, error) {
 		return t.TrackCtrl.GetTracksByTag(entities.TrackTag(s))
@@ -38,7 +54,7 @@ func (t TrackHandlerImpl) GETTracksByLayoutType(writer http.ResponseWriter, requ
 	t.getTrackByParamResponse("layoutType", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByLayoutType(s) }, writer, request)
 }
 
-func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {
+func (t TrackHandlerImpl) GETTracksByName(writer http.ResponseWriter, request *http.Request) {
 	t.getTrackByParamResponse("name", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByName(s) }, writer, request)
 }
 
