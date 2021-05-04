@@ -7,6 +7,25 @@ import (
 type CarCategory struct {
 	Name string `gorm:"primaryKey:not null"`
 }
+type CarMods struct {
+	DownloadLink string
+	ModelName    string `gorm:"primaryKey"`
+	Year         uint
+	Brand        string
+	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;joinForeignKey:car_model_name"`
+	Transmission string
+	Drivetrain   string
+	Premium      bool
+	Image        string
+	BHP          uint
+	Torque       uint
+	Weight       uint
+	TopSpeed     uint
+	Author 		string
+	AuthorLink string
+	Nation string
+}
+
 type Car struct {
 	DownloadLink string
 	ModelName    string `gorm:"primaryKey"`
@@ -27,13 +46,13 @@ type Car struct {
 type Author struct {
 	Name string `gorm:"primaryKey"`
 	Link string
-	Cars []Car `gorm:"foreignKey:Author"`
+	Cars []CarMods `gorm:"foreignKey:Author"`
 	Tracks []Track `gorm:"foreignKey:Author"`
 }
 
 type CarBrand struct {
-	Name   string `gorm:"primaryKey"`
-	Cars   []Car  `gorm:"foreignKey:Brand"`
+	Name   string    `gorm:"primaryKey"`
+	Cars   []CarMods `gorm:"foreignKey:Brand"`
 	Nation string
 }
 
