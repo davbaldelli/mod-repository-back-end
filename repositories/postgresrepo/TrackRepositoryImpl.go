@@ -104,7 +104,7 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 		return res.Error
 	}
 
-	if res := t.Db.Model(&db.TrackMod{}).Create(&dbTrack); res.Error != nil {
+	if res := t.Db.Create(&dbTrack); res.Error != nil {
 		return res.Error
 	}
 	return nil
