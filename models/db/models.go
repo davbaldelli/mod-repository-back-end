@@ -46,8 +46,8 @@ type Car struct {
 type Author struct {
 	Name string `gorm:"primaryKey"`
 	Link string
-	Cars []CarMods `gorm:"foreignKey:Author"`
-	Tracks []Track `gorm:"foreignKey:Author"`
+	Cars []CarMods    `gorm:"foreignKey:Author"`
+	Tracks []TrackMod `gorm:"foreignKey:Author"`
 }
 
 type CarBrand struct {
@@ -59,7 +59,7 @@ type CarBrand struct {
 type Nation struct {
 	Name   string     `gorm:"primaryKey"`
 	Brands []CarBrand `gorm:"foreignKey:Nation"`
-	Tracks []Track    `gorm:"foreignKey:Nation"`
+	Tracks []TrackMod `gorm:"foreignKey:Nation"`
 }
 
 type Track struct {
@@ -73,6 +73,20 @@ type Track struct {
 	Premium 	 bool
 	Image string
 	Author string
+}
+
+type TrackMod struct {
+	DownloadLink string
+	Name         string   `gorm:"primaryKey"`
+	Layouts      []Layout `gorm:"foreignKey:Track"`
+	Location     string
+	Nation       string
+	Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
+	Year 		 uint
+	Premium 	 bool
+	Image string
+	Author string
+	AuthorLink string
 }
 
 type Layout struct {

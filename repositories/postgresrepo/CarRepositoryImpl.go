@@ -1,7 +1,6 @@
 package postgresrepo
 
 import (
-	"fmt"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -80,7 +79,7 @@ func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) 
 
 func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
 	var categories []db.CarCategory
-	if result := c.Db.Find(&categories) ; result.Error != nil{
+	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
 		return  nil, result.Error
 	}
 	return allCategoriesToEntity(categories), nil
@@ -116,7 +115,6 @@ func (c CarRepositoryImpl) SelectAllCars() ([]entities.Car,error) {
 }
 
 
-
 func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,error) {
 	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("nation = ?",nation).Find(&cars)
@@ -137,16 +135,7 @@ func (c CarRepositoryImpl) SelectCarsByBrand(brandName string) ([]entities.Car,e
 }
 
 func (c CarRepositoryImpl) SelectCarsByType(category string) ([]entities.Car,error) {
-	var cars []entities.Car
-	var dbCars []db.CarMods
-
-	if result := c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&dbCars); result.Error != nil{
-		return nil,result.Error
-	}
-
-	for _, dbCar := range dbCars {
-		cars = append(cars, dbCarToEntity(dbCar))
-	}
-	fmt.Println(cars)
-	return cars, nil
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
+		return  c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&cars)
+	})
 }

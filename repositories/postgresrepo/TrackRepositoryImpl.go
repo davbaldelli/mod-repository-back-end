@@ -11,10 +11,9 @@ type TrackRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-type selectFromTrackQuery func(*[]db.Track) *gorm.DB
-type selectFromAuthorsQuery func(*[]db.Author, []string) *gorm.DB
+type selectFromTrackQuery func(*[]db.TrackMod) *gorm.DB
 
-func trackToEntity(dbTrack db.Track, author db.Author) entities.Track {
+func trackToEntity(dbTrack db.TrackMod) entities.Track {
 	var tags []entities.TrackTag
 	for _, tag := range dbTrack.Tags {
 		tags = append(tags, entities.TrackTag(tag))
@@ -25,8 +24,8 @@ func trackToEntity(dbTrack db.Track, author db.Author) entities.Track {
 			Premium: dbTrack.Premium,
 			Image: dbTrack.Image,
 			Author: entities.Author{
-				Name: author.Name,
-				Link: author.Link,
+				Name: dbTrack.Author,
+				Link: dbTrack.AuthorLink,
 			},
 		},
 		Name:     dbTrack.Name,
@@ -50,7 +49,7 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 }
 
 func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, error) {
-	track := db.Track{Name: name}
+	track := db.TrackMod{Name: name}
 	if result := t.Db.Preload("Layouts").First(&track); result.Error != nil{
 		return entities.Track{}, result.Error
 	}
@@ -60,46 +59,36 @@ func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, err
 		return entities.Track{}, result.Error
 	}
 
-	return trackToEntity(track, author), nil
+	return trackToEntity(track), nil
 }
 
 func (t TrackRepositoryImpl) SelectAllTracks() ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
+	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Find(tracks)
-	}, func(authors *[]db.Author, tracksNames []string) *gorm.DB {
-		return t.Db.Joins("join tracks on author = authors.name").Find(authors,"tracks.name IN ?",tracksNames)
 	})
 }
 
 func (t TrackRepositoryImpl) SelectTracksByNation(nation string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
+	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"nation = ?",nation)
-	}, func(authors *[]db.Author, tracksNames []string) *gorm.DB {
-		return t.Db.Joins("join tracks on author = authors.name").Find(authors,"tracks.name IN ?",tracksNames)
 	})
 }
 
 func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
-		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = tracks.name").Where("layouts.category = ?", category).Find(&tracks)
-	}, func(authors *[]db.Author, tracksNames []string) *gorm.DB {
-		return t.Db.Joins("join tracks on author = authors.name").Find(authors,"tracks.name IN ?",tracksNames)
+	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
+		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = track_mods.name").Where("layouts.category = ?", category).Find(&tracks)
 	})
 }
 
 func (t TrackRepositoryImpl) SelectTracksByName(name string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"LOWER(tracks.name) LIKE LOWER(?)","%"+name+"%")
-	}, func(authors *[]db.Author, tracksNames []string) *gorm.DB {
-		return t.Db.Joins("join tracks on author = authors.name").Find(authors,"tracks.name IN ?",tracksNames)
+	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"LOWER(track_mods.name) LIKE LOWER(?)","%"+name+"%")
 	})
 }
 
 func (t TrackRepositoryImpl) SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error){
-	return selectTracksWithQuery(func(tracks *[]db.Track) *gorm.DB {
+	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks," ? = ANY (tags)", tag)
-	}, func(authors *[]db.Author, tracksNames []string) *gorm.DB {
-		return t.Db.Joins("join tracks on author = authors.name").Find(authors,"tracks.name IN ?",tracksNames)
 	})
 }
 
@@ -115,40 +104,24 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 		return res.Error
 	}
 
-	if res := t.Db.Model(&db.Track{}).Create(&dbTrack); res.Error != nil {
+	if res := t.Db.Model(&db.TrackMod{}).Create(&dbTrack); res.Error != nil {
 		return res.Error
 	}
 	return nil
 }
 
-func selectTracksWithQuery(query selectFromTrackQuery, authorsQuery selectFromAuthorsQuery) ([]entities.Track, error) {
-	var dbTracks []db.Track
+func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error) {
+	var dbTracks []db.TrackMod
 	var tracks []entities.Track
 	if result := query(&dbTracks); result.Error != nil {
 		return nil,result.Error
 	}
-
-	var tracksNames []string
-	for _,dbTrack := range dbTracks{
-		tracksNames = append(tracksNames, dbTrack.Name)
-	}
-	var dbAuthors []db.Author
-	if result := authorsQuery(&dbAuthors,tracksNames); result.Error != nil{
-		return nil,result.Error
-	}
-
-	authorMap := make(map[string]db.Author)
-
-	for _, author := range dbAuthors {
-		authorMap[author.Name] = author
-	}
-
 	for _, dbTrack := range dbTracks {
 		var tags []entities.TrackTag
 		for _, tag := range dbTrack.Tags {
 			tags = append(tags, entities.TrackTag(tag))
 		}
-		tracks = append(tracks, trackToEntity(dbTrack, authorMap[dbTrack.Author]))
+		tracks = append(tracks, trackToEntity(dbTrack))
 	}
 	return tracks,nil
 }
