@@ -10,6 +10,7 @@ type BrandRepositoryImpl struct {
 	Db *gorm.DB
 }
 
+
 func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand,error) {
 	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
 		return b.Db.Order("name ASC").Find(&brands)

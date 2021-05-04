@@ -50,6 +50,7 @@ func main() {
 	nationRepo := postgresrepo.NationsRepositoryImpl{Db: dbase}
 	brandRepo := postgresrepo.BrandRepositoryImpl{Db: dbase}
 	userRepo := postgresrepo.UserRepositoryImpl{Db: dbase}
+	authorRepo := postgresrepo.AuthorsRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
 		CarHandler:    handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}},
@@ -57,6 +58,7 @@ func main() {
 		NationHandler: handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler: handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
 		UsersHandler:  handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
+		AuthorsHandler: handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
 	}
 	web.Listen()
 }

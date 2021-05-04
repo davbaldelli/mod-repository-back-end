@@ -1,7 +1,6 @@
 package postgresrepo
 
 import (
-	"fmt"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -12,15 +11,25 @@ type CarRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-type selectFromCarsQuery func(*[]db.Car) *gorm.DB
+
+
+type selectFromCarsQuery func(*[]db.CarMods) *gorm.DB
 type selectFromBrandsQuery func(*[]db.CarBrand) *gorm.DB
 
-func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
+func dbCarToEntity(dbCar db.CarMods)entities.Car{
 	return entities.Car{
-		Mod: entities.Mod{DownloadLink: dbCar.DownloadLink, Premium: dbCar.Premium, Image: dbCar.Image},
+		Mod: entities.Mod{
+			DownloadLink: dbCar.DownloadLink,
+			Premium: dbCar.Premium,
+			Image: dbCar.Image,
+			Author: entities.Author{
+				Name: dbCar.Author,
+				Link: dbCar.AuthorLink,
+			},
+		},
 		Brand: entities.CarBrand{
 			Name:   dbCar.Brand,
-			Nation: entities.Nation{Name: nation},
+			Nation: entities.Nation{Name: dbCar.Nation},
 		},
 		ModelName:  dbCar.ModelName,
 		Categories: allCategoriesToEntity(dbCar.Categories),
@@ -35,30 +44,42 @@ func dbCarToEntity(dbCar db.Car, nation string)entities.Car{
 	}
 }
 
-func selectCarsWithQuery(carsQuery selectFromCarsQuery, brandsQuery selectFromBrandsQuery) ([]entities.Car, error){
+func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory{
+	var cats []entities.CarCategory
+	for _,dbCat := range  dbCategories {
+		cats = append(cats, entities.CarCategory{Name: dbCat.Name})
+	}
+	return cats
+}
+
+
+func selectCarsWithQuery(carsQuery selectFromCarsQuery) ([]entities.Car, error){
 	var cars []entities.Car
-	var dbCars []db.Car
+	var dbCars []db.CarMods
+
 
 	if result := carsQuery(&dbCars); result.Error != nil{
 		return nil,result.Error
 	}
-	var dbBrands []db.CarBrand
-	if result := brandsQuery(&dbBrands); result.Error != nil {
-		return nil,result.Error
-	}
-	brandsNation := make(map[string]string)
-	for _, brand := range dbBrands {
-		brandsNation[brand.Name] = brand.Nation
-	}
+
 	for _, dbCar := range dbCars {
-		cars = append(cars, dbCarToEntity(dbCar, brandsNation[dbCar.Brand]))
+		cars = append(cars, dbCarToEntity(dbCar))
 	}
 	return cars,nil
 }
 
+func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) {
+	dbCar := db.CarMods{ModelName: model}
+	if result := c.Db.Preload("Categories").First(&dbCar); result.Error != nil {
+		return entities.Car{}, result.Error
+	}
+
+	return dbCarToEntity(dbCar), nil
+}
+
 func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
 	var categories []db.CarCategory
-	if result := c.Db.Find(&categories) ; result.Error != nil{
+	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
 		return  nil, result.Error
 	}
 	return allCategoriesToEntity(categories), nil
@@ -68,6 +89,10 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 	dbCar := db.CarFromEntity(car)
 	dbNation := db.NationFromEntity(car.Brand.Nation)
 	dbBrand := db.BrandFromEntity(car.Brand)
+
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&car.Author); res.Error != nil {
+		return res.Error
+	}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error
@@ -84,71 +109,33 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 }
 
 func (c CarRepositoryImpl) SelectAllCars() ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars)
-	}, func(brands *[]db.CarBrand) *gorm.DB {
-		return c.Db.Find(&brands)
 	})
-}
-
-func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory{
-	var cats []entities.CarCategory
-	for _,dbCat := range  dbCategories {
-		cats = append(cats, entities.CarCategory{Name: dbCat.Name})
-	}
-	return cats
 }
 
 
 func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join car_brands on cars.brand = car_brands.name").Where("car_brands.nation = ?",nation).Find(&cars)
-	}, func(brands *[]db.CarBrand) *gorm.DB {
-		return c.Db.Find(&brands,"nation = ?",nation)
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("nation = ?",nation).Find(&cars)
 	})
 
 }
 
 func (c CarRepositoryImpl) SelectCarsByModelName(model string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"LOWER(concat(brand,' ',model_name)) LIKE LOWER(?)", "%"+model+"%").Find(&cars)
-	}, func(brands *[]db.CarBrand) *gorm.DB {
-		return c.Db.Joins("right join cars on cars.brand = car_brands.name").Find(&brands,"cars.model_name = ?",model)
 	})
 }
 
 func (c CarRepositoryImpl) SelectCarsByBrand(brandName string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.Car) *gorm.DB {
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"brand = ?",brandName)
-	}, func(brands *[]db.CarBrand) *gorm.DB {
-		return  c.Db.Find(&brands,"name = ?", brandName)
 	})
 }
 
 func (c CarRepositoryImpl) SelectCarsByType(category string) ([]entities.Car,error) {
-	
-	var cars []entities.Car
-	var dbCars []db.Car
-
-	if result := c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&dbCars); result.Error != nil{
-		return nil,result.Error
-	}
-	var brandsNames []string
-	for _, car := range dbCars {
-		brandsNames = append(brandsNames, car.Brand)
-	}
-
-	var dbBrands []db.CarBrand
-	if result := c.Db.Find(&dbBrands, "name IN ?", brandsNames); result.Error != nil {
-		return nil,result.Error
-	}
-	brandsNation := make(map[string]string)
-	for _, brand := range dbBrands {
-		brandsNation[brand.Name] = brand.Nation
-	}
-	for _, dbCar := range dbCars {
-		cars = append(cars, dbCarToEntity(dbCar, brandsNation[dbCar.Brand]))
-	}
-	fmt.Println(cars)
-	return cars, nil
+	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
+		return  c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&cars)
+	})
 }

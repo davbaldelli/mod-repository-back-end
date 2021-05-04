@@ -9,6 +9,10 @@ type TrackControllerImpl struct {
 	Repo repositories.TrackRepository
 }
 
+func (t TrackControllerImpl) GetTrackByName(name string) (entities.Track, error) {
+	return t.Repo.SelectTrackByName(name)
+}
+
 func (t TrackControllerImpl) GetTracksByTag(tag entities.TrackTag) ([]entities.Track, error) {
 	return t.Repo.SelectTrackByTag(tag)
 }

@@ -7,10 +7,11 @@ import (
 type CarController interface {
 	GetAllCars() ([]entities.Car, error)
 	GetCarsByNation(string) ([]entities.Car, error)
-	GetCarByModel(string) ([]entities.Car, error)
+	GetCarsByModel(string) ([]entities.Car, error)
 	GetCarsByBrand(string) ([]entities.Car, error)
 	GetCarsByType(string) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
+	GetCarByModel(string) (entities.Car, error)
 
 	AddCar(car entities.Car) error
 }
@@ -21,6 +22,7 @@ type TrackController interface {
 	GetTracksByLayoutType(string) ([]entities.Track,error)
 	GetTracksByName(string) ([]entities.Track,error)
 	GetTracksByTag(tag entities.TrackTag) ([]entities.Track, error)
+	GetTrackByName(string) (entities.Track, error)
 
 	AddTrack(track entities.Track) error
 }
@@ -38,4 +40,10 @@ type NationController interface {
 
 type LoginController interface {
 	Login(username string, password string) (entities.User,error)
+}
+
+type AuthorController interface {
+	GetAllAuthors() ([]entities.Author, error)
+	GetAllCarAuthors() ([]entities.Author, error)
+	GetAllTrackAuthors() ([]entities.Author, error)
 }

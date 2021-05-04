@@ -9,6 +9,10 @@ type CarControllerImpl struct {
 	Repo repositories.CarRepository
 }
 
+func (c CarControllerImpl) GetCarByModel(model string) (entities.Car, error) {
+	return c.Repo.SelectCarByModel(model)
+}
+
 func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error) {
 	return c.Repo.SelectAllCarCategories()
 }
@@ -21,7 +25,7 @@ func (c CarControllerImpl) GetCarsByNation(nationName string) ([]entities.Car, e
 	return c.Repo.SelectCarsByNation(nationName)
 }
 
-func (c CarControllerImpl) GetCarByModel(model string) ([]entities.Car, error) {
+func (c CarControllerImpl) GetCarsByModel(model string) ([]entities.Car, error) {
 	return c.Repo.SelectCarsByModelName(model)
 }
 
