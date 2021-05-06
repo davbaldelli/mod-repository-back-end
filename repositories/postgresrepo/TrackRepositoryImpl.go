@@ -33,6 +33,7 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 		Location: dbTrack.Location,
 		Nation:   entities.Nation{Name: dbTrack.Nation},
 		Tags: tags,
+		Year: dbTrack.Year,
 	}
 }
 
