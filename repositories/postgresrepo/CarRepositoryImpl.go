@@ -1,6 +1,7 @@
 package postgresrepo
 
 import (
+	"errors"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -60,6 +61,8 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery) ([]entities.Car, error){
 
 	if result := carsQuery(&dbCars); result.Error != nil{
 		return nil,result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("not found")
 	}
 
 	for _, dbCar := range dbCars {
@@ -71,6 +74,9 @@ func selectCarsWithQuery(carsQuery selectFromCarsQuery) ([]entities.Car, error){
 func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) {
 	dbCar := db.CarMods{ModelName: model}
 	if result := c.Db.Preload("Categories").First(&dbCar); result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return entities.Car{}, errors.New("not found")
+		}
 		return entities.Car{}, result.Error
 	}
 

@@ -1,6 +1,7 @@
 package postgresrepo
 
 import (
+	"errors"
 	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
 	"gorm.io/gorm"
@@ -52,11 +53,9 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, error) {
 	track := db.TrackMod{Name: name}
 	if result := t.Db.Preload("Layouts").First(&track); result.Error != nil{
-		return entities.Track{}, result.Error
-	}
-
-	author := db.Author{Name: track.Author}
-	if result := t.Db.First(&author); result.Error != nil{
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return entities.Track{}, errors.New("not found")
+		}
 		return entities.Track{}, result.Error
 	}
 
@@ -116,6 +115,8 @@ func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error)
 	var tracks []entities.Track
 	if result := query(&dbTracks); result.Error != nil {
 		return nil,result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("not found")
 	}
 	for _, dbTrack := range dbTracks {
 		var tags []entities.TrackTag

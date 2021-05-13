@@ -23,7 +23,11 @@ func (c CarsHandlerImpl) GETCarByModel(writer http.ResponseWriter, request *http
 	}
 
 	if car, err := c.CarCtrl.GetCarByModel(param); err != nil {
-		respondError(writer, http.StatusInternalServerError, err)
+		if err.Error() == "not found" {
+			respondError(writer, http.StatusNotFound, err)
+		} else {
+			respondError(writer, http.StatusInternalServerError, err)
+		}
 	} else {
 		respondJSON(writer, http.StatusOK, car)
 	}
@@ -91,7 +95,11 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 	}
 
 	if cars, err := getCars(param) ; err != nil {
-		respondError(writer, http.StatusInternalServerError, err)
+		if err.Error() == "not found" {
+			respondError(writer, http.StatusNotFound, err)
+		} else {
+			respondError(writer, http.StatusInternalServerError, err)
+		}
 	} else {
 		respondJSON(writer, http.StatusOK, cars)
 	}

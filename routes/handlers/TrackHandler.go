@@ -23,16 +23,18 @@ func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *ht
 	}
 
 	if track, err := t.TrackCtrl.GetTrackByName(param); err != nil {
-		respondError(writer, http.StatusInternalServerError, err)
+		if err.Error() == "not found" {
+			respondError(writer, http.StatusNotFound, err)
+		} else {
+			respondError(writer, http.StatusInternalServerError, err)
+		}
 	} else {
 		respondJSON(writer, http.StatusOK, track)
 	}
 }
 
 func (t TrackHandlerImpl) GETTracksByTag(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("tag", func(s string) ([]entities.Track, error) {
-		return t.TrackCtrl.GetTracksByTag(entities.TrackTag(s))
-	}, writer,request)
+	t.getTrackByParamResponse("tag", func(s string) ([]entities.Track, error) {return t.TrackCtrl.GetTracksByTag(entities.TrackTag(s))}, writer,request)
 }
 
 type getTracksByParam func(string) ([]entities.Track, error)
@@ -85,7 +87,11 @@ func (t TrackHandlerImpl) getTrackByParamResponse(paramString string, getTracks 
 	}
 
 	if tracks, err := getTracks(param); err != nil {
-		respondError(writer, http.StatusInternalServerError, err)
+		if err.Error() == "not found" {
+			respondError(writer, http.StatusNotFound, err)
+		} else {
+			respondError(writer, http.StatusInternalServerError, err)
+		}
 	} else {
 		respondJSON(writer, http.StatusOK, tracks)
 	}
