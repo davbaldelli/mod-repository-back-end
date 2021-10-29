@@ -66,7 +66,7 @@ func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, err
 			return nil, errors.New("not found")
 		}
 	} else {
-		if result := carsQuery().Where("-premium = false").Find(&dbCars); result.Error != nil{
+		if result := carsQuery().Where("premium = false").Find(&dbCars); result.Error != nil{
 			return nil,result.Error
 		} else if result.RowsAffected == 0 {
 			return nil, errors.New("not found")
