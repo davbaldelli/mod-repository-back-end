@@ -14,7 +14,7 @@ type CarRepositoryImpl struct {
 
 
 
-type selectFromCarsQuery func(*[]db.CarMods) *gorm.DB
+type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.CarBrand) *gorm.DB
 
 func dbCarToEntity(dbCar db.CarMods)entities.Car{
@@ -54,15 +54,23 @@ func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory
 }
 
 
-func selectCarsWithQuery(carsQuery selectFromCarsQuery) ([]entities.Car, error){
+func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error){
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
 
-	if result := carsQuery(&dbCars); result.Error != nil{
-		return nil,result.Error
-	} else if result.RowsAffected == 0 {
-		return nil, errors.New("not found")
+	if premium {
+		if result := carsQuery().Find(&dbCars); result.Error != nil{
+			return nil,result.Error
+		} else if result.RowsAffected == 0 {
+			return nil, errors.New("not found")
+		}
+	} else {
+		if result := carsQuery().Where("cars.premium = false").Find(&dbCars); result.Error != nil{
+			return nil,result.Error
+		} else if result.RowsAffected == 0 {
+			return nil, errors.New("not found")
+		}
 	}
 
 	for _, dbCar := range dbCars {
@@ -114,34 +122,34 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 	return nil
 }
 
-func (c CarRepositoryImpl) SelectAllCars() ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars)
-	})
+func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car,error) {
+	return selectCarsWithQuery(func() *gorm.DB {
+			return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories")
+	}, premium)
 }
 
 
-func (c CarRepositoryImpl) SelectCarsByNation(nation string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("nation = ?",nation).Find(&cars)
-	})
+func (c CarRepositoryImpl) SelectCarsByNation(nation string, premium bool) ([]entities.Car,error) {
+	return selectCarsWithQuery(func() *gorm.DB {
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("nation = ?",nation)
+	},premium)
 
 }
 
-func (c CarRepositoryImpl) SelectCarsByModelName(model string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"LOWER(concat(brand,' ',model_name)) LIKE LOWER(?)", "%"+model+"%").Find(&cars)
-	})
+func (c CarRepositoryImpl) SelectCarsByModelName(model string, premium bool) ([]entities.Car,error) {
+	return selectCarsWithQuery(func() *gorm.DB {
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("LOWER(concat(brand,' ',model_name)) LIKE LOWER(?)", "%"+model+"%")
+	}, premium)
 }
 
-func (c CarRepositoryImpl) SelectCarsByBrand(brandName string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Find(&cars,"brand = ?",brandName)
-	})
+func (c CarRepositoryImpl) SelectCarsByBrand(brandName string, premium bool) ([]entities.Car,error) {
+	return selectCarsWithQuery(func() *gorm.DB {
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Where("brand = ?",brandName)
+	}, premium)
 }
 
-func (c CarRepositoryImpl) SelectCarsByType(category string) ([]entities.Car,error) {
-	return selectCarsWithQuery(func(cars *[]db.CarMods) *gorm.DB {
-		return  c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category).Find(&cars)
-	})
+func (c CarRepositoryImpl) SelectCarsByType(category string, premium bool) ([]entities.Car,error) {
+	return selectCarsWithQuery(func() *gorm.DB {
+		return  c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories").Joins("join cars_categories_ass on cars_categories_ass.car_model_name = model_name").Where("car_category_name = ?", category)
+	}, premium)
 }

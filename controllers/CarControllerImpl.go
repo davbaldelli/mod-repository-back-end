@@ -17,24 +17,24 @@ func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error)
 	return c.Repo.SelectAllCarCategories()
 }
 
-func (c CarControllerImpl) GetAllCars() ([]entities.Car, error){
-	return c.Repo.SelectAllCars()
+func (c CarControllerImpl) GetAllCars(premium bool) ([]entities.Car, error){
+	return c.Repo.SelectAllCars(premium)
 }
 
-func (c CarControllerImpl) GetCarsByNation(nationName string) ([]entities.Car, error) {
-	return c.Repo.SelectCarsByNation(nationName)
+func (c CarControllerImpl) GetCarsByNation(nationName string, premium bool) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByNation(nationName, premium)
 }
 
-func (c CarControllerImpl) GetCarsByModel(model string) ([]entities.Car, error) {
-	return c.Repo.SelectCarsByModelName(model)
+func (c CarControllerImpl) GetCarsByModel(model string, premium bool) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByModelName(model, premium)
 }
 
-func (c CarControllerImpl) GetCarsByBrand(brandName string) ([]entities.Car, error) {
-	return c.Repo.SelectCarsByBrand(brandName)
+func (c CarControllerImpl) GetCarsByBrand(brandName string, premium bool) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByBrand(brandName, premium)
 }
 
-func (c CarControllerImpl) GetCarsByType(categoryName string) ([]entities.Car, error) {
-	return c.Repo.SelectCarsByType(categoryName)
+func (c CarControllerImpl) GetCarsByType(categoryName string, premium bool) ([]entities.Car, error) {
+	return c.Repo.SelectCarsByType(categoryName, premium)
 }
 
 func (c CarControllerImpl) AddCar(car entities.Car) error {

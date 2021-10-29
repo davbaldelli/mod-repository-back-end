@@ -44,7 +44,7 @@ func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, request
 type getCarsByParam func(string) ([]entities.Car, error)
 
 func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Request) {
-	if cars, err := c.CarCtrl.GetAllCars(); err != nil {
+	if cars, err := c.CarCtrl.GetAllCars(true); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, cars)
@@ -52,19 +52,19 @@ func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Re
 }
 
 func (c CarsHandlerImpl) GETCarsByNation(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("nation", func(s string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByNation(s) }, writer, request)
+	c.getCarsByParamResponse("nation", func(nation string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByNation(nation, true) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarsByModel(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("model", func(s string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByModel(s) }, writer, request)
+	c.getCarsByParamResponse("model", func(model string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByModel(model, true) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarsByBrand(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("brand", func(s string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByBrand(s) }, writer, request)
+	c.getCarsByParamResponse("brand", func(brand string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByBrand(brand, true) }, writer, request)
 }
 
 func (c CarsHandlerImpl) GETCarsByType(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("category", func(s string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByType(s) }, writer, request)
+	c.getCarsByParamResponse("category", func(category string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByType(category, true) }, writer, request)
 }
 
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {

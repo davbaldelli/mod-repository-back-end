@@ -5,11 +5,11 @@ import (
 )
 
 type CarController interface {
-	GetAllCars() ([]entities.Car, error)
-	GetCarsByNation(string) ([]entities.Car, error)
-	GetCarsByModel(string) ([]entities.Car, error)
-	GetCarsByBrand(string) ([]entities.Car, error)
-	GetCarsByType(string) ([]entities.Car, error)
+	GetAllCars(premium bool) ([]entities.Car, error)
+	GetCarsByNation(string, bool) ([]entities.Car, error)
+	GetCarsByModel(string, bool) ([]entities.Car, error)
+	GetCarsByBrand(string, bool) ([]entities.Car, error)
+	GetCarsByType(string, bool) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
 	GetCarByModel(string) (entities.Car, error)
 

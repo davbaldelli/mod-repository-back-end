@@ -16,6 +16,7 @@ import (
 type Credentials struct {
 	Username string
 	Password string
+	Host string
 }
 
 func main() {
@@ -38,7 +39,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dsn := "host=127.0.0.1 user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
+	dsn := "host="+cred.Host+" user=" + cred.Username + " password=" + cred.Password + " dbname=mod_repo port=5432 sslmode=disable TimeZone=Europe/Rome"
 	dbase, err3 := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err3 != nil {

@@ -6,11 +6,11 @@ import (
 
 type CarRepository interface {
 	InsertCar(car entities.Car) error
-	SelectAllCars() ([]entities.Car, error)
-	SelectCarsByNation(string) ([]entities.Car, error)
-	SelectCarsByModelName(string) ([]entities.Car, error)
-	SelectCarsByBrand(string) ([]entities.Car, error)
-	SelectCarsByType(string) ([]entities.Car, error)
+	SelectAllCars(premium bool) ([]entities.Car, error)
+	SelectCarsByNation(string, bool) ([]entities.Car, error)
+	SelectCarsByModelName(string, bool) ([]entities.Car, error)
+	SelectCarsByBrand(string, bool) ([]entities.Car, error)
+	SelectCarsByType(string, bool) ([]entities.Car, error)
 	SelectAllCarCategories() ([]entities.CarCategory, error)
 	SelectCarByModel(string) (entities.Car, error)
 }
