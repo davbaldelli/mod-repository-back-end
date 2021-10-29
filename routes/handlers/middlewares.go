@@ -3,16 +3,20 @@ package handlers
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"log"
 	"net/http"
 )
 
 func IsAuthorized(next http.HandlerFunc) http.HandlerFunc{
+	log.Println("xxxxx")
 	return func(w http.ResponseWriter, r *http.Request) {
-
+		log.Println("dddddd")
 		if r.Header["Token"] == nil {
 			respondError(w, http.StatusUnauthorized, fmt.Errorf("token not found"))
 			return
 		}
+
+		log.Println(r.Header["Token"])
 
 		var mySigningKey = []byte("eskere")
 
