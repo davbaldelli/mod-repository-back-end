@@ -1,11 +1,9 @@
 package routes
 
 import (
-	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -25,8 +23,9 @@ type Web struct {
 
 func (w Web) Listen() {
 	router := mux.NewRouter().StrictSlash(true)
+	//router.Use(handlers.IsAuthorized)
 	router.HandleFunc("/car/new", w.CarHandler.POSTNewCar).Methods("POST")
-	router.HandleFunc("/car/all", w.CarHandler.GETAllCars).Methods("GET")
+	router.HandleFunc("/car/all", handlers.IsAuthorized(w.CarHandler.GETAllCars)).Methods("GET")
 	router.HandleFunc("/car/nation/{nation}", w.CarHandler.GETCarsByNation).Methods("GET")
 	router.HandleFunc("/car/find/model/{model}", w.CarHandler.GETCarsByModel).Methods("GET")
 	router.HandleFunc("/car/brand/{brand}", w.CarHandler.GETCarsByBrand).Methods("GET")
@@ -54,7 +53,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/car/author/all", w.AuthorsHandler.GETCarAuthors).Methods("GET")
 	router.HandleFunc("/track/author/all", w.AuthorsHandler.GETTrackAuthors).Methods("GET")
 
-	router.HandleFunc("/login", w.UsersHandler.POSTLogin).Methods("POST")
+	router.HandleFunc("/login", w.UsersHandler.SignIn).Methods("POST")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -62,7 +61,7 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
-
+/*
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it"),
@@ -86,7 +85,10 @@ func (w Web) Listen() {
 	}()
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
-
-	//log.Fatal(http.ListenAndServe(":6316", handler))
+*/
+	log.Fatal(http.ListenAndServe(":6316", handler))
 
 }
+
+
+

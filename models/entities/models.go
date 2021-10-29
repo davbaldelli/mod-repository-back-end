@@ -2,6 +2,8 @@ package entities
 
 type Drivetrain string
 
+type Role string
+
 func ToTrackTags(strings []string) []TrackTag{
 	var tags []TrackTag
 	for _, s := range strings {
@@ -15,6 +17,12 @@ type Transmission string
 type TrackTag string
 
 type LayoutType string
+
+const (
+	Admin Role = "admin"
+	Premium Role = "premium"
+	Base Role = "base"
+)
 
 const (
 	F1 TrackTag = "F1"
@@ -106,5 +114,16 @@ type Layout struct {
 type User struct {
 	Username string
 	Password string
-	IsAdmin bool
+	Role Role
+}
+
+type Authentication struct {
+	Username    string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Token struct {
+	Role        string `json:"role"`
+	Username       string `json:"username"`
+	TokenString string `json:"token"`
 }

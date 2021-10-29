@@ -41,6 +41,7 @@ type BrandsHandler interface {
 
 type UsersHandler interface {
 	POSTLogin(http.ResponseWriter, *http.Request)
+	SignIn(http.ResponseWriter, *http.Request)
 }
 
 type AuthorsHandler interface {

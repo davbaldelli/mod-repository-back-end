@@ -20,6 +20,6 @@ func (u UserRepositoryImpl) Login(user entities.User) (entities.User, error) {
 	if res.RowsAffected == 0 {
 		return entities.User{}, errors.New("username or password not valid")
 	}
-	return entities.User{Username: dbUser.Username, IsAdmin: dbUser.IsAdmin}, nil
+	return entities.User{Username: dbUser.Username, Role: entities.Role(dbUser.Role)}, nil
 }
 

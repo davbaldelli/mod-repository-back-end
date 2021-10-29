@@ -99,7 +99,7 @@ type Layout struct {
 type User struct {
 	Username string `gorm:"primaryKey"`
 	Password string
-	IsAdmin bool
+	Role string
 }
 
 
