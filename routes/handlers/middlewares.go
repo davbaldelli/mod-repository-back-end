@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"net/http"
 )
 
@@ -20,6 +20,7 @@ func IsAuthorized(next http.HandlerFunc) http.HandlerFunc{
 			}
 			return mySigningKey, nil
 		})
+
 
 		if err != nil {
 			respondError(w, http.StatusUnauthorized, fmt.Errorf("your Token has been expired: %v", err.Error()))

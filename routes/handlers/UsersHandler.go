@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"net/http"
 	"time"
 )
@@ -31,20 +31,16 @@ func (u UserHandlerImpl) POSTLogin(writer http.ResponseWriter, request *http.Req
 	}
 }
 
+func GenerateJWT(username, role string) (string, error){
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"authorized": true,
+		"email" : username,
+		"role" : role,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
 
-func GenerateJWT(email, role string) (string, error) {
-	var mySigningKey = []byte("eskere")
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-
-	claims["authorized"] = true
-	claims["email"] = email
-	claims["role"] = role
-	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
-
-	tokenString, err := token.SignedString(mySigningKey)
-
-
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte("eskere"))
 
 	if err != nil {
 		return "", fmt.Errorf("Something Went Wrong: %s ", err.Error())
