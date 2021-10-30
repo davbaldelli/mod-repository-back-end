@@ -10,18 +10,18 @@ type CarController interface {
 	GetCarsByModel(string, bool) ([]entities.Car, error)
 	GetCarsByBrand(string, bool) ([]entities.Car, error)
 	GetCarsByType(string, bool) ([]entities.Car, error)
-	GetAllCarCategories() ([]entities.CarCategory, error)
+	GetAllCarCategories(bool) ([]entities.CarCategory, error)
 	GetCarByModel(string) (entities.Car, error)
 
 	AddCar(car entities.Car) error
 }
 
 type TrackController interface {
-	GetAllTracks() ([]entities.Track,error)
-	GetTracksByNation(string) ([]entities.Track,error)
-	GetTracksByLayoutType(string) ([]entities.Track,error)
-	GetTracksByName(string) ([]entities.Track,error)
-	GetTracksByTag(tag entities.TrackTag) ([]entities.Track, error)
+	GetAllTracks(bool) ([]entities.Track,error)
+	GetTracksByNation(string, bool) ([]entities.Track,error)
+	GetTracksByLayoutType(string, bool) ([]entities.Track,error)
+	GetTracksByName(string, bool) ([]entities.Track,error)
+	GetTracksByTag(entities.TrackTag, bool) ([]entities.Track, error)
 	GetTrackByName(string) (entities.Track, error)
 
 	AddTrack(track entities.Track) error

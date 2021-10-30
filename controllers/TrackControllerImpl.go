@@ -13,24 +13,24 @@ func (t TrackControllerImpl) GetTrackByName(name string) (entities.Track, error)
 	return t.Repo.SelectTrackByName(name)
 }
 
-func (t TrackControllerImpl) GetTracksByTag(tag entities.TrackTag) ([]entities.Track, error) {
-	return t.Repo.SelectTrackByTag(tag)
+func (t TrackControllerImpl) GetTracksByTag(tag entities.TrackTag, premium bool) ([]entities.Track, error) {
+	return t.Repo.SelectTracksByTag(tag, premium)
 }
 
-func (t TrackControllerImpl) GetAllTracks() ([]entities.Track, error) {
-	return t.Repo.SelectAllTracks()
+func (t TrackControllerImpl) GetAllTracks(premium bool) ([]entities.Track, error) {
+	return t.Repo.SelectAllTracks(premium)
 }
 
-func (t TrackControllerImpl) GetTracksByNation(nationName string) ([]entities.Track, error) {
-	return t.Repo.SelectTracksByNation(nationName)
+func (t TrackControllerImpl) GetTracksByNation(nationName string,premium bool) ([]entities.Track, error) {
+	return t.Repo.SelectTracksByNation(nationName, premium)
 }
 
-func (t TrackControllerImpl) GetTracksByLayoutType(category string) ([]entities.Track, error) {
-	return t.Repo.SelectTracksByLayoutType(category)
+func (t TrackControllerImpl) GetTracksByLayoutType(category string,premium bool) ([]entities.Track, error) {
+	return t.Repo.SelectTracksByLayoutType(category, premium)
 }
 
-func (t TrackControllerImpl) GetTracksByName(name string) ([]entities.Track, error) {
-	return t.Repo.SelectTracksByName(name)
+func (t TrackControllerImpl) GetTracksByName(name string, premium bool) ([]entities.Track, error) {
+	return t.Repo.SelectTracksByName(name, premium)
 }
 
 func (t TrackControllerImpl) AddTrack(track entities.Track) error {

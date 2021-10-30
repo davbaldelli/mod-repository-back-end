@@ -11,16 +11,16 @@ type CarRepository interface {
 	SelectCarsByModelName(string, bool) ([]entities.Car, error)
 	SelectCarsByBrand(string, bool) ([]entities.Car, error)
 	SelectCarsByType(string, bool) ([]entities.Car, error)
-	SelectAllCarCategories() ([]entities.CarCategory, error)
+	SelectAllCarCategories(bool) ([]entities.CarCategory, error)
 	SelectCarByModel(string) (entities.Car, error)
 }
 
 type TrackRepository interface {
-	SelectAllTracks() ([]entities.Track,error)
-	SelectTracksByNation(string) ([]entities.Track,error)
-	SelectTracksByLayoutType(string) ([]entities.Track,error)
-	SelectTracksByName(string) ([]entities.Track,error)
-	SelectTrackByTag(entities.TrackTag) ([]entities.Track,error)
+	SelectAllTracks(bool) ([]entities.Track,error)
+	SelectTracksByNation(string, bool) ([]entities.Track,error)
+	SelectTracksByLayoutType(string, bool) ([]entities.Track,error)
+	SelectTracksByName(string, bool) ([]entities.Track,error)
+	SelectTracksByTag(entities.TrackTag, bool) ([]entities.Track,error)
 	SelectTrackByName(string) (entities.Track, error)
 	InsertTrack(track entities.Track) error
 }

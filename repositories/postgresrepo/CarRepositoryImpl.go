@@ -58,7 +58,6 @@ func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, err
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
-
 	if premium {
 		if result := carsQuery().Find(&dbCars); result.Error != nil{
 			return nil,result.Error
@@ -91,7 +90,7 @@ func (c CarRepositoryImpl) SelectCarByModel(model string) (entities.Car, error) 
 	return dbCarToEntity(dbCar), nil
 }
 
-func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
+func (c CarRepositoryImpl) SelectAllCarCategories(premium bool) ([]entities.CarCategory, error) {
 	var categories []db.CarCategory
 	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
 		return  nil, result.Error

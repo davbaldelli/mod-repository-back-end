@@ -34,7 +34,7 @@ func (c CarsHandlerImpl) GETCarByModel(writer http.ResponseWriter, request *http
 }
 
 func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, request *http.Request) {
-	if categories, err := c.CarCtrl.GetAllCarCategories(); err != nil {
+	if categories, err := c.CarCtrl.GetAllCarCategories(request.Header.Get("Role") != string(entities.Base)); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, categories)

@@ -13,8 +13,8 @@ func (c CarControllerImpl) GetCarByModel(model string) (entities.Car, error) {
 	return c.Repo.SelectCarByModel(model)
 }
 
-func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error) {
-	return c.Repo.SelectAllCarCategories()
+func (c CarControllerImpl) GetAllCarCategories(premium bool) ([]entities.CarCategory, error) {
+	return c.Repo.SelectAllCarCategories(premium)
 }
 
 func (c CarControllerImpl) GetAllCars(premium bool) ([]entities.Car, error){

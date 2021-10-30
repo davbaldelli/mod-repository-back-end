@@ -12,7 +12,7 @@ type TrackRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-type selectFromTrackQuery func(*[]db.TrackMod) *gorm.DB
+type selectFromTrackQuery func() *gorm.DB
 
 func trackToEntity(dbTrack db.TrackMod) entities.Track {
 	var tags []entities.TrackTag
@@ -62,34 +62,34 @@ func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, err
 	return trackToEntity(track), nil
 }
 
-func (t TrackRepositoryImpl) SelectAllTracks() ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(tracks)
-	})
+func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track,error) {
+	return selectTracksWithQuery(func() *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts")
+	}, premium)
 }
 
-func (t TrackRepositoryImpl) SelectTracksByNation(nation string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"nation = ?",nation)
-	})
+func (t TrackRepositoryImpl) SelectTracksByNation(nation string, premium bool) ([]entities.Track,error) {
+	return selectTracksWithQuery(func() *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Where("nation = ?",nation)
+	}, premium)
 }
 
-func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
-		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = track_mods.name").Where("layouts.category = ?", category).Find(&tracks)
-	})
+func (t TrackRepositoryImpl) SelectTracksByLayoutType(category string, premium bool) ([]entities.Track,error) {
+	return selectTracksWithQuery(func() *gorm.DB {
+		return t.Db.Order("name ASC").Distinct().Preload("Layouts").Joins("join layouts on layouts.track = track_mods.name").Where("layouts.category = ?", category)
+	}, premium)
 }
 
-func (t TrackRepositoryImpl) SelectTracksByName(name string) ([]entities.Track,error) {
-	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks,"LOWER(track_mods.name) LIKE LOWER(?)","%"+name+"%")
-	})
+func (t TrackRepositoryImpl) SelectTracksByName(name string, premium bool) ([]entities.Track,error) {
+	return selectTracksWithQuery(func() *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Where("LOWER(track_mods.name) LIKE LOWER(?)","%"+name+"%")
+	}, premium)
 }
 
-func (t TrackRepositoryImpl) SelectTrackByTag(tag entities.TrackTag) ([]entities.Track,error){
-	return selectTracksWithQuery(func(tracks *[]db.TrackMod) *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Find(&tracks," ? = ANY (tags)", tag)
-	})
+func (t TrackRepositoryImpl) SelectTracksByTag(tag entities.TrackTag, premium bool) ([]entities.Track,error){
+	return selectTracksWithQuery(func() *gorm.DB {
+		return t.Db.Order("name ASC").Preload("Layouts").Where(" ? = ANY (tags)", tag)
+	}, premium)
 }
 
 func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
@@ -110,13 +110,21 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	return nil
 }
 
-func selectTracksWithQuery(query selectFromTrackQuery) ([]entities.Track, error) {
+func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities.Track, error) {
 	var dbTracks []db.TrackMod
 	var tracks []entities.Track
-	if result := query(&dbTracks); result.Error != nil {
-		return nil,result.Error
-	} else if result.RowsAffected == 0 {
-		return nil, errors.New("not found")
+	if premium {
+		if result := query().Find(&dbTracks); result.Error != nil {
+			return nil,result.Error
+		} else if result.RowsAffected == 0 {
+			return nil, errors.New("not found")
+		}
+	} else {
+		if result := query().Where("premium = false").Find(&dbTracks); result.Error != nil {
+			return nil,result.Error
+		} else if result.RowsAffected == 0 {
+			return nil, errors.New("not found")
+		}
 	}
 	for _, dbTrack := range dbTracks {
 		var tags []entities.TrackTag
