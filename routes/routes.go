@@ -25,7 +25,6 @@ type Web struct {
 
 func (w Web) Listen() {
 	router := mux.NewRouter().StrictSlash(true)
-	//router.Use(handlers.IsAuthorized)
 	router.HandleFunc("/car/new", handlers.IsAuthorized(w.CarHandler.POSTNewCar)).Methods("POST")
 	router.HandleFunc("/car/all", handlers.IsAuthorized(w.CarHandler.GETAllCars)).Methods("GET")
 	router.HandleFunc("/car/nation/{nation}", handlers.IsAuthorized(w.CarHandler.GETCarsByNation)).Methods("GET")
@@ -89,7 +88,7 @@ func (w Web) Listen() {
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
 
-//	log.Fatal(http.ListenAndServe(":6316", handler))
+	//log.Fatal(http.ListenAndServe(":6316", handler))
 
 }
 
