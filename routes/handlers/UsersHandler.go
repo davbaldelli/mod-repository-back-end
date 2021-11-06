@@ -24,19 +24,19 @@ func (u UserHandlerImpl) POSTLogin(writer http.ResponseWriter, request *http.Req
 		respondError(writer, http.StatusBadRequest, fmt.Errorf("error converting post form to entiy: %v ", err))
 		return
 	}
-	if user, err := u.UserCtrl.Login(reqUser.Username,reqUser.Password); err != nil{
+	if user, err := u.UserCtrl.Login(reqUser.Username, reqUser.Password); err != nil {
 		respondError(writer, http.StatusUnauthorized, fmt.Errorf("wrong username or password: %v ", err))
 	} else {
 		respondJSON(writer, http.StatusAccepted, user)
 	}
 }
 
-func GenerateJWT(username, role string) (string, error){
+func GenerateJWT(username, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"authorized": true,
-		"email" : username,
-		"role" : role,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"email":      username,
+		"role":       role,
+		"exp":        time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -48,7 +48,7 @@ func GenerateJWT(username, role string) (string, error){
 	return tokenString, nil
 }
 
-func (u UserHandlerImpl)SignIn(w http.ResponseWriter, r *http.Request) {
+func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	var authdetails entities.Authentication
 	err := json.NewDecoder(r.Body).Decode(&authdetails)
@@ -59,10 +59,9 @@ func (u UserHandlerImpl)SignIn(w http.ResponseWriter, r *http.Request) {
 
 	authuser, err := u.UserCtrl.Login(authdetails.Username, authdetails.Password)
 	if err != nil {
-		respondError(w, http.StatusNotFound, err)
+		respondError(w, http.StatusUnauthorized, err)
 		return
 	}
-
 
 	validToken, err := GenerateJWT(authuser.Username, string(authuser.Role))
 	if err != nil {
