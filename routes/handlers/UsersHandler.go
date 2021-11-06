@@ -25,7 +25,7 @@ func (u UserHandlerImpl) POSTLogin(writer http.ResponseWriter, request *http.Req
 		return
 	}
 	if user, err := u.UserCtrl.Login(reqUser.Username,reqUser.Password); err != nil{
-		respondError(writer, http.StatusNotFound, fmt.Errorf("wrong username or password: %v ", err))
+		respondError(writer, http.StatusUnauthorized, fmt.Errorf("wrong username or password: %v ", err))
 	} else {
 		respondJSON(writer, http.StatusAccepted, user)
 	}
