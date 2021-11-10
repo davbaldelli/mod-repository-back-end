@@ -1,4 +1,4 @@
-package postgresrepo
+package mysql
 
 import (
 	"errors"
@@ -8,14 +8,11 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type CarRepositoryImpl struct {
+type CarsRepoImpl struct {
 	Db *gorm.DB
 }
 
-
-
 type carsQuery func() *gorm.DB
-type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
 func dbCarToEntity(dbCar db.CarMods)entities.Car{
 	return entities.Car{
@@ -53,7 +50,6 @@ func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory
 	return cats
 }
 
-
 func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error){
 	var cars []entities.Car
 	var dbCars []db.CarMods
@@ -78,35 +74,22 @@ func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, err
 	return cars,nil
 }
 
-func (c CarRepositoryImpl) SelectAllCarCategories(premium bool) ([]entities.CarCategory, error) {
-	var categories []db.CarCategory
-	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
-		return  nil, result.Error
+func (c CarsRepoImpl) InsertCar(car entities.Car) error {
+	dbCar := db.CarFromEntity(car)
+	dbNation := db.NationFromEntity(car.Brand.Nation)
+	dbBrand := db.BrandFromEntity(car.Brand)
+
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&car.Author); res.Error != nil {
+		return res.Error
 	}
-	return allCategoriesToEntity(categories), nil
-}
-
-func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
-
-	dbNation := db.Nation{Name: car.Brand.Nation.Name}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error
 	}
 
-	dbBrand := db.Manufacturer{Name: car.Brand.Name, IdNation: dbNation.Id}
-
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
 		return res.Error
 	}
-
-	dbAuthor := db.Author{ Name:   car.Author.Name, Link:   car.Author.Link}
-
-	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
-		return res.Error
-	}
-
-	dbCar := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
 
 	if res := c.Db.Create(&dbCar); res.Error != nil {
 		return res.Error
@@ -114,8 +97,18 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 	return nil
 }
 
-func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car,error) {
+func (c CarsRepoImpl) SelectAllCars(premium bool) ([]entities.Car, error) {
 	return selectCarsWithQuery(func() *gorm.DB {
-			return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
+		return c.Db.Order("concat(brand,' ',model_name) ASC").Preload("Categories")
 	}, premium)
 }
+
+func (c CarsRepoImpl) SelectAllCarCategories(premium bool) ([]entities.CarCategory, error) {
+	var categories []db.CarCategory
+	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
+		return  nil, result.Error
+	}
+	return allCategoriesToEntity(categories), nil
+}
+
+

@@ -16,6 +16,7 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gorm.io/driver/mysql v1.1.3 // indirect
 	gorm.io/driver/postgres v1.0.8
-	gorm.io/gorm v1.21.6
+	gorm.io/gorm v1.21.12
 )

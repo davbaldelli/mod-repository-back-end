@@ -12,34 +12,27 @@ type BrandRepositoryImpl struct {
 
 
 func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand,error) {
-	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
+	return b.selectBrandsWithQuery(func(brands *[]db.Manufacturer) *gorm.DB {
 		return b.Db.Order("name ASC").Find(&brands)
 	})
 }
 
-func (b BrandRepositoryImpl) SelectBrandsByNation(nation string) ([]entities.CarBrand, error) {
-	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
-		return b.Db.Order("name ASC").Find(&brands, "nation = ?", nation)
-	})
-}
-
-func (b BrandRepositoryImpl) SelectBrandsByName(name string) ([]entities.CarBrand, error) {
-	return selectBrandsWithQuery(func(brands *[]db.CarBrand) *gorm.DB {
-		return b.Db.Order("name ASC").Find(&brands, "name = ?", name)
-	})
-}
-
-func selectBrandsWithQuery(query selectFromBrandsQuery) ([]entities.CarBrand, error){
-	var dbBrands []db.CarBrand
+func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) ([]entities.CarBrand, error){
+	var dbBrands []db.Manufacturer
 	var brands []entities.CarBrand
 	if result := query(&dbBrands); result.Error != nil {
 		return nil,result.Error
 	}
 	for _, dbBrand := range dbBrands {
-		brands = append(brands, entities.CarBrand{
-			Name:   dbBrand.Name,
-			Nation: entities.Nation{Name: dbBrand.Nation},
-		})
+		nation:= db.Nation{Id: dbBrand.IdNation}
+		if res2 := b.Db.Find(&nation); res2.Error != nil{
+			return nil,  res2.Error
+		} else {
+			brands = append(brands, entities.CarBrand{
+				Name:   dbBrand.Name,
+				Nation: entities.Nation{Name: nation.Name},
+			})
+		}
 	}
 	return brands, nil
 }

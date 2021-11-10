@@ -2,12 +2,12 @@ package db
 
 import "github.com/davide/ModRepository/models/entities"
 
-func CarFromEntity(car entities.Car) Car {
+func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 
 	return Car{
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
-		Brand:        car.Brand.Name,
+		IdBrand:        idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories),
 		Year:         car.Year,
 		Drivetrain:   string(car.Drivetrain),
@@ -18,7 +18,7 @@ func CarFromEntity(car entities.Car) Car {
 		Torque:       car.Torque,
 		Weight:       car.Weight,
 		TopSpeed:     car.TopSpeed,
-		Author: car.Author.Name,
+		IdAuthor: idAuthor,
 	}
 }
 
@@ -36,10 +36,10 @@ func allCarCategoryFromEntity(categories []entities.CarCategory) []CarCategory {
 	return dbCats
 }
 
-func BrandFromEntity(brand entities.CarBrand) CarBrand {
-	return CarBrand{
+func BrandFromEntity(brand entities.CarBrand, idNation uint) Manufacturer {
+	return Manufacturer{
 		Name:   brand.Name,
-		Nation: brand.Nation.Name,
+		IdNation: idNation,
 	}
 }
 
@@ -49,7 +49,7 @@ func NationFromEntity(nation entities.Nation) Nation {
 	}
 }
 
-func TrackFromEntity(track entities.Track) Track {
+func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 	var tags []string
 	for _, tag := range track.Tags {
 		tags = append(tags, string(tag))
@@ -57,27 +57,27 @@ func TrackFromEntity(track entities.Track) Track {
 	return Track{
 		DownloadLink: track.DownloadLink,
 		Name:         track.Name,
-		Layouts:      allLayoutFromEntity(track.Layouts, track.Name),
+		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
 		Location:     track.Location,
-		Nation:       track.Nation.Name,
-		Tags: tags,
+		IdNation:       idNation,
+		//Tags: tags,
 		Year: track.Year,
 		Premium: track.Premium,
 		Image: track.Image,
-		Author: track.Author.Name,
+		IdAuthor: idAuthor,
 	}
 }
 
-func layoutFromEntity(layout entities.Layout, track string) Layout {
+func layoutFromEntity(layout entities.Layout, idTrack uint) Layout {
 	return Layout{
 		Name:     layout.Name,
 		LengthM: layout.LengthM,
 		Category: string(layout.Category),
-		Track:    track,
+		IdTrack:    idTrack,
 	}
 }
 
-func allLayoutFromEntity(layouts []entities.Layout, track string) []Layout {
+func allLayoutFromEntity(layouts []entities.Layout, track uint) []Layout {
 	var dbLayouts []Layout
 	for _, layout := range layouts {
 		dbLayouts = append(dbLayouts, layoutFromEntity(layout, track))

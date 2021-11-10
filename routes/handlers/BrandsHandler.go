@@ -31,15 +31,6 @@ func (b BrandsHandlerImpl) GETAllBrands(writer http.ResponseWriter, request *htt
 	}
 }
 
-func (b BrandsHandlerImpl) GETBrandByNation(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("nation", func(s string) ([]entities.CarBrand, error) { return b.BrandCtrl.GetBrandsByNation(s) }, writer, request)
-}
-
-func (b BrandsHandlerImpl) GETBrandByName(writer http.ResponseWriter, request *http.Request) {
-	b.getBrandByParamResponse("name", func(s string) ([]entities.CarBrand, error) { return b.BrandCtrl.GetBrandsByName(s) }, writer, request)
-}
-
-
 func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands getBrandsByParam, w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	param := params[paramString]
