@@ -25,7 +25,7 @@ type BrandsHandler interface {
 }
 
 type UsersHandler interface {
-	POSTLogin(http.ResponseWriter, *http.Request)
+	LogIn(http.ResponseWriter, *http.Request)
 	SignIn(http.ResponseWriter, *http.Request)
 }
 
@@ -33,6 +33,4 @@ type AuthorsHandler interface {
 	GETAllAuthors(http.ResponseWriter, *http.Request)
 	GETTrackAuthors(http.ResponseWriter, *http.Request)
 	GETCarAuthors(http.ResponseWriter, *http.Request)
-
-
 }

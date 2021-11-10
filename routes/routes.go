@@ -40,7 +40,8 @@ func (w Web) Listen() {
 	router.HandleFunc("/car/author/all", w.AuthorsHandler.GETCarAuthors).Methods("GET")
 	router.HandleFunc("/track/author/all", w.AuthorsHandler.GETTrackAuthors).Methods("GET")
 
-	router.HandleFunc("/login", w.UsersHandler.SignIn).Methods("POST")
+	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
+	router.HandleFunc("/signin", w.UsersHandler.SignIn).Methods("POST")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},

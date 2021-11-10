@@ -13,4 +13,11 @@ func (u UserControllerImpl) Login(username string, password string) (entities.Us
 	return u.Repo.Login(entities.User{Username: username, Password: password})
 }
 
+func (u UserControllerImpl) SignIn(username string, password string, role entities.Role) (entities.User, error)  {
+	return u.Repo.SignIn(entities.User{
+		Username: username,
+		Password: password,
+		Role:     role,
+	})
+}
 

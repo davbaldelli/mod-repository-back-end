@@ -8,7 +8,6 @@ type CarRepository interface {
 	InsertCar(car entities.Car) error
 	SelectAllCars(premium bool) ([]entities.Car, error)
 	SelectAllCarCategories(bool) ([]entities.CarCategory, error)
-
 }
 
 type TrackRepository interface {
@@ -27,6 +26,7 @@ type BrandRepository interface {
 
 type UserRepository interface {
 	Login(user entities.User) (entities.User, error)
+	SignIn(user entities.User) (entities.User, error)
 }
 
 type AuthorRepository interface {

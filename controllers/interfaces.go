@@ -26,6 +26,7 @@ type NationController interface {
 
 type LoginController interface {
 	Login(username string, password string) (entities.User,error)
+	SignIn(username string, password string, role entities.Role) (entities.User, error)
 }
 
 type AuthorController interface {
