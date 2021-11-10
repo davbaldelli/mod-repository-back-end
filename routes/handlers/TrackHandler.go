@@ -13,30 +13,6 @@ type TrackHandlerImpl struct {
 	TrackCtrl controllers.TrackController
 }
 
-func (t TrackHandlerImpl) GETTrackByName(writer http.ResponseWriter, request *http.Request) {
-	params := mux.Vars(request)
-	param := params["name"]
-
-	if param == "" {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("missing param name"))
-		return
-	}
-
-	if track, err := t.TrackCtrl.GetTrackByName(param); err != nil {
-		if err.Error() == "not found" {
-			respondError(writer, http.StatusNotFound, err)
-		} else {
-			respondError(writer, http.StatusInternalServerError, err)
-		}
-	} else {
-		respondJSON(writer, http.StatusOK, track)
-	}
-}
-
-func (t TrackHandlerImpl) GETTracksByTag(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("tag", func(s string) ([]entities.Track, error) {return t.TrackCtrl.GetTracksByTag(entities.TrackTag(s), request.Header.Get("Role") != string(entities.Base))}, writer,request)
-}
-
 type getTracksByParam func(string) ([]entities.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
@@ -46,18 +22,6 @@ func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http
 		respondJSON(writer, http.StatusOK, tracks)
 	}
 
-}
-
-func (t TrackHandlerImpl) GETTracksByNation(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("nation", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByNation(s, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
-}
-
-func (t TrackHandlerImpl) GETTracksByLayoutType(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("layoutType", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByLayoutType(s, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
-}
-
-func (t TrackHandlerImpl) GETTracksByName(writer http.ResponseWriter, request *http.Request) {
-	t.getTrackByParamResponse("name", func(s string) ([]entities.Track, error) { return t.TrackCtrl.GetTracksByName(s, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
 }
 
 func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http.Request) {

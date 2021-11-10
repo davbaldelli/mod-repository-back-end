@@ -20,4 +20,3 @@ func (a AuthorsControllerImpl) GetAllCarAuthors() ([]entities.Author, error) {
 func (a AuthorsControllerImpl) GetAllTrackAuthors() ([]entities.Author, error) {
 	return a.Repo.SelectAllTrackAuthors()
 }
-

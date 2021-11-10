@@ -4,7 +4,7 @@ type Drivetrain string
 
 type Role string
 
-func ToTrackTags(strings []string) []TrackTag{
+func ToTrackTags(strings []string) []TrackTag {
 	var tags []TrackTag
 	for _, s := range strings {
 		tags = append(tags, TrackTag(s))
@@ -19,36 +19,36 @@ type TrackTag string
 type LayoutType string
 
 const (
-	Admin Role = "admin"
+	Admin   Role = "admin"
 	Premium Role = "premium"
-	Base Role = "base"
+	Base    Role = "base"
 )
 
 const (
-	F1 TrackTag = "F1"
-	Touge TrackTag = "Touge"
-	NASCAR  TrackTag = "NASCAR"
-	Rally TrackTag = "Rally"
-	CityTrack TrackTag = "City Track"
+	F1          TrackTag = "F1"
+	Touge       TrackTag = "Touge"
+	NASCAR      TrackTag = "NASCAR"
+	Rally       TrackTag = "Rally"
+	CityTrack   TrackTag = "City Track"
 	StreetTrack TrackTag = "Street Track"
-	Fictional TrackTag = "Fictional"
-	Endurance TrackTag = "Endurance"
-	Drift TrackTag = "Drift"
-	Historic TrackTag = "Historic"
-	OpenWorld TrackTag = "Open World"
-	Karting TrackTag = "Karting"
+	Fictional   TrackTag = "Fictional"
+	Endurance   TrackTag = "Endurance"
+	Drift       TrackTag = "Drift"
+	Historic    TrackTag = "Historic"
+	OpenWorld   TrackTag = "Open World"
+	Karting     TrackTag = "Karting"
 )
 
 const (
 	RoadCourse LayoutType = "Road Course"
-	Oval LayoutType = "Oval"
-	AToB LayoutType = "A to B"
+	Oval       LayoutType = "Oval"
+	AToB       LayoutType = "A to B"
 )
 
 const (
-	RearWheelDrive Drivetrain = "RWD"
-	FrontWheelDrive  Drivetrain = "FWD"
-	AllWheelDrive Drivetrain = "AWD"
+	RearWheelDrive  Drivetrain = "RWD"
+	FrontWheelDrive Drivetrain = "FWD"
+	AllWheelDrive   Drivetrain = "AWD"
 )
 
 const (
@@ -58,9 +58,9 @@ const (
 
 type Mod struct {
 	DownloadLink string
-	Premium bool
-	Image string
-	Author Author
+	Premium      bool
+	Image        string
+	Author       Author
 }
 
 type Author struct {
@@ -98,11 +98,11 @@ type Nation struct {
 type Track struct {
 	Mod
 	Name     string
-	Tags []TrackTag
+	Tags     []TrackTag
 	Layouts  []Layout
 	Location string
 	Nation   Nation
-	Year uint
+	Year     uint
 }
 
 type Layout struct {
@@ -114,16 +114,16 @@ type Layout struct {
 type User struct {
 	Username string
 	Password string
-	Role Role
+	Role     Role
 }
 
 type Authentication struct {
-	Username    string `json:"username"`
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 type Token struct {
 	Role        string `json:"role"`
-	Username       string `json:"username"`
+	Username    string `json:"username"`
 	TokenString string `json:"token"`
 }

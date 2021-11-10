@@ -13,26 +13,6 @@ type CarsHandlerImpl struct {
 	CarCtrl controllers.CarController
 }
 
-func (c CarsHandlerImpl) GETCarByModel(writer http.ResponseWriter, request *http.Request) {
-	params := mux.Vars(request)
-	param := params["model"]
-
-	if param == "" {
-		respondError(writer, http.StatusBadRequest, fmt.Errorf("missing param model"))
-		return
-	}
-
-	if car, err := c.CarCtrl.GetCarByModel(param); err != nil {
-		if err.Error() == "not found" {
-			respondError(writer, http.StatusNotFound, err)
-		} else {
-			respondError(writer, http.StatusInternalServerError, err)
-		}
-	} else {
-		respondJSON(writer, http.StatusOK, car)
-	}
-}
-
 func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, request *http.Request) {
 	if categories, err := c.CarCtrl.GetAllCarCategories(request.Header.Get("Role") != string(entities.Base)); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
@@ -49,22 +29,6 @@ func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Re
 	} else {
 		respondJSON(writer, http.StatusOK, cars)
 	}
-}
-
-func (c CarsHandlerImpl) GETCarsByNation(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("nation", func(nation string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByNation(nation, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
-}
-
-func (c CarsHandlerImpl) GETCarsByModel(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("model", func(model string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByModel(model, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
-}
-
-func (c CarsHandlerImpl) GETCarsByBrand(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("brand", func(brand string) ([]entities.Car,error)  { return c.CarCtrl.GetCarsByBrand(brand, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
-}
-
-func (c CarsHandlerImpl) GETCarsByType(writer http.ResponseWriter, request *http.Request) {
-	c.getCarsByParamResponse("category", func(category string) ([]entities.Car,error) { return c.CarCtrl.GetCarsByType(category, request.Header.Get("Role") != string(entities.Base)) }, writer, request)
 }
 
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {
@@ -94,7 +58,7 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 		return
 	}
 
-	if cars, err := getCars(param) ; err != nil {
+	if cars, err := getCars(param); err != nil {
 		if err.Error() == "not found" {
 			respondError(writer, http.StatusNotFound, err)
 		} else {

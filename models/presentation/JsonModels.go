@@ -51,7 +51,7 @@ func ofBrand(brand entities.CarBrand) BrandPresentation {
 	}
 }
 
-func OfAllBrands(brands []entities.CarBrand) []BrandPresentation{
+func OfAllBrands(brands []entities.CarBrand) []BrandPresentation {
 	var brandsPres []BrandPresentation
 	for _, brand := range brands {
 		brandsPres = append(brandsPres, ofBrand(brand))
@@ -65,7 +65,7 @@ func OfAllBrandsGroupedByNation(brands []entities.CarBrand) []NationBrands {
 		brandsMap[brand.Nation.Name] = append(brandsMap[brand.Nation.Name], brand.Name)
 	}
 	var nationsBrands []NationBrands
-	for nation, nBrands := range brandsMap{
+	for nation, nBrands := range brandsMap {
 		nationsBrands = append(nationsBrands, NationBrands{Nation: nation, Brands: nBrands})
 	}
 	return nationsBrands

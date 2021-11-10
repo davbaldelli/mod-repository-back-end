@@ -1,18 +1,38 @@
 package db
 
 import (
-	"github.com/lib/pq"
+	"time"
 )
 
-type CarCategory struct {
-	Name string `gorm:"primaryKey:not null"`
+type ModModel struct {
+	Id        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
+
+type CarCategory struct {
+	Id   uint `gorm:"primarykey"`
+	Name string
+	Cars []Car `gorm:"many2many:cars_categories_ass;joinForeignKey:id_category"`
+}
+
+type CarsCategoriesAss struct {
+	Id         uint `gorm:"primarykey"`
+	IdCategory uint
+	IdCar      uint
+}
+
+func (CarsCategoriesAss) TableName() string {
+	return "cars_categories_ass"
+}
+
 type CarMods struct {
+	ModModel
 	DownloadLink string
-	ModelName    string `gorm:"primaryKey"`
+	ModelName    string `gorm:"column:model"`
 	Year         uint
 	Brand        string
-	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;joinForeignKey:car_model_name"`
+	Categories   []CarsCategoriesAss `gorm:"foreignKey:IdCar"`
 	Transmission string
 	Drivetrain   string
 	Premium      bool
@@ -21,17 +41,18 @@ type CarMods struct {
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
-	Author 		string
-	AuthorLink string
-	Nation string
+	Author       string
+	AuthorLink   string
+	Nation       string
 }
 
 type Car struct {
+	ModModel
 	DownloadLink string
-	ModelName    string `gorm:"primaryKey"`
-	Year         uint
-	Brand        string
-	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;"`
+	ModelName    string `gorm:"column:model"`
+	Year        	int
+	IdBrand      uint
+	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;joinForeignKey:IdCar;joinReferences:IdCategory"`
 	Transmission string
 	Drivetrain   string
 	Premium      bool
@@ -40,89 +61,77 @@ type Car struct {
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
-	Author 		string
+	IdAuthor     uint
 }
 
 type Author struct {
-	Name string `gorm:"primaryKey"`
-	Link string
-	Cars []CarMods    `gorm:"foreignKey:Author"`
-	Tracks []TrackMod `gorm:"foreignKey:Author"`
+	Id     uint `gorm:"primarykey"`
+	Name   string
+	Link   string
+	Cars   []Car   `gorm:"foreignKey:IdAuthor"`
+	Tracks []Track `gorm:"foreignKey:IdAuthor"`
 }
 
-type CarBrand struct {
-	Name   string    `gorm:"primaryKey"`
-	Cars   []CarMods `gorm:"foreignKey:Brand"`
-	Nation string
+type Manufacturer struct {
+	Id       uint `gorm:"primarykey"`
+	Name     string
+	Cars     []Car `gorm:"foreignKey:IdBrand"`
+	IdNation uint
 }
 
 type Nation struct {
-	Name   string     `gorm:"primaryKey"`
-	Brands []CarBrand `gorm:"foreignKey:Nation"`
-	Tracks []TrackMod `gorm:"foreignKey:Nation"`
+	Id     uint           `gorm:"primarykey"`
+	Name   string         `gorm:"primaryKey"`
+	Brands []Manufacturer `gorm:"foreignKey:IdNation"`
+	Tracks []Track        `gorm:"foreignKey:IdNation"`
 }
 
 type Track struct {
+	ModModel
 	DownloadLink string
-	Name         string   `gorm:"primaryKey"`
-	Layouts      []Layout `gorm:"foreignKey:Track"`
+	Name         string
+	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
 	Location     string
-	Nation       string
-	Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
-	Year 		 uint
-	Premium 	 bool
-	Image string
-	Author string
+	IdNation     uint
+	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
+	Year         uint
+	Premium      bool
+	Image        string
+	IdAuthor     uint
+}
+
+type TrackTag struct {
+	Id      uint `gorm:"primarykey"`
+	IdTrack uint
+	Tag     string
 }
 
 type TrackMod struct {
+	ModModel
 	DownloadLink string
-	Name         string   `gorm:"primaryKey"`
-	Layouts      []Layout `gorm:"foreignKey:Track"`
+	Name         string
+	Layouts      []Layout   `gorm:"foreignKey:IdTrack"`
+	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
 	Location     string
 	Nation       string
-	Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
-	Year 		 uint
-	Premium 	 bool
-	Image string
-	Author string
-	AuthorLink string
+	Year         uint
+	Premium      bool
+	Image        string
+	Author       string
+	AuthorLink   string
 }
 
 type Layout struct {
-	Name     string `gorm:"primaryKey"`
-	LengthM float32
+	Id       uint `gorm:"primarykey"`
+	Name     string
+	LengthM  float32
 	Category string
-	Track    string `gorm:"primaryKey"`
+	IdTrack  uint
 }
 
 type User struct {
-	Username string `gorm:"primaryKey"`
+	Username string
 	Password string
-	Role string
+	Role     string
+	Salt     string
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

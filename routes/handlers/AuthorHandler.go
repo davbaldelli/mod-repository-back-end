@@ -32,4 +32,3 @@ func (a AuthorHandlerImpl) GETCarAuthors(writer http.ResponseWriter, request *ht
 		respondJSON(writer, http.StatusOK, authors)
 	}
 }
-

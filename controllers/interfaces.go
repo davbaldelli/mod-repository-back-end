@@ -6,31 +6,17 @@ import (
 
 type CarController interface {
 	GetAllCars(premium bool) ([]entities.Car, error)
-	GetCarsByNation(string, bool) ([]entities.Car, error)
-	GetCarsByModel(string, bool) ([]entities.Car, error)
-	GetCarsByBrand(string, bool) ([]entities.Car, error)
-	GetCarsByType(string, bool) ([]entities.Car, error)
 	GetAllCarCategories(bool) ([]entities.CarCategory, error)
-	GetCarByModel(string) (entities.Car, error)
-
 	AddCar(car entities.Car) error
 }
 
 type TrackController interface {
-	GetAllTracks(bool) ([]entities.Track,error)
-	GetTracksByNation(string, bool) ([]entities.Track,error)
-	GetTracksByLayoutType(string, bool) ([]entities.Track,error)
-	GetTracksByName(string, bool) ([]entities.Track,error)
-	GetTracksByTag(entities.TrackTag, bool) ([]entities.Track, error)
-	GetTrackByName(string) (entities.Track, error)
-
+	GetAllTracks(bool) ([]entities.Track, error)
 	AddTrack(track entities.Track) error
 }
 
 type BrandController interface {
 	GetAllBrands() ([]entities.CarBrand, error)
-	GetBrandsByNation(string) ([]entities.CarBrand, error)
-	GetBrandsByName(string) ([]entities.CarBrand, error)
 }
 
 type NationController interface {
@@ -39,7 +25,8 @@ type NationController interface {
 }
 
 type LoginController interface {
-	Login(username string, password string) (entities.User,error)
+	Login(username string, password string) (entities.User, error)
+	SignIn(username string, password string, role entities.Role) (entities.User, error)
 }
 
 type AuthorController interface {

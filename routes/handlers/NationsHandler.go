@@ -11,7 +11,7 @@ type NationsHandlerImpl struct {
 }
 
 func (n NationsHandlerImpl) GETAllTracksNations(writer http.ResponseWriter, request *http.Request) {
-	if nations, err := n.CtrlNations.GetAllTracksNations(); err != nil{
+	if nations, err := n.CtrlNations.GetAllTracksNations(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
@@ -19,7 +19,7 @@ func (n NationsHandlerImpl) GETAllTracksNations(writer http.ResponseWriter, requ
 }
 
 func (n NationsHandlerImpl) GETAllBrandsNations(writer http.ResponseWriter, request *http.Request) {
-	if nations, err := n.CtrlNations.GetAllBrandsNations(); err != nil{
+	if nations, err := n.CtrlNations.GetAllBrandsNations(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
