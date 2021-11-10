@@ -17,7 +17,7 @@ type CarRepositoryImpl struct {
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
-func dbCarToEntity(dbCar db.CarMods)entities.Car{
+func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory)entities.Car{
 	return entities.Car{
 		Mod: entities.Mod{
 			DownloadLink: dbCar.DownloadLink,
@@ -33,7 +33,7 @@ func dbCarToEntity(dbCar db.CarMods)entities.Car{
 			Nation: entities.Nation{Name: dbCar.Nation},
 		},
 		ModelName:  dbCar.ModelName,
-		Categories: allCategoriesToEntity(dbCar.Categories),
+		Categories: allCategoriesToEntity(categories),
 		Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
 		Transmission: entities.Transmission(dbCar.Transmission),
 		Year: dbCar.Year,
@@ -54,7 +54,7 @@ func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory
 }
 
 
-func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error){
+func (c CarRepositoryImpl)selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error){
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
@@ -73,7 +73,15 @@ func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, err
 	}
 
 	for _, dbCar := range dbCars {
-		cars = append(cars, dbCarToEntity(dbCar))
+		var categories []db.CarCategory
+		var catId []uint
+		for _, catAss := range dbCar.Categories{
+			catId = append(catId, catAss.IdCategory)
+		}
+		if res := c.Db.Where("id IN (?)", catId).Find(&categories); res.Error != nil{
+			return nil, res.Error
+		}
+		cars = append(cars, dbCarToEntity(dbCar, categories))
 	}
 	return cars,nil
 }
@@ -115,7 +123,7 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 }
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car,error) {
-	return selectCarsWithQuery(func() *gorm.DB {
-			return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
+	return c.selectCarsWithQuery(func() *gorm.DB {
+			return c.Db.Order("concat(brand,' ',model) ASC").Preload(clause.Associations)
 	}, premium)
 }

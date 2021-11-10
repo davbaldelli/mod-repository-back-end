@@ -15,13 +15,28 @@ type CarCategory struct {
 	Name string
 	Cars []Car `gorm:"many2many:cars_categories_ass;joinForeignKey:id_category"`
 }
+
+func (CarCategory) TableName() string {
+	return "car_categories"
+}
+
+type CarsCategoriesAss struct {
+	Id   uint `gorm:"primarykey"`
+	IdCategory uint
+	IdCar uint
+}
+
+func (CarsCategoriesAss) TableName() string {
+	return "cars_categories_ass"
+}
+
 type CarMods struct {
 	ModModel
 	DownloadLink string
 	ModelName    string `gorm:"column:model"`
 	Year         uint
 	Brand        string
-	Categories   []CarCategory `gorm:"many2many:cars_categories_ass;joinForeignKey:id_car"`
+	Categories   []CarsCategoriesAss `gorm:"foreignKey:IdCar"`
 	Transmission string
 	Drivetrain   string
 	Premium      bool
