@@ -64,9 +64,17 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 		return res.Error
 	}
 
+	if res := t.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil{
+		return res.Error
+	}
+	
 	dbAuthor := db.Author{Name: track.Author.Name, Link: track.Author.Link}
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
+		return res.Error
+	}
+
+	if res := t.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil{
 		return res.Error
 	}
 

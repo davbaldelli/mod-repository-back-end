@@ -1,15 +1,16 @@
 package db
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models/entities"
+)
 
 func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
-
 	return Car{
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories),
-		Year:         car.Year,
+		Year: int(car.Year),
 		Drivetrain:   string(car.Drivetrain),
 		Transmission: string(car.Transmission),
 		Premium:      car.Premium,
@@ -50,9 +51,9 @@ func NationFromEntity(nation entities.Nation) Nation {
 }
 
 func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
-	var tags []string
+	var tags []TrackTag
 	for _, tag := range track.Tags {
-		tags = append(tags, string(tag))
+		tags = append(tags, TrackTag{Tag: string(tag)})
 	}
 	return Track{
 		DownloadLink: track.DownloadLink,
@@ -60,7 +61,7 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
 		Location:     track.Location,
 		IdNation:     idNation,
-		//Tags: tags,
+		Tags: tags,
 		Year:     track.Year,
 		Premium:  track.Premium,
 		Image:    track.Image,

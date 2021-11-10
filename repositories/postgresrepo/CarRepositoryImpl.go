@@ -98,11 +98,21 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 		return res.Error
 	}
 
+	if res := c.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil{
+		return res.Error
+	}
+
 	dbBrand := db.Manufacturer{Name: car.Brand.Name, IdNation: dbNation.Id}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
 		return res.Error
 	}
+
+	if res := c.Db.Where("name = ?", dbBrand.Name).First(&dbBrand); res.Error != nil{
+		return res.Error
+	}
+
+	println(dbBrand.Id)
 
 	dbAuthor := db.Author{Name: car.Author.Name, Link: car.Author.Link}
 
@@ -110,7 +120,24 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 		return res.Error
 	}
 
+	if res := c.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil{
+		return res.Error
+	}
+
 	dbCar := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
+
+	var computedCategories []db.CarCategory
+	for _, category := range dbCar.Categories {
+		if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&category); res.Error != nil {
+			return res.Error
+		}
+		if res := c.Db.Where("name = ?", category.Name).First(&category); res.Error != nil{
+			return res.Error
+		}
+		computedCategories = append(computedCategories, category)
+	}
+
+	dbCar.Categories = computedCategories
 
 	if res := c.Db.Create(&dbCar); res.Error != nil {
 		return res.Error
