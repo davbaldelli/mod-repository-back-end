@@ -13,11 +13,11 @@ type Route interface {
 }
 
 type Web struct {
-	CarHandler    handlers.CarsHandler
-	TracksHandler handlers.TracksHandler
-	NationHandler handlers.NationsHandler
-	BrandsHandler handlers.BrandsHandler
-	UsersHandler  handlers.UsersHandler
+	CarHandler     handlers.CarsHandler
+	TracksHandler  handlers.TracksHandler
+	NationHandler  handlers.NationsHandler
+	BrandsHandler  handlers.BrandsHandler
+	UsersHandler   handlers.UsersHandler
 	AuthorsHandler handlers.AuthorsHandler
 }
 
@@ -35,7 +35,6 @@ func (w Web) Listen() {
 
 	router.HandleFunc("/brand/all", handlers.IsAuthorized(w.BrandsHandler.GETAllBrands)).Methods("GET")
 
-
 	router.HandleFunc("/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETAllAuthors)).Methods("GET")
 	router.HandleFunc("/car/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
 	router.HandleFunc("/track/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
@@ -46,38 +45,35 @@ func (w Web) Listen() {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
-		AllowedHeaders: []string{"*"},
+		AllowedHeaders:   []string{"*"},
 	})
 
 	handler := c.Handler(router)
-/*
-	certManager := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it"),
-		Cache:      autocert.DirCache("certs"),
-	}
+	/*
+		certManager := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it"),
+			Cache:      autocert.DirCache("certs"),
+		}
 
-	// create the server itself
-	server := &http.Server{
-		Addr:    ":https",
-		Handler: handler,
-		TLSConfig: &tls.Config{
-			GetCertificate: certManager.GetCertificate,
-		},
-	}
+		// create the server itself
+		server := &http.Server{
+			Addr:    ":https",
+			Handler: handler,
+			TLSConfig: &tls.Config{
+				GetCertificate: certManager.GetCertificate,
+			},
+		}
 
-	log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
-	go func() {
-		// serve HTTP, which will redirect automatically to HTTPS
-		h := certManager.HTTPHandler(nil)
-		log.Fatal(http.ListenAndServe(":http", h))
-	}()
+		log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
+		go func() {
+			// serve HTTP, which will redirect automatically to HTTPS
+			h := certManager.HTTPHandler(nil)
+			log.Fatal(http.ListenAndServe(":http", h))
+		}()
 
-	log.Fatal(server.ListenAndServeTLS("", ""))
-*/
+		log.Fatal(server.ListenAndServeTLS("", ""))
+	*/
 	log.Fatal(http.ListenAndServe(":6316", handler))
 
 }
-
-
-

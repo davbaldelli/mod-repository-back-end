@@ -7,7 +7,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
-		IdBrand:        idBrand,
+		IdBrand:      idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories),
 		Year:         car.Year,
 		Drivetrain:   string(car.Drivetrain),
@@ -18,7 +18,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		Torque:       car.Torque,
 		Weight:       car.Weight,
 		TopSpeed:     car.TopSpeed,
-		IdAuthor: idAuthor,
+		IdAuthor:     idAuthor,
 	}
 }
 
@@ -38,7 +38,7 @@ func allCarCategoryFromEntity(categories []entities.CarCategory) []CarCategory {
 
 func BrandFromEntity(brand entities.CarBrand, idNation uint) Manufacturer {
 	return Manufacturer{
-		Name:   brand.Name,
+		Name:     brand.Name,
 		IdNation: idNation,
 	}
 }
@@ -59,11 +59,11 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		Name:         track.Name,
 		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
 		Location:     track.Location,
-		IdNation:       idNation,
+		IdNation:     idNation,
 		//Tags: tags,
-		Year: track.Year,
-		Premium: track.Premium,
-		Image: track.Image,
+		Year:     track.Year,
+		Premium:  track.Premium,
+		Image:    track.Image,
 		IdAuthor: idAuthor,
 	}
 }
@@ -71,9 +71,9 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 func layoutFromEntity(layout entities.Layout, idTrack uint) Layout {
 	return Layout{
 		Name:     layout.Name,
-		LengthM: layout.LengthM,
+		LengthM:  layout.LengthM,
 		Category: string(layout.Category),
-		IdTrack:    idTrack,
+		IdTrack:  idTrack,
 	}
 }
 

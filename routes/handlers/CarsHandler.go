@@ -31,7 +31,6 @@ func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Re
 	}
 }
 
-
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {
 	car := entities.Car{}
 
@@ -59,7 +58,7 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 		return
 	}
 
-	if cars, err := getCars(param) ; err != nil {
+	if cars, err := getCars(param); err != nil {
 		if err.Error() == "not found" {
 			respondError(writer, http.StatusNotFound, err)
 		} else {

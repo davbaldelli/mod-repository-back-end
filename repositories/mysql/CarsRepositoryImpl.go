@@ -14,12 +14,12 @@ type CarsRepoImpl struct {
 
 type carsQuery func() *gorm.DB
 
-func dbCarToEntity(dbCar db.CarMods)entities.Car{
+func dbCarToEntity(dbCar db.CarMods) entities.Car {
 	return entities.Car{
 		Mod: entities.Mod{
 			DownloadLink: dbCar.DownloadLink,
-			Premium: dbCar.Premium,
-			Image: dbCar.Image,
+			Premium:      dbCar.Premium,
+			Image:        dbCar.Image,
 			Author: entities.Author{
 				Name: dbCar.Author,
 				Link: dbCar.AuthorLink,
@@ -29,40 +29,39 @@ func dbCarToEntity(dbCar db.CarMods)entities.Car{
 			Name:   dbCar.Brand,
 			Nation: entities.Nation{Name: dbCar.Nation},
 		},
-		ModelName:  dbCar.ModelName,
-		Categories: allCategoriesToEntity(dbCar.Categories),
-		Drivetrain: entities.Drivetrain(dbCar.Drivetrain),
+		ModelName:    dbCar.ModelName,
+		Categories:   allCategoriesToEntity(dbCar.Categories),
+		Drivetrain:   entities.Drivetrain(dbCar.Drivetrain),
 		Transmission: entities.Transmission(dbCar.Transmission),
-		Year: dbCar.Year,
-		Torque: dbCar.Torque,
-		TopSpeed: dbCar.TopSpeed,
-		Weight: dbCar.Weight,
-		BHP: dbCar.BHP,
-
+		Year:         dbCar.Year,
+		Torque:       dbCar.Torque,
+		TopSpeed:     dbCar.TopSpeed,
+		Weight:       dbCar.Weight,
+		BHP:          dbCar.BHP,
 	}
 }
 
-func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory{
+func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory {
 	var cats []entities.CarCategory
-	for _,dbCat := range  dbCategories {
+	for _, dbCat := range dbCategories {
 		cats = append(cats, entities.CarCategory{Name: dbCat.Name})
 	}
 	return cats
 }
 
-func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error){
+func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error) {
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
 	if premium {
-		if result := carsQuery().Find(&dbCars); result.Error != nil{
-			return nil,result.Error
+		if result := carsQuery().Find(&dbCars); result.Error != nil {
+			return nil, result.Error
 		} else if result.RowsAffected == 0 {
 			return nil, errors.New("not found")
 		}
 	} else {
-		if result := carsQuery().Where("premium = false").Find(&dbCars); result.Error != nil{
-			return nil,result.Error
+		if result := carsQuery().Where("premium = false").Find(&dbCars); result.Error != nil {
+			return nil, result.Error
 		} else if result.RowsAffected == 0 {
 			return nil, errors.New("not found")
 		}
@@ -71,7 +70,7 @@ func selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, err
 	for _, dbCar := range dbCars {
 		cars = append(cars, dbCarToEntity(dbCar))
 	}
-	return cars,nil
+	return cars, nil
 }
 
 func (c CarsRepoImpl) InsertCar(car entities.Car) error {
@@ -105,10 +104,8 @@ func (c CarsRepoImpl) SelectAllCars(premium bool) ([]entities.Car, error) {
 
 func (c CarsRepoImpl) SelectAllCarCategories(premium bool) ([]entities.CarCategory, error) {
 	var categories []db.CarCategory
-	if result := c.Db.Order("name ASC").Find(&categories) ; result.Error != nil{
-		return  nil, result.Error
+	if result := c.Db.Order("name ASC").Find(&categories); result.Error != nil {
+		return nil, result.Error
 	}
 	return allCategoriesToEntity(categories), nil
 }
-
-

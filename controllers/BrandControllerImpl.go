@@ -9,8 +9,6 @@ type BrandControllerImpl struct {
 	Repo repositories.BrandRepository
 }
 
-func (b BrandControllerImpl) GetAllBrands() ([]entities.CarBrand,error) {
+func (b BrandControllerImpl) GetAllBrands() ([]entities.CarBrand, error) {
 	return b.Repo.SelectAllBrands()
 }
-
-

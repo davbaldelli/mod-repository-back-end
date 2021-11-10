@@ -10,23 +10,22 @@ type BrandRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-
-func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand,error) {
+func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand, error) {
 	return b.selectBrandsWithQuery(func(brands *[]db.Manufacturer) *gorm.DB {
 		return b.Db.Order("name ASC").Find(&brands)
 	})
 }
 
-func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) ([]entities.CarBrand, error){
+func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) ([]entities.CarBrand, error) {
 	var dbBrands []db.Manufacturer
 	var brands []entities.CarBrand
 	if result := query(&dbBrands); result.Error != nil {
-		return nil,result.Error
+		return nil, result.Error
 	}
 	for _, dbBrand := range dbBrands {
-		nation:= db.Nation{Id: dbBrand.IdNation}
-		if res2 := b.Db.Find(&nation); res2.Error != nil{
-			return nil,  res2.Error
+		nation := db.Nation{Id: dbBrand.IdNation}
+		if res2 := b.Db.Find(&nation); res2.Error != nil {
+			return nil, res2.Error
 		} else {
 			brands = append(brands, entities.CarBrand{
 				Name:   dbBrand.Name,
@@ -36,4 +35,3 @@ func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) 
 	}
 	return brands, nil
 }
-

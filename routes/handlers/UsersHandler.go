@@ -82,4 +82,3 @@ func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	respondJSON(w, http.StatusAccepted, token)
 }
-

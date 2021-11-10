@@ -21,9 +21,9 @@ func (CarCategory) TableName() string {
 }
 
 type CarsCategoriesAss struct {
-	Id   uint `gorm:"primarykey"`
+	Id         uint `gorm:"primarykey"`
 	IdCategory uint
-	IdCar uint
+	IdCar      uint
 }
 
 func (CarsCategoriesAss) TableName() string {
@@ -45,9 +45,9 @@ type CarMods struct {
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
-	Author 		string
-	AuthorLink string
-	Nation string
+	Author       string
+	AuthorLink   string
+	Nation       string
 }
 
 type Car struct {
@@ -65,29 +65,29 @@ type Car struct {
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
-	IdAuthor 	uint
+	IdAuthor     uint
 }
 
 type Author struct {
-	Id   uint `gorm:"primarykey"`
-	Name string
-	Link string
-	Cars []Car    `gorm:"foreignKey:IdAuthor"`
+	Id     uint `gorm:"primarykey"`
+	Name   string
+	Link   string
+	Cars   []Car   `gorm:"foreignKey:IdAuthor"`
 	Tracks []Track `gorm:"foreignKey:IdAuthor"`
 }
 
 type Manufacturer struct {
-	Id        uint `gorm:"primarykey"`
-	Name   string
-	Cars   []Car `gorm:"foreignKey:IdBrand"`
+	Id       uint `gorm:"primarykey"`
+	Name     string
+	Cars     []Car `gorm:"foreignKey:IdBrand"`
 	IdNation uint
 }
 
 type Nation struct {
-	Id        uint `gorm:"primarykey"`
-	Name   string     `gorm:"primaryKey"`
+	Id     uint           `gorm:"primarykey"`
+	Name   string         `gorm:"primaryKey"`
 	Brands []Manufacturer `gorm:"foreignKey:IdNation"`
-	Tracks []Track `gorm:"foreignKey:IdNation"`
+	Tracks []Track        `gorm:"foreignKey:IdNation"`
 }
 
 type Track struct {
@@ -96,30 +96,37 @@ type Track struct {
 	Name         string
 	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
 	Location     string
-	IdNation       uint
-	//Tags 		 pq.StringArray `gorm:"type:track_tag[]"`
-	Year 		 uint
-	Premium 	 bool
-	Image string
-	IdAuthor uint
+	IdNation     uint
+	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
+	Year         uint
+	Premium      bool
+	Image        string
+	IdAuthor     uint
+}
+
+type TrackTag struct {
+	Id      uint `gorm:"primarykey"`
+	IdTrack uint
+	Tag     string
 }
 
 type TrackMod struct {
 	ModModel
 	DownloadLink string
 	Name         string
-	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
+	Layouts      []Layout   `gorm:"foreignKey:IdTrack"`
+	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
 	Location     string
 	Nation       string
-	Year 		 uint
-	Premium 	 bool
-	Image string
-	Author string
-	AuthorLink string
+	Year         uint
+	Premium      bool
+	Image        string
+	Author       string
+	AuthorLink   string
 }
 
 type Layout struct {
-	Id        uint `gorm:"primarykey"`
+	Id       uint `gorm:"primarykey"`
 	Name     string
 	LengthM  float32
 	Category string
@@ -129,31 +136,6 @@ type Layout struct {
 type User struct {
 	Username string
 	Password string
-	Role string
-	Salt string
+	Role     string
+	Salt     string
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

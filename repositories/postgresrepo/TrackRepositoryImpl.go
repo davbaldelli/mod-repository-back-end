@@ -16,14 +16,14 @@ type selectFromTrackQuery func() *gorm.DB
 
 func trackToEntity(dbTrack db.TrackMod) entities.Track {
 	var tags []entities.TrackTag
-	/*for _, tag := range dbTrack.Tags {
-		tags = append(tags, entities.TrackTag(tag))
-	}*/
+	for _, tag := range dbTrack.Tags {
+		tags = append(tags, entities.TrackTag(tag.Tag))
+	}
 	return entities.Track{
-		Mod:      entities.Mod{
+		Mod: entities.Mod{
 			DownloadLink: dbTrack.DownloadLink,
-			Premium: dbTrack.Premium,
-			Image: dbTrack.Image,
+			Premium:      dbTrack.Premium,
+			Image:        dbTrack.Image,
 			Author: entities.Author{
 				Name: dbTrack.Author,
 				Link: dbTrack.AuthorLink,
@@ -33,14 +33,14 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 		Layouts:  allLayoutsToEntity(dbTrack.Layouts),
 		Location: dbTrack.Location,
 		Nation:   entities.Nation{Name: dbTrack.Nation},
-		Tags: tags,
-		Year: dbTrack.Year,
+		Tags:     tags,
+		Year:     dbTrack.Year,
 	}
 }
 
-func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
+func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout {
 	var layouts []entities.Layout
-	for _,dbLayout := range dbLayouts{
+	for _, dbLayout := range dbLayouts {
 		layouts = append(layouts, entities.Layout{
 			Name:     dbLayout.Name,
 			LengthM:  dbLayout.LengthM,
@@ -50,30 +50,19 @@ func allLayoutsToEntity(dbLayouts []db.Layout) []entities.Layout{
 	return layouts
 }
 
-func (t TrackRepositoryImpl) SelectTrackByName(name string) (entities.Track, error) {
-	track := db.TrackMod{Name: name}
-	if result := t.Db.Preload("Layouts").First(&track); result.Error != nil{
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return entities.Track{}, errors.New("not found")
-		}
-		return entities.Track{}, result.Error
-	}
-
-	return trackToEntity(track), nil
-}
-
-func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track,error) {
+func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track, error) {
 	return selectTracksWithQuery(func() *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts")
+		return t.Db.Order("name ASC").Preload("Layouts").Preload("Tags")
 	}, premium)
 }
-
 
 func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 
 	dbNation := db.Nation{Name: track.Nation.Name}
 
-	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {return res.Error}
+	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
+		return res.Error
+	}
 
 	dbAuthor := db.Author{Name: track.Author.Name, Link: track.Author.Link}
 
@@ -94,13 +83,13 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities
 	var tracks []entities.Track
 	if premium {
 		if result := query().Find(&dbTracks); result.Error != nil {
-			return nil,result.Error
+			return nil, result.Error
 		} else if result.RowsAffected == 0 {
 			return nil, errors.New("not found")
 		}
 	} else {
 		if result := query().Where("premium = false").Find(&dbTracks); result.Error != nil {
-			return nil,result.Error
+			return nil, result.Error
 		} else if result.RowsAffected == 0 {
 			return nil, errors.New("not found")
 		}
@@ -108,5 +97,5 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities
 	for _, dbTrack := range dbTracks {
 		tracks = append(tracks, trackToEntity(dbTrack))
 	}
-	return tracks,nil
+	return tracks, nil
 }

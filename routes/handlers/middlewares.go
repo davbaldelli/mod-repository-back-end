@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func IsAuthorized(next http.HandlerFunc) http.HandlerFunc{
+func IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Header["Token"] == nil {
 			respondError(w, http.StatusUnauthorized, fmt.Errorf("token not found"))
@@ -22,13 +22,10 @@ func IsAuthorized(next http.HandlerFunc) http.HandlerFunc{
 			return mySigningKey, nil
 		})
 
-
 		if err != nil {
 			respondError(w, http.StatusUnauthorized, fmt.Errorf("your Token has been expired: %v", err.Error()))
 			return
 		}
-
-
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			switch claims["role"] {
@@ -57,9 +54,9 @@ func IsAuthorized(next http.HandlerFunc) http.HandlerFunc{
 	}
 }
 
-func IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc{
+func IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if contains(allowedRoles, r.Header["Role"][0]){
+		if contains(allowedRoles, r.Header["Role"][0]) {
 			next.ServeHTTP(w, r)
 		} else {
 			respondError(w, http.StatusForbidden, fmt.Errorf("you are not allowed to use this resource"))

@@ -13,7 +13,7 @@ func (c CarControllerImpl) GetAllCarCategories(premium bool) ([]entities.CarCate
 	return c.Repo.SelectAllCarCategories(premium)
 }
 
-func (c CarControllerImpl) GetAllCars(premium bool) ([]entities.Car, error){
+func (c CarControllerImpl) GetAllCars(premium bool) ([]entities.Car, error) {
 	return c.Repo.SelectAllCars(premium)
 }
 

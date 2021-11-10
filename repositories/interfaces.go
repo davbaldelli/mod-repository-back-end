@@ -11,7 +11,7 @@ type CarRepository interface {
 }
 
 type TrackRepository interface {
-	SelectAllTracks(bool) ([]entities.Track,error)
+	SelectAllTracks(bool) ([]entities.Track, error)
 	InsertTrack(track entities.Track) error
 }
 

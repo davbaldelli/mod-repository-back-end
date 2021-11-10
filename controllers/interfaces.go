@@ -11,7 +11,7 @@ type CarController interface {
 }
 
 type TrackController interface {
-	GetAllTracks(bool) ([]entities.Track,error)
+	GetAllTracks(bool) ([]entities.Track, error)
 	AddTrack(track entities.Track) error
 }
 
@@ -25,7 +25,7 @@ type NationController interface {
 }
 
 type LoginController interface {
-	Login(username string, password string) (entities.User,error)
+	Login(username string, password string) (entities.User, error)
 	SignIn(username string, password string, role entities.Role) (entities.User, error)
 }
 

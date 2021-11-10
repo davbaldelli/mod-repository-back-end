@@ -40,10 +40,9 @@ func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands
 		return
 	}
 
-	if brands, err := getBrands(param); err!=nil{
+	if brands, err := getBrands(param); err != nil {
 		respondError(w, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(w, http.StatusOK, presentation.OfAllBrands(brands))
 	}
 }
-
