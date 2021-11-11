@@ -1,4 +1,4 @@
-package postgresrepo
+package mysql
 
 import (
 	"errors"

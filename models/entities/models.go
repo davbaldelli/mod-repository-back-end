@@ -1,5 +1,7 @@
 package entities
 
+import "time"
+
 type Drivetrain string
 
 type Role string
@@ -80,6 +82,8 @@ type Car struct {
 	TopSpeed     uint
 	Weight       uint
 	Torque       uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type CarCategory struct {
@@ -103,6 +107,8 @@ type Track struct {
 	Location string
 	Nation   Nation
 	Year     uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Layout struct {

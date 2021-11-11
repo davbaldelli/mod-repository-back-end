@@ -1,4 +1,4 @@
-package postgresrepo
+package mysql
 
 import (
 	"errors"
@@ -35,6 +35,8 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 		Nation:   entities.Nation{Name: dbTrack.Nation},
 		Tags:     tags,
 		Year:     dbTrack.Year,
+		CreatedAt: dbTrack.CreatedAt,
+		UpdatedAt: dbTrack.UpdatedAt,
 	}
 }
 

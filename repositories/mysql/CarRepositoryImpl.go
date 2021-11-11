@@ -1,4 +1,4 @@
-package postgresrepo
+package mysql
 
 import (
 	"errors"
@@ -39,6 +39,8 @@ func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
 		TopSpeed:     dbCar.TopSpeed,
 		Weight:       dbCar.Weight,
 		BHP:          dbCar.BHP,
+		CreatedAt: dbCar.CreatedAt,
+		UpdatedAt: dbCar.UpdatedAt,
 	}
 }
 

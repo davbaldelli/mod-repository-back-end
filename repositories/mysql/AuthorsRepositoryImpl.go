@@ -1,4 +1,4 @@
-package postgresrepo
+package mysql
 
 import (
 	"github.com/davide/ModRepository/models/entities"

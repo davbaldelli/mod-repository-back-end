@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/repositories/postgresrepo"
+	"github.com/davide/ModRepository/repositories/mysql"
 	"github.com/davide/ModRepository/routes"
 	"github.com/davide/ModRepository/routes/handlers"
 	"gorm.io/driver/mysql"
@@ -47,12 +47,12 @@ func main() {
 		log.Fatal("error connecting to database")
 	}
 
-	carRepo := postgresrepo.CarRepositoryImpl{Db: dbase}
-	trackRepo := postgresrepo.TrackRepositoryImpl{Db: dbase}
-	nationRepo := postgresrepo.NationsRepositoryImpl{Db: dbase}
-	brandRepo := postgresrepo.BrandRepositoryImpl{Db: dbase}
-	userRepo := postgresrepo.UserRepositoryImpl{Db: dbase}
-	authorRepo := postgresrepo.AuthorsRepositoryImpl{Db: dbase}
+	carRepo := mysql.CarRepositoryImpl{Db: dbase}
+	trackRepo := mysql.TrackRepositoryImpl{Db: dbase}
+	nationRepo := mysql.NationsRepositoryImpl{Db: dbase}
+	brandRepo := mysql.BrandRepositoryImpl{Db: dbase}
+	userRepo := mysql.UserRepositoryImpl{Db: dbase}
+	authorRepo := mysql.AuthorsRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
 		CarHandler:     handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}},
