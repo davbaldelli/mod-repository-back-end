@@ -25,26 +25,26 @@ func main() {
 	jsonFile, err := os.Open("credentials.json")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("no credentials file")
 	}
 
 	byteValue, err1 := ioutil.ReadAll(jsonFile)
 
 	if err1 != nil {
-		log.Fatal(err)
+		log.Fatal("err pasrsing json")
 	}
 
 	var cred Credentials
 
 	if err2 := json.Unmarshal(byteValue, &cred); err2 != nil {
-		log.Fatal(err)
+		log.Fatal("err pasrsing json")
 	}
 
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err3 != nil {
-		log.Fatal(err)
+		log.Fatal("error connecting to database")
 	}
 
 	carRepo := postgresrepo.CarRepositoryImpl{Db: dbase}
