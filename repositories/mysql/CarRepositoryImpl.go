@@ -28,7 +28,7 @@ func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
 		},
 		Brand: entities.CarBrand{
 			Name:   dbCar.Brand,
-			Nation: entities.Nation{Name: dbCar.Nation},
+			Nation: entities.Nation{Name: dbCar.Nation, Code: dbCar.NationCode},
 		},
 		ModelName:    dbCar.ModelName,
 		Categories:   allCategoriesToEntity(categories),
@@ -94,7 +94,7 @@ func (c CarRepositoryImpl) SelectAllCarCategories(premium bool) ([]entities.CarC
 
 func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 
-	dbNation := db.Nation{Name: car.Brand.Nation.Name}
+	dbNation := db.Nation{Name: car.Brand.Nation.Name, Code: car.Brand.Nation.Code}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return res.Error

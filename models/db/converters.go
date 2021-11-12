@@ -47,6 +47,7 @@ func BrandFromEntity(brand entities.CarBrand, idNation uint) Manufacturer {
 func NationFromEntity(nation entities.Nation) Nation {
 	return Nation{
 		Name: nation.Name,
+		Code: nation.Code,
 	}
 }
 

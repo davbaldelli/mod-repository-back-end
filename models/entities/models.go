@@ -97,6 +97,7 @@ type CarBrand struct {
 
 type Nation struct {
 	Name string
+	Code string
 }
 
 type Track struct {

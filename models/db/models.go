@@ -44,6 +44,7 @@ type CarMods struct {
 	Author       string
 	AuthorLink   string
 	Nation       string
+	NationCode	string
 }
 
 type Car struct {
@@ -81,7 +82,8 @@ type Manufacturer struct {
 
 type Nation struct {
 	Id     uint           `gorm:"primarykey"`
-	Name   string         `gorm:"primaryKey"`
+	Name   string
+	Code   string
 	Brands []Manufacturer `gorm:"foreignKey:IdNation"`
 	Tracks []Track        `gorm:"foreignKey:IdNation"`
 }
@@ -114,6 +116,7 @@ type TrackMod struct {
 	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
 	Location     string
 	Nation       string
+	NationCode string
 	Year         uint
 	Premium      bool
 	Image        string
