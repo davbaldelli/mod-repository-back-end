@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/presentation"
 	"net/http"
 )
 
@@ -14,7 +13,7 @@ func (n NationsHandlerImpl) GETAllTracksNations(writer http.ResponseWriter, requ
 	if nations, err := n.CtrlNations.GetAllTracksNations(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
+		respondJSON(writer, http.StatusOK, nations)
 	}
 }
 
@@ -22,6 +21,6 @@ func (n NationsHandlerImpl) GETAllBrandsNations(writer http.ResponseWriter, requ
 	if nations, err := n.CtrlNations.GetAllBrandsNations(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllNations(nations))
+		respondJSON(writer, http.StatusOK, nations)
 	}
 }

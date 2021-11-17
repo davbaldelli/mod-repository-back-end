@@ -29,7 +29,7 @@ func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) 
 		} else {
 			brands = append(brands, entities.CarBrand{
 				Name:   dbBrand.Name,
-				Nation: entities.Nation{Name: nation.Name},
+				Nation: entities.Nation{Name: nation.Name, Code: nation.Code},
 			})
 		}
 	}

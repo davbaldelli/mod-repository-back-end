@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
-	"github.com/davide/ModRepository/models/presentation"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -19,7 +18,7 @@ func (b BrandsHandlerImpl) GETAllBrandsGroupedByNation(writer http.ResponseWrite
 	if brands, err := b.BrandCtrl.GetAllBrands(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllBrandsGroupedByNation(brands))
+		respondJSON(writer, http.StatusOK, brands)
 	}
 }
 
@@ -27,7 +26,7 @@ func (b BrandsHandlerImpl) GETAllBrands(writer http.ResponseWriter, request *htt
 	if brands, err := b.BrandCtrl.GetAllBrands(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(writer, http.StatusOK, presentation.OfAllBrands(brands))
+		respondJSON(writer, http.StatusOK, brands)
 	}
 }
 
@@ -43,6 +42,6 @@ func (b BrandsHandlerImpl) getBrandByParamResponse(paramString string, getBrands
 	if brands, err := getBrands(param); err != nil {
 		respondError(w, http.StatusInternalServerError, err)
 	} else {
-		respondJSON(w, http.StatusOK, presentation.OfAllBrands(brands))
+		respondJSON(w, http.StatusOK, brands)
 	}
 }

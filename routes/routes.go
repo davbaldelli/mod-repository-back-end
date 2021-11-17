@@ -45,7 +45,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/signin", handlers.IsAuthorized(handlers.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"localhost","127.0.0.1", "https://mods.davidebaldelli.it", "128.116.134.232"},
+		AllowedOrigins:   []string{"https://master.d1y457trwjl42h.amplifyapp.com/","127.0.0.1", "https://mods.davidebaldelli.it", "128.116.134.232"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 	})
