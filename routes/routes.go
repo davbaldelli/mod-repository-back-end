@@ -31,6 +31,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/car/type/all", handlers.IsAuthorized(w.CarHandler.GETAllCarCategories)).Methods("GET")
 
 	router.HandleFunc("/track/new", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.POSTNewTrack, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/track/update", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.UPDATETrack, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/track/all", handlers.IsAuthorized(w.TracksHandler.GETAllTracks)).Methods("GET")
 
 	router.HandleFunc("/nation/brand/all", handlers.IsAuthorized(w.NationHandler.GETAllBrandsNations)).Methods("GET")

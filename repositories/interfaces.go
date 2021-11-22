@@ -14,6 +14,7 @@ type CarRepository interface {
 type TrackRepository interface {
 	SelectAllTracks(bool) ([]entities.Track, error)
 	InsertTrack(track entities.Track) error
+	UpdateTrack(track entities.Track) error
 }
 
 type NationRepository interface {

@@ -14,6 +14,7 @@ type CarController interface {
 type TrackController interface {
 	GetAllTracks(bool) ([]entities.Track, error)
 	AddTrack(track entities.Track) error
+	UpdateTrack(track entities.Track) error
 }
 
 type BrandController interface {

@@ -58,6 +58,7 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		tags = append(tags, TrackTag{Tag: string(tag)})
 	}
 	return Track{
+		ModModel: ModModel{Id: track.Id},
 		DownloadLink: track.DownloadLink,
 		Name:         track.Name,
 		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),

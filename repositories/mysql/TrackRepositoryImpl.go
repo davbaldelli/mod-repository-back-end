@@ -89,6 +89,36 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	return nil
 }
 
+func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) error {
+
+	dbNation := db.Nation{Name: track.Nation.Name}
+
+	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
+		return res.Error
+	}
+
+	if res := t.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil{
+		return res.Error
+	}
+
+	dbAuthor := db.Author{Name: track.Author.Name, Link: track.Author.Link}
+
+	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
+		return res.Error
+	}
+
+	if res := t.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil{
+		return res.Error
+	}
+
+	dbTrack := db.TrackFromEntity(track, dbNation.Id, dbAuthor.Id)
+
+	if res := t.Db.Model(&db.Track{ModModel : db.ModModel{Id: dbTrack.Id}}).Updates(&dbTrack); res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
 func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities.Track, error) {
 	var dbTracks []db.TrackMod
 	var tracks []entities.Track

@@ -14,6 +14,7 @@ type CarsHandler interface {
 type TracksHandler interface {
 	GETAllTracks(http.ResponseWriter, *http.Request)
 	POSTNewTrack(http.ResponseWriter, *http.Request)
+	UPDATETrack(http.ResponseWriter, *http.Request)
 }
 
 type NationsHandler interface {

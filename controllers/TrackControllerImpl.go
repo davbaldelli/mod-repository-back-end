@@ -16,3 +16,7 @@ func (t TrackControllerImpl) GetAllTracks(premium bool) ([]entities.Track, error
 func (t TrackControllerImpl) AddTrack(track entities.Track) error {
 	return t.Repo.InsertTrack(track)
 }
+
+func (t TrackControllerImpl) UpdateTrack(track entities.Track) error {
+	return t.Repo.UpdateTrack(track)
+}

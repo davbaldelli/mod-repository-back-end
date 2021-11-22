@@ -41,6 +41,23 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 	respondJSON(writer, http.StatusCreated, track)
 }
 
+func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.Request) {
+	track := entities.Track{}
+
+	decoder := json.NewDecoder(request.Body)
+	if err := decoder.Decode(&track); err != nil {
+		respondError(writer, http.StatusBadRequest, fmt.Errorf("error converting post form to entiy: %v ", err))
+		return
+	}
+
+	if err := t.TrackCtrl.UpdateTrack(track); err != nil {
+		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
+		return
+	}
+
+	respondJSON(writer, http.StatusOK, track)
+}
+
 func (t TrackHandlerImpl) getTrackByParamResponse(paramString string, getTracks getTracksByParam, writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 	param := params[paramString]
