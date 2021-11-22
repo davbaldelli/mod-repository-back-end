@@ -26,6 +26,7 @@ type Web struct {
 func (w Web) Listen() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/car/new", handlers.IsAuthorized(handlers.IsAllowed(w.CarHandler.POSTNewCar, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/car/update", handlers.IsAuthorized(handlers.IsAllowed(w.CarHandler.UPDATECar, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/car/all", handlers.IsAuthorized(w.CarHandler.GETAllCars)).Methods("GET")
 	router.HandleFunc("/car/type/all", handlers.IsAuthorized(w.CarHandler.GETAllCarCategories)).Methods("GET")
 

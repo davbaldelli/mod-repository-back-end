@@ -8,6 +8,7 @@ type CarsHandler interface {
 	GETAllCars(http.ResponseWriter, *http.Request)
 	GETAllCarCategories(http.ResponseWriter, *http.Request)
 	POSTNewCar(http.ResponseWriter, *http.Request)
+	UPDATECar(http.ResponseWriter, *http.Request)
 }
 
 type TracksHandler interface {

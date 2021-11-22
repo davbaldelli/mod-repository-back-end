@@ -8,6 +8,7 @@ type CarController interface {
 	GetAllCars(premium bool) ([]entities.Car, error)
 	GetAllCarCategories(bool) ([]entities.CarCategory, error)
 	AddCar(car entities.Car) error
+	UpdateCar(car entities.Car) error
 }
 
 type TrackController interface {

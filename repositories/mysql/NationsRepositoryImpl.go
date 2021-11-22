@@ -17,7 +17,7 @@ func (n NationsRepositoryImpl) SelectAllBrandsNations() ([]entities.Nation, erro
 		return nil, result.Error
 	}
 	for _, dbNation := range dbNations {
-		nations = append(nations, entities.Nation{Name: dbNation.Name})
+		nations = append(nations, entities.Nation{Name: dbNation.Name, Code: dbNation.Code})
 	}
 	return nations, nil
 }
@@ -29,7 +29,7 @@ func (n NationsRepositoryImpl) SelectAllTrackNations() ([]entities.Nation, error
 		return nil, result.Error
 	}
 	for _, dbNation := range dbNations {
-		nations = append(nations, entities.Nation{Name: dbNation.Name})
+		nations = append(nations, entities.Nation{Name: dbNation.Name, Code: dbNation.Code})
 	}
 	return nations, nil
 }

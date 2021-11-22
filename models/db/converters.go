@@ -6,6 +6,7 @@ import (
 
 func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
+		ModModel : ModModel{Id: car.Id},
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,

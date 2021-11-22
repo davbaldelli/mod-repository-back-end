@@ -59,6 +59,7 @@ const (
 )
 
 type Mod struct {
+	Id uint
 	DownloadLink string
 	Premium      bool
 	Image        string

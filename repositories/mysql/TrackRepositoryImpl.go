@@ -21,6 +21,7 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 	}
 	return entities.Track{
 		Mod: entities.Mod{
+			Id: dbTrack.Id,
 			DownloadLink: dbTrack.DownloadLink,
 			Premium:      dbTrack.Premium,
 			Image:        dbTrack.Image,

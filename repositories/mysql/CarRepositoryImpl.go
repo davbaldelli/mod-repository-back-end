@@ -12,12 +12,15 @@ type CarRepositoryImpl struct {
 	Db *gorm.DB
 }
 
+
+
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
 func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
 	return entities.Car{
 		Mod: entities.Mod{
+			Id: dbCar.Id,
 			DownloadLink: dbCar.DownloadLink,
 			Premium:      dbCar.Premium,
 			Image:        dbCar.Image,
@@ -145,6 +148,62 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 		return res.Error
 	}
 	return nil
+}
+
+func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
+	dbNation := db.Nation{Name: car.Brand.Nation.Name, Code: car.Brand.Nation.Code}
+
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
+		return res.Error
+	}
+
+	if res := c.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil{
+		return res.Error
+	}
+
+	dbBrand := db.Manufacturer{Name: car.Brand.Name, IdNation: dbNation.Id}
+
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
+		return res.Error
+	}
+
+	if res := c.Db.Where("name = ?", dbBrand.Name).First(&dbBrand); res.Error != nil{
+		return res.Error
+	}
+
+	println(dbBrand.Id)
+
+	dbAuthor := db.Author{Name: car.Author.Name, Link: car.Author.Link}
+
+	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
+		return res.Error
+	}
+
+	if res := c.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil{
+		return res.Error
+	}
+
+	dbCarUpdated := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
+
+	var computedCategories []db.CarCategory
+	for _, category := range dbCarUpdated.Categories {
+		if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&category); res.Error != nil {
+			return res.Error
+		}
+		if res := c.Db.Where("name = ?", category.Name).First(&category); res.Error != nil{
+			return res.Error
+		}
+		computedCategories = append(computedCategories, category)
+	}
+
+	dbCarUpdated.Categories = computedCategories
+
+	if res := c.Db.Model(&db.Car{ModModel : db.ModModel{Id: dbCarUpdated.Id}}).Updates(&dbCarUpdated) ; res.Error != nil{
+		return res.Error
+	}
+
+	return nil
+
 }
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car, error) {
