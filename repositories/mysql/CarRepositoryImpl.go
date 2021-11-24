@@ -17,7 +17,7 @@ type CarRepositoryImpl struct {
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
-func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
+func dbCarToEntity(dbCar db.CarMods) entities.Car {
 	return entities.Car{
 		Mod: entities.Mod{
 			Id: dbCar.Id,
@@ -34,7 +34,7 @@ func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
 			Nation: entities.Nation{Name: dbCar.Nation, Code: dbCar.NationCode},
 		},
 		ModelName:    dbCar.ModelName,
-		Categories:   allCategoriesToEntity(categories),
+		Categories:   allCategoriesToEntity(dbCar.Categories),
 		Drivetrain:   entities.Drivetrain(dbCar.Drivetrain),
 		Transmission: entities.Transmission(dbCar.Transmission),
 		Year:         dbCar.Year,
@@ -48,9 +48,9 @@ func dbCarToEntity(dbCar db.CarMods, categories []db.CarCategory) entities.Car {
 }
 
 func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory {
-	var cats []entities.CarCategory
+	cats := []entities.CarCategory{}
 	for _, dbCat := range dbCategories {
-		cats = append(cats, entities.CarCategory{Name: dbCat.Name})
+		cats = append(cats, entities.CarCategory{Name: dbCat.Category})
 	}
 	return cats
 }
@@ -74,15 +74,7 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	}
 
 	for _, dbCar := range dbCars {
-		var categories []db.CarCategory
-		var catId []uint
-		for _, catAss := range dbCar.Categories {
-			catId = append(catId, catAss.IdCategory)
-		}
-		if res := c.Db.Where("id IN (?)", catId).Find(&categories); res.Error != nil {
-			return nil, res.Error
-		}
-		cars = append(cars, dbCarToEntity(dbCar, categories))
+		cars = append(cars, dbCarToEntity(dbCar))
 	}
 	return cars, nil
 }
@@ -131,19 +123,6 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 
 	dbCar := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
 
-	var computedCategories []db.CarCategory
-	for _, category := range dbCar.Categories {
-		if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&category); res.Error != nil {
-			return res.Error
-		}
-		if res := c.Db.Where("name = ?", category.Name).First(&category); res.Error != nil{
-			return res.Error
-		}
-		computedCategories = append(computedCategories, category)
-	}
-
-	dbCar.Categories = computedCategories
-
 	if res := c.Db.Create(&dbCar); res.Error != nil {
 		return res.Error
 	}
@@ -185,21 +164,13 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
 
 	dbCarUpdated := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
 
-	var computedCategories []db.CarCategory
-	for _, category := range dbCarUpdated.Categories {
-		if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&category); res.Error != nil {
-			return res.Error
-		}
-		if res := c.Db.Where("name = ?", category.Name).First(&category); res.Error != nil{
-			return res.Error
-		}
-		computedCategories = append(computedCategories, category)
-	}
-
-	dbCarUpdated.Categories = computedCategories
 
 	if res := c.Db.Model(&db.Car{ModModel : db.ModModel{Id: dbCarUpdated.Id}}).Updates(&dbCarUpdated) ; res.Error != nil{
 		return res.Error
+	}
+
+	if res := c.Db.Model(&db.Car{ModModel : db.ModModel{Id: dbCarUpdated.Id}}).Association("Categories").Append(dbCarUpdated.Categories); res != nil{
+		return res
 	}
 
 	return nil
@@ -208,6 +179,6 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car, error) {
 	return c.selectCarsWithQuery(func() *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model) ASC").Preload(clause.Associations)
+		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
 	}, premium)
 }

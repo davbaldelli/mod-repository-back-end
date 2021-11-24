@@ -10,7 +10,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
-		Categories:   allCarCategoryFromEntity(car.Categories),
+		Categories:   allCarCategoryFromEntity(car.Categories, car.Id),
 		Year: int(car.Year),
 		Drivetrain:   string(car.Drivetrain),
 		Transmission: string(car.Transmission),
@@ -24,16 +24,17 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	}
 }
 
-func carCategoryFromEntity(category entities.CarCategory) CarCategory {
+func carCategoryFromEntity(category entities.CarCategory, id uint) CarCategory {
 	return CarCategory{
-		Name: category.Name,
+		IdCar: id,
+		Category: category.Name,
 	}
 }
 
-func allCarCategoryFromEntity(categories []entities.CarCategory) []CarCategory {
+func allCarCategoryFromEntity(categories []entities.CarCategory, id uint) []CarCategory {
 	var dbCats []CarCategory
 	for _, cat := range categories {
-		dbCats = append(dbCats, carCategoryFromEntity(cat))
+		dbCats = append(dbCats, carCategoryFromEntity(cat, id))
 	}
 	return dbCats
 }
