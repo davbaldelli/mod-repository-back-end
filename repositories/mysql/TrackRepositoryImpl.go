@@ -113,8 +113,12 @@ func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) error {
 
 	dbTrack := db.TrackFromEntity(track, dbNation.Id, dbAuthor.Id)
 
-	if res := t.Db.Model(&db.Track{ModModel : db.ModModel{Id: dbTrack.Id}}).Updates(&dbTrack); res.Error != nil {
+	if res := t.Db.Model(&dbTrack).Select("*").Omit("UpdatedAt", "CreatedAt").Updates(&dbTrack); res.Error != nil {
 		return res.Error
+	}
+
+	if res := t.Db.Model(&dbTrack).Association("Tags").Append(dbTrack.Tags); res != nil{
+		return res
 	}
 	return nil
 }

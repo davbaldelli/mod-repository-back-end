@@ -1,11 +1,9 @@
 package routes
 
 import (
-	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -53,7 +51,7 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
-
+/*
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it"),
@@ -78,6 +76,8 @@ func (w Web) Listen() {
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
 
-	//log.Fatal(http.ListenAndServe(":6316", handler))
+
+ */
+	log.Fatal(http.ListenAndServe(":6316", handler))
 
 }

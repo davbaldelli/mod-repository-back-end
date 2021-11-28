@@ -150,8 +150,6 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
 		return res.Error
 	}
 
-	println(dbBrand.Id)
-
 	dbAuthor := db.Author{Name: car.Author.Name, Link: car.Author.Link}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
@@ -165,11 +163,11 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
 	dbCarUpdated := db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id)
 
 
-	if res := c.Db.Model(&db.Car{ModModel : db.ModModel{Id: dbCarUpdated.Id}}).Updates(&dbCarUpdated) ; res.Error != nil{
+	if res := c.Db.Model(&dbCarUpdated).Select("*").Omit("UpdatedAt", "CreatedAt").Updates(&dbCarUpdated) ; res.Error != nil{
 		return res.Error
 	}
 
-	if res := c.Db.Model(&db.Car{ModModel : db.ModModel{Id: dbCarUpdated.Id}}).Association("Categories").Append(dbCarUpdated.Categories); res != nil{
+	if res := c.Db.Model(&dbCarUpdated).Association("Categories").Append(dbCarUpdated.Categories); res != nil{
 		return res
 	}
 
