@@ -47,7 +47,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/signin", handlers.IsAuthorized(handlers.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://rev.mods.davidebaldelli.it","http://localhost:8080", "https://mods.davidebaldelli.it", "128.116.134.232"},
+		AllowedOrigins:   []string{"https://legacy.mods.davidebaldelli.it","http://localhost:8080", "https://mods.davidebaldelli.it", "128.116.134.232"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 	})
