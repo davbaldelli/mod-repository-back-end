@@ -6,19 +6,13 @@ type Drivetrain string
 
 type Role string
 
-func ToTrackTags(strings []string) []TrackTag {
-	var tags []TrackTag
-	for _, s := range strings {
-		tags = append(tags, TrackTag(s))
-	}
-	return tags
-}
-
 type Transmission string
 
 type TrackTag string
 
 type LayoutType string
+
+type CarType string
 
 const (
 	Admin   Role = "admin"
@@ -30,11 +24,11 @@ const (
 	F1          TrackTag = "F1"
 	Touge       TrackTag = "Touge"
 	NASCAR      TrackTag = "NASCAR"
-	Rally       TrackTag = "Rally"
+	RallyTrack       TrackTag = "Rally"
 	CityTrack   TrackTag = "City Track"
 	StreetTrack TrackTag = "Street Track"
 	Fictional   TrackTag = "Fictional"
-	Endurance   TrackTag = "Endurance"
+	EnduranceTrack   TrackTag = "Endurance"
 	Drift       TrackTag = "Drift"
 	Historic    TrackTag = "Historic"
 	OpenWorld   TrackTag = "Open World"
@@ -58,71 +52,83 @@ const (
 	Manual     Transmission = "Manual"
 )
 
+const (
+	EnduranceCar CarType = "Endurance"
+	Formula = "Formula"
+	GT = "GT"
+	Prototype = "Prototype"
+	RallyCar = "Rally"
+	Street = "Street"
+	Tuned = "Tuned"
+	Touring = "Touring"
+	Vintage = "Vintage"
+	StockCar = "Stock Car"
+)
+
 type Mod struct {
-	Id uint
-	DownloadLink string
-	Premium      bool
-	Image        string
-	Author       Author
+	Id uint `json:"id"`
+	DownloadLink string `json:"downloadLink"`
+	Premium      bool `json:"premium"`
+	Image        string `json:"image"`
+	Author       Author `json:"author"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Rating uint `json:"rating"`
 }
 
 type Author struct {
-	Name string
-	Link string
+	Name string `json:"name"`
+	Link string `json:"link"`
 }
 
 type Car struct {
 	Mod
-	Brand        CarBrand
-	ModelName    string
-	Categories   []CarCategory
-	Year         uint
-	Drivetrain   Drivetrain
-	Transmission Transmission
-	BHP          uint
-	TopSpeed     uint
-	Weight       uint
-	Torque       uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Brand        CarBrand `json:"brand"`
+	ModelName    string `json:"modelName"`
+	Categories   []CarCategory `json:"categories"`
+	Year         uint `json:"year"`
+	Drivetrain   Drivetrain `json:"drivetrain"`
+	Transmission Transmission `json:"transmission"`
+	BHP          uint `json:"bhp"`
+	TopSpeed     uint `json:"topSpeed"`
+	Weight       uint `json:"weight"`
+	Torque       uint `json:"torque"`
 }
 
 type CarCategory struct {
-	Name string
+	Name CarType `json:"name"`
 }
 
 type CarBrand struct {
-	Name   string
-	Nation Nation
+	Name   string `json:"name"`
+	Nation Nation `json:"nation"`
 }
 
 type Nation struct {
-	Name string
-	Code string
+	Name string `json:"name"`
+	Code string `json:"code"`
 }
 
 type Track struct {
 	Mod
-	Name     string
-	Tags     []TrackTag
-	Layouts  []Layout
-	Location string
-	Nation   Nation
-	Year     uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Name     string `json:"name"`
+	Tags     []TrackTag `json:"tags"`
+	Layouts  []Layout `json:"layouts"`
+	Location string `json:"location"`
+	Nation   Nation `json:"nation"`
+	Year     uint `json:"year"`
 }
 
 type Layout struct {
-	Name     string
-	LengthM  float32
-	Category LayoutType
+	Name     string `json:"name"`
+	LengthM  float32 `json:"lengthM"`
+	Category LayoutType `json:"category"`
 }
 
 type User struct {
-	Username string
-	Password string
-	Role     Role
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Role     Role `json:"role"`
 }
 
 type Authentication struct {

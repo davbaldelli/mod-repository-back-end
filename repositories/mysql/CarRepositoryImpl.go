@@ -18,6 +18,9 @@ type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
 func dbCarToEntity(dbCar db.CarMods) entities.Car {
+	if dbCar.Rating != 0 {
+		println(dbCar.Rating)
+	}
 	return entities.Car{
 		Mod: entities.Mod{
 			Id: dbCar.Id,
@@ -28,6 +31,9 @@ func dbCarToEntity(dbCar db.CarMods) entities.Car {
 				Name: dbCar.Author,
 				Link: dbCar.AuthorLink,
 			},
+			CreatedAt: dbCar.CreatedAt,
+			UpdatedAt: dbCar.UpdatedAt,
+			Rating: dbCar.Rating,
 		},
 		Brand: entities.CarBrand{
 			Name:   dbCar.Brand,
@@ -42,15 +48,13 @@ func dbCarToEntity(dbCar db.CarMods) entities.Car {
 		TopSpeed:     dbCar.TopSpeed,
 		Weight:       dbCar.Weight,
 		BHP:          dbCar.BHP,
-		CreatedAt: dbCar.CreatedAt,
-		UpdatedAt: dbCar.UpdatedAt,
 	}
 }
 
 func allCategoriesToEntity(dbCategories []db.CarCategory) []entities.CarCategory {
 	cats := []entities.CarCategory{}
 	for _, dbCat := range dbCategories {
-		cats = append(cats, entities.CarCategory{Name: dbCat.Category})
+		cats = append(cats, entities.CarCategory{Name: entities.CarType(dbCat.Category)})
 	}
 	return cats
 }
@@ -79,12 +83,19 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	return cars, nil
 }
 
-func (c CarRepositoryImpl) SelectAllCarCategories(premium bool) ([]entities.CarCategory, error) {
-	var categories []db.CarCategory
-	if result := c.Db.Order("name ASC").Find(&categories); result.Error != nil {
-		return nil, result.Error
-	}
-	return allCategoriesToEntity(categories), nil
+func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
+	return []entities.CarCategory{
+		{Name: entities.EnduranceCar},
+		{Name: entities.Formula},
+		{Name: entities.GT},
+		{Name: entities.Touring},
+		{Name: entities.Tuned},
+		{Name: entities.Vintage},
+		{Name: entities.StockCar},
+		{Name: entities.Street},
+		{Name: entities.RallyCar},
+		{Name: entities.Prototype},
+	}, nil
 }
 
 func (c CarRepositoryImpl) InsertCar(car entities.Car) error {

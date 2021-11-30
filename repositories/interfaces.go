@@ -7,7 +7,7 @@ import (
 type CarRepository interface {
 	InsertCar(car entities.Car) error
 	SelectAllCars(premium bool) ([]entities.Car, error)
-	SelectAllCarCategories(bool) ([]entities.CarCategory, error)
+	SelectAllCarCategories() ([]entities.CarCategory, error)
 	UpdateCar(car entities.Car) error
 }
 

@@ -29,6 +29,9 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 				Name: dbTrack.Author,
 				Link: dbTrack.AuthorLink,
 			},
+			Rating: dbTrack.Rating,
+			CreatedAt: dbTrack.CreatedAt,
+			UpdatedAt: dbTrack.UpdatedAt,
 		},
 		Name:     dbTrack.Name,
 		Layouts:  allLayoutsToEntity(dbTrack.Layouts),
@@ -36,8 +39,6 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 		Nation:   entities.Nation{Name: dbTrack.Nation, Code: dbTrack.NationCode},
 		Tags:     tags,
 		Year:     dbTrack.Year,
-		CreatedAt: dbTrack.CreatedAt,
-		UpdatedAt: dbTrack.UpdatedAt,
 	}
 }
 

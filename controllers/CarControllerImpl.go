@@ -9,8 +9,8 @@ type CarControllerImpl struct {
 	Repo repositories.CarRepository
 }
 
-func (c CarControllerImpl) GetAllCarCategories(premium bool) ([]entities.CarCategory, error) {
-	return c.Repo.SelectAllCarCategories(premium)
+func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error) {
+	return c.Repo.SelectAllCarCategories()
 }
 
 func (c CarControllerImpl) GetAllCars(premium bool) ([]entities.Car, error) {

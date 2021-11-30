@@ -7,6 +7,7 @@ import (
 func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
 		ModModel : ModModel{Id: car.Id},
+		Rating: car.Rating,
 		DownloadLink: car.DownloadLink,
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
@@ -26,8 +27,8 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 
 func carCategoryFromEntity(category entities.CarCategory, id uint) CarCategory {
 	return CarCategory{
-		IdCar: id,
-		Category: category.Name,
+		IdCar:    id,
+		Category: string(category.Name),
 	}
 }
 
@@ -70,6 +71,7 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		Premium:  track.Premium,
 		Image:    track.Image,
 		IdAuthor: idAuthor,
+		Rating : track.Rating,
 	}
 }
 

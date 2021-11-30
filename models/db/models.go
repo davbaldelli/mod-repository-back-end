@@ -23,6 +23,7 @@ func (CarCategory) TableName() string {
 
 type CarMods struct {
 	ModModel
+	Rating uint
 	DownloadLink string
 	ModelName    string `gorm:"column:model"`
 	Year         uint
@@ -44,6 +45,7 @@ type CarMods struct {
 
 type Car struct {
 	ModModel
+	Rating uint
 	DownloadLink string
 	ModelName    string `gorm:"column:model"`
 	Year        	int
@@ -95,6 +97,7 @@ type Track struct {
 	Premium      bool
 	Image        string
 	IdAuthor     uint
+	Rating uint
 }
 
 type TrackTag struct {
@@ -117,6 +120,7 @@ type TrackMod struct {
 	Image        string
 	Author       string
 	AuthorLink   string
+	Rating uint
 }
 
 type Layout struct {
