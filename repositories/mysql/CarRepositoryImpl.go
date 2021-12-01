@@ -34,6 +34,7 @@ func dbCarToEntity(dbCar db.CarMods) entities.Car {
 			CreatedAt: dbCar.CreatedAt,
 			UpdatedAt: dbCar.UpdatedAt,
 			Rating: dbCar.Rating,
+			Version: dbCar.Version,
 		},
 		Brand: entities.CarBrand{
 			Name:   dbCar.Brand,

@@ -22,6 +22,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		Weight:       car.Weight,
 		TopSpeed:     car.TopSpeed,
 		IdAuthor:     idAuthor,
+		Version: car.Version,
 	}
 }
 
@@ -72,6 +73,8 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		Image:    track.Image,
 		IdAuthor: idAuthor,
 		Rating : track.Rating,
+		Version: track.Version,
+
 	}
 }
 

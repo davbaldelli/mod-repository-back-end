@@ -32,6 +32,7 @@ func trackToEntity(dbTrack db.TrackMod) entities.Track {
 			Rating: dbTrack.Rating,
 			CreatedAt: dbTrack.CreatedAt,
 			UpdatedAt: dbTrack.UpdatedAt,
+			Version: dbTrack.Version,
 		},
 		Name:     dbTrack.Name,
 		Layouts:  allLayoutsToEntity(dbTrack.Layouts),
