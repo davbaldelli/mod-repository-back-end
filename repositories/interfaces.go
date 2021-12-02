@@ -11,6 +11,11 @@ type CarRepository interface {
 	UpdateCar(car entities.Car) error
 }
 
+type LogRepository interface {
+	SelectAllTrackLogs(bool) ([]entities.TrackLog, error)
+	SelectAllCarLogs(bool) ([]entities.CarLog, error)
+}
+
 type TrackRepository interface {
 	SelectAllTracks(bool) ([]entities.Track, error)
 	InsertTrack(track entities.Track) error

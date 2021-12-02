@@ -27,10 +27,7 @@ func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) 
 		if res2 := b.Db.Find(&nation); res2.Error != nil {
 			return nil, res2.Error
 		} else {
-			brands = append(brands, entities.CarBrand{
-				Name:   dbBrand.Name,
-				Nation: entities.Nation{Name: nation.Name, Code: nation.Code},
-			})
+			brands = append(brands, dbBrand.ToEntity(nation))
 		}
 	}
 	return brands, nil

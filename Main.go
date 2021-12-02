@@ -53,6 +53,7 @@ func main() {
 	brandRepo := repo.BrandRepositoryImpl{Db: dbase}
 	userRepo := repo.UserRepositoryImpl{Db: dbase}
 	authorRepo := repo.AuthorsRepositoryImpl{Db: dbase}
+	logsRepo := repo.LogRepositoryImpl{Db : dbase}
 
 	web := routes.Web{
 		CarHandler:     handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}},
@@ -61,6 +62,7 @@ func main() {
 		BrandsHandler:  handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
 		UsersHandler:   handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
 		AuthorsHandler: handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
+		LogsHandler: handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo :logsRepo}},
 	}
 	web.Listen()
 }

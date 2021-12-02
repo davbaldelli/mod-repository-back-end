@@ -21,6 +21,7 @@ type Web struct {
 	BrandsHandler  handlers.BrandsHandler
 	UsersHandler   handlers.UsersHandler
 	AuthorsHandler handlers.AuthorsHandler
+	LogsHandler handlers.LogsHandler
 }
 
 func (w Web) Listen() {
@@ -33,6 +34,9 @@ func (w Web) Listen() {
 	router.HandleFunc("/track/new", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.POSTNewTrack, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/track/update", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.UPDATETrack, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/track/all", handlers.IsAuthorized(w.TracksHandler.GETAllTracks)).Methods("GET")
+
+	router.HandleFunc("/log/car/all", handlers.IsAuthorized(w.LogsHandler.GETAllCarLogs)).Methods("GET")
+	router.HandleFunc("/log/track/all", handlers.IsAuthorized(w.LogsHandler.GETAllTrackLogs)).Methods("GET")
 
 	router.HandleFunc("/nation/brand/all", handlers.IsAuthorized(w.NationHandler.GETAllBrandsNations)).Methods("GET")
 	router.HandleFunc("/nation/track/all", handlers.IsAuthorized(w.NationHandler.GETAllTracksNations)).Methods("GET")
@@ -47,7 +51,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/signin", handlers.IsAuthorized(handlers.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://legacy.mods.davidebaldelli.it","http://localhost:8080", "https://mods.davidebaldelli.it", "128.116.134.232"},
+		AllowedOrigins:   []string{"https://legacy.mods.davidebaldelli.it", "http://localhost:8080", "https://mods.davidebaldelli.it", "128.116.134.232"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 	})
@@ -77,7 +81,6 @@ func (w Web) Listen() {
 	}()
 
 	log.Fatal(server.ListenAndServeTLS("", ""))
-
 
 	//log.Fatal(http.ListenAndServe(":6316", handler))
 

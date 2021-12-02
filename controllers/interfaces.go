@@ -17,6 +17,11 @@ type TrackController interface {
 	UpdateTrack(track entities.Track) error
 }
 
+type LogController interface {
+	GetTrackLogs(bool) ([]entities.TrackLog, error)
+	GetCarLogs(bool) ([]entities.CarLog, error)
+}
+
 type BrandController interface {
 	GetAllBrands() ([]entities.CarBrand, error)
 }

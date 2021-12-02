@@ -67,7 +67,6 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 	respondJSON(writer, http.StatusOK, car)
 }
 
-
 func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCarsByParam, writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 	param := params[paramName]
@@ -87,5 +86,3 @@ func (c CarsHandlerImpl) getCarsByParamResponse(paramName string, getCars getCar
 		respondJSON(writer, http.StatusOK, cars)
 	}
 }
-
-

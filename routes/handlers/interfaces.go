@@ -17,6 +17,11 @@ type TracksHandler interface {
 	UPDATETrack(http.ResponseWriter, *http.Request)
 }
 
+type LogsHandler interface {
+	GETAllTrackLogs(http.ResponseWriter, *http.Request)
+	GETAllCarLogs(http.ResponseWriter, *http.Request)
+}
+
 type NationsHandler interface {
 	GETAllTracksNations(http.ResponseWriter, *http.Request)
 	GETAllBrandsNations(http.ResponseWriter, *http.Request)
