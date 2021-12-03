@@ -20,25 +20,41 @@ type Credentials struct {
 	Host     string
 }
 
+type Secret struct {
+	Secret string
+}
+
 func main() {
 
-	jsonFile, err := os.Open("credentials.json")
-
-	if err != nil {
-		log.Fatal("no credentials file")
-	}
-
-	byteValue, err1 := ioutil.ReadAll(jsonFile)
-
-	if err1 != nil {
-		log.Fatal("err pasrsing json")
-	}
 
 	var cred Credentials
 
-	if err2 := json.Unmarshal(byteValue, &cred); err2 != nil {
-		log.Fatal("err pasrsing json")
+	if jsonFile, err := os.Open("credentials.json"); err != nil {
+		log.Fatal("no credentials file")
+	} else {
+		if byteValue, err := ioutil.ReadAll(jsonFile); err != nil {
+			log.Fatal("err pasrsing json")
+		} else {
+			if err := json.Unmarshal(byteValue, &cred); err != nil {
+				log.Fatal("err pasrsing json")
+			}
+		}
 	}
+
+	var secret Secret
+
+	if secretFile, err := os.Open("credentials.json"); err != nil {
+		log.Fatal("no credentials file")
+	} else {
+		if secretByte, err := ioutil.ReadAll(secretFile); err != nil {
+			log.Fatal("err pasrsing json")
+		} else {
+			if err := json.Unmarshal(secretByte, &cred); err != nil {
+				log.Fatal("err pasrsing json")
+			}
+		}
+	}
+
 
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -60,9 +76,10 @@ func main() {
 		TracksHandler:  handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}},
 		NationHandler:  handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler:  handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
-		UsersHandler:   handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}},
+		UsersHandler:   handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}, Secret: secret.Secret},
 		AuthorsHandler: handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
 		LogsHandler: handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo :logsRepo}},
+		Middleware: handlers.MiddlewareImpl{Secret: secret.Secret},
 	}
 	web.Listen()
 }

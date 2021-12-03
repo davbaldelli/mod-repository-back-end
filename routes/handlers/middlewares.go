@@ -7,13 +7,17 @@ import (
 	"net/http"
 )
 
-func IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
+type MiddlewareImpl struct {
+	Secret string
+}
+
+func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Header["Token"] == nil {
 			respondError(w, http.StatusUnauthorized, fmt.Errorf("token not found"))
 			return
 		}
-		var mySigningKey = []byte("eskere")
+		var mySigningKey = []byte(m.Secret)
 
 		token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -54,7 +58,7 @@ func IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc {
+func (m MiddlewareImpl) IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if contains(allowedRoles, r.Header["Role"][0]) {
 			next.ServeHTTP(w, r)

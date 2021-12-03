@@ -22,33 +22,34 @@ type Web struct {
 	UsersHandler   handlers.UsersHandler
 	AuthorsHandler handlers.AuthorsHandler
 	LogsHandler handlers.LogsHandler
+	Middleware handlers.Middleware
 }
 
 func (w Web) Listen() {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/car/new", handlers.IsAuthorized(handlers.IsAllowed(w.CarHandler.POSTNewCar, []string{"admin"}))).Methods("POST")
-	router.HandleFunc("/car/update", handlers.IsAuthorized(handlers.IsAllowed(w.CarHandler.UPDATECar, []string{"admin"}))).Methods("POST")
-	router.HandleFunc("/car/all", handlers.IsAuthorized(w.CarHandler.GETAllCars)).Methods("GET")
-	router.HandleFunc("/car/type/all", handlers.IsAuthorized(w.CarHandler.GETAllCarCategories)).Methods("GET")
+	router.HandleFunc("/car/new", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.CarHandler.POSTNewCar, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/car/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.CarHandler.UPDATECar, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/car/all", w.Middleware.IsAuthorized(w.CarHandler.GETAllCars)).Methods("GET")
+	router.HandleFunc("/car/type/all", w.Middleware.IsAuthorized(w.CarHandler.GETAllCarCategories)).Methods("GET")
 
-	router.HandleFunc("/track/new", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.POSTNewTrack, []string{"admin"}))).Methods("POST")
-	router.HandleFunc("/track/update", handlers.IsAuthorized(handlers.IsAllowed(w.TracksHandler.UPDATETrack, []string{"admin"}))).Methods("POST")
-	router.HandleFunc("/track/all", handlers.IsAuthorized(w.TracksHandler.GETAllTracks)).Methods("GET")
+	router.HandleFunc("/track/new", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.TracksHandler.POSTNewTrack, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/track/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.TracksHandler.UPDATETrack, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/track/all", w.Middleware.IsAuthorized(w.TracksHandler.GETAllTracks)).Methods("GET")
 
-	router.HandleFunc("/log/car/all", handlers.IsAuthorized(w.LogsHandler.GETAllCarLogs)).Methods("GET")
-	router.HandleFunc("/log/track/all", handlers.IsAuthorized(w.LogsHandler.GETAllTrackLogs)).Methods("GET")
+	router.HandleFunc("/log/car/all", w.Middleware.IsAuthorized(w.LogsHandler.GETAllCarLogs)).Methods("GET")
+	router.HandleFunc("/log/track/all", w.Middleware.IsAuthorized(w.LogsHandler.GETAllTrackLogs)).Methods("GET")
 
-	router.HandleFunc("/nation/brand/all", handlers.IsAuthorized(w.NationHandler.GETAllBrandsNations)).Methods("GET")
-	router.HandleFunc("/nation/track/all", handlers.IsAuthorized(w.NationHandler.GETAllTracksNations)).Methods("GET")
+	router.HandleFunc("/nation/brand/all", w.Middleware.IsAuthorized(w.NationHandler.GETAllBrandsNations)).Methods("GET")
+	router.HandleFunc("/nation/track/all", w.Middleware.IsAuthorized(w.NationHandler.GETAllTracksNations)).Methods("GET")
 
-	router.HandleFunc("/brand/all", handlers.IsAuthorized(w.BrandsHandler.GETAllBrands)).Methods("GET")
+	router.HandleFunc("/brand/all", w.Middleware.IsAuthorized(w.BrandsHandler.GETAllBrands)).Methods("GET")
 
-	router.HandleFunc("/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETAllAuthors)).Methods("GET")
-	router.HandleFunc("/car/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
-	router.HandleFunc("/track/author/all", handlers.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
+	router.HandleFunc("/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETAllAuthors)).Methods("GET")
+	router.HandleFunc("/car/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
+	router.HandleFunc("/track/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
-	router.HandleFunc("/signin", handlers.IsAuthorized(handlers.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"https://legacy.mods.davidebaldelli.it", "http://localhost:8080", "https://mods.davidebaldelli.it", "128.116.134.232"},

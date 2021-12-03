@@ -12,9 +12,10 @@ import (
 
 type UserHandlerImpl struct {
 	UserCtrl controllers.LoginController
+	Secret string
 }
 
-func GenerateJWT(username, role string) (string, error) {
+func GenerateJWT(username, role string, secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"authorized": true,
 		"email":      username,
@@ -23,7 +24,7 @@ func GenerateJWT(username, role string) (string, error) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString([]byte("eskere"))
+	tokenString, err := token.SignedString([]byte(secret))
 
 	if err != nil {
 		return "", fmt.Errorf("Something Went Wrong: %s ", err.Error())
@@ -46,7 +47,7 @@ func (u UserHandlerImpl) LogIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validToken, err := GenerateJWT(authuser.Username, string(authuser.Role))
+	validToken, err := GenerateJWT(authuser.Username, string(authuser.Role), u.Secret)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, fmt.Errorf("error generating token: %v ", err))
 		return
@@ -72,7 +73,7 @@ func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validToken, err := GenerateJWT(newUser.Username, string(newUser.Role))
+	validToken, err := GenerateJWT(newUser.Username, string(newUser.Role), u.Secret)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, fmt.Errorf("error generating token: %v ", err))
 		return

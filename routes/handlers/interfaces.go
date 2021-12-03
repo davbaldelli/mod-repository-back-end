@@ -41,3 +41,8 @@ type AuthorsHandler interface {
 	GETTrackAuthors(http.ResponseWriter, *http.Request)
 	GETCarAuthors(http.ResponseWriter, *http.Request)
 }
+
+type Middleware interface {
+	IsAuthorized(next http.HandlerFunc) http.HandlerFunc
+	IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc
+}
