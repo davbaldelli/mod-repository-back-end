@@ -52,7 +52,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://api.acmodrepository.com", "http://localhost:8080", "http://localhost:3000", "https://mods.davidebaldelli.it", "128.116.134.232"},
+		AllowedOrigins:   []string{"https://www.acmodrepository.com", "http://localhost:8080", "http://localhost:3000", "https://mods.davidebaldelli.it", "128.116.134.232"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 	})
