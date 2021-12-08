@@ -8,7 +8,7 @@ type CarRepository interface {
 	InsertCar(car entities.Car) error
 	SelectAllCars(premium bool) ([]entities.Car, error)
 	SelectAllCarCategories() ([]entities.CarCategory, error)
-	UpdateCar(car entities.Car) error
+	UpdateCar(car entities.Car) (bool, error)
 }
 
 type LogRepository interface {
@@ -19,7 +19,7 @@ type LogRepository interface {
 type TrackRepository interface {
 	SelectAllTracks(bool) ([]entities.Track, error)
 	InsertTrack(track entities.Track) error
-	UpdateTrack(track entities.Track) error
+	UpdateTrack(track entities.Track) (bool, error)
 }
 
 type NationRepository interface {

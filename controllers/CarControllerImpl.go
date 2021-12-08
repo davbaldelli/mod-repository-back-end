@@ -21,6 +21,6 @@ func (c CarControllerImpl) AddCar(car entities.Car) error {
 	return c.Repo.InsertCar(car)
 }
 
-func (c CarControllerImpl) UpdateCar(car entities.Car) error {
+func (c CarControllerImpl) UpdateCar(car entities.Car) (bool, error) {
 	return c.Repo.UpdateCar(car)
 }

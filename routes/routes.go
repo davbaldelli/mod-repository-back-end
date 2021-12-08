@@ -15,14 +15,14 @@ type Route interface {
 }
 
 type Web struct {
-	CarHandler     handlers.CarsHandler
-	TracksHandler  handlers.TracksHandler
-	NationHandler  handlers.NationsHandler
-	BrandsHandler  handlers.BrandsHandler
-	UsersHandler   handlers.UsersHandler
-	AuthorsHandler handlers.AuthorsHandler
-	LogsHandler handlers.LogsHandler
-	Middleware handlers.Middleware
+	CarHandler      handlers.CarsHandler
+	TracksHandler   handlers.TracksHandler
+	NationHandler   handlers.NationsHandler
+	BrandsHandler   handlers.BrandsHandler
+	UsersHandler    handlers.UsersHandler
+	AuthorsHandler  handlers.AuthorsHandler
+	LogsHandler     handlers.LogsHandler
+	Middleware      handlers.Middleware
 	FirebaseHandler handlers.FirebaseHandler
 }
 
@@ -64,7 +64,7 @@ func (w Web) Listen() {
 
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it","api.acmodrepository.com"),
+		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),
 		Cache:      autocert.DirCache("certs"),
 	}
 

@@ -13,7 +13,7 @@ type FirebaseHandlerImpl struct {
 
 type SubscribeRequest struct {
 	RegistrationToken string `json:"token"`
-	Topic string `json:"topic"`
+	Topic             string `json:"topic"`
 }
 
 func (f FirebaseHandlerImpl) SubscribeToTopic(writer http.ResponseWriter, request *http.Request) {
@@ -26,7 +26,7 @@ func (f FirebaseHandlerImpl) SubscribeToTopic(writer http.ResponseWriter, reques
 		return
 	}
 
-	if err := f.Ctrl.RegisterToTopic(regReq.RegistrationToken, regReq.Topic); err != nil{
+	if err := f.Ctrl.RegisterToTopic(regReq.RegistrationToken, regReq.Topic); err != nil {
 		respondError(writer, http.StatusBadRequest, fmt.Errorf("error registrating token to topic: %v ", err))
 		return
 	}
@@ -34,4 +34,3 @@ func (f FirebaseHandlerImpl) SubscribeToTopic(writer http.ResponseWriter, reques
 	respondJSON(writer, http.StatusOK, "registration successful")
 
 }
-

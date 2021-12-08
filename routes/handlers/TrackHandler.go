@@ -11,7 +11,7 @@ import (
 )
 
 type TrackHandlerImpl struct {
-	TrackCtrl controllers.TrackController
+	TrackCtrl    controllers.TrackController
 	FirebaseCtrl controllers.FirebaseController
 }
 
@@ -44,8 +44,8 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "track_added", Title: "Check It Out!"},
 		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been added to repository",track.Name), Body: "A resource has been added"},
-		Topic: "modsUpdates",
+		Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been added to repository", track.Name), Body: "A resource has been added", ImageURL: "https://imgur.com/0GuN24g"},
+		Topic:        "modsUpdates",
 	}
 	t.FirebaseCtrl.Notify(message)
 
@@ -61,19 +61,19 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 		return
 	}
 
-	if err := t.TrackCtrl.UpdateTrack(track); err != nil {
+	if versionChange, err := t.TrackCtrl.UpdateTrack(track); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
+	} else if versionChange {
+		message := &messaging.Message{
+			Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
+				{Action: "track_updated", Title: "Check It Out!"},
+			}}},
+			Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been updated", track.Name), Body: "A resource has been updated", ImageURL: "https://imgur.com/0GuN24g"},
+			Topic:        "modsUpdates",
+		}
+		t.FirebaseCtrl.Notify(message)
 	}
-
-	message := &messaging.Message{
-		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-			{Action: "track_updated", Title: "Check It Out!"},
-		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been updated",track.Name), Body: "A resource has been updated"},
-		Topic: "modsUpdates",
-	}
-	t.FirebaseCtrl.Notify(message)
 
 	respondJSON(writer, http.StatusOK, track)
 }

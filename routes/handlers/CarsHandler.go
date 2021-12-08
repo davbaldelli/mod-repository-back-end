@@ -10,10 +10,8 @@ import (
 	"net/http"
 )
 
-
-
 type CarsHandlerImpl struct {
-	CarCtrl controllers.CarController
+	CarCtrl      controllers.CarController
 	FirebaseCtrl controllers.FirebaseController
 }
 
@@ -54,8 +52,8 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "car_added", Title: "Check It Out!"},
 		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been added to repository",car.Brand.Name, car.ModelName), Body: "A resource has been added"},
-		Topic: "modsUpdates",
+		Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been added to repository", car.Brand.Name, car.ModelName), Body: "A resource has been added", ImageURL: "https://imgur.com/0GuN24g"},
+		Topic:        "modsUpdates",
 	}
 	c.FirebaseCtrl.Notify(message)
 
@@ -72,21 +70,19 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 		return
 	}
 
-	if err := c.CarCtrl.UpdateCar(car); err != nil {
+	if versionChange, err := c.CarCtrl.UpdateCar(car); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
+	} else if versionChange {
+		message := &messaging.Message{
+			Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
+				{Action: "car_updated", Title: "Check It Out!"},
+			}}},
+			Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been updated", car.Brand.Name, car.ModelName), Body: "A resource has been updated", ImageURL: "https://imgur.com/0GuN24g"},
+			Topic:        "modsUpdates",
+		}
+		c.FirebaseCtrl.Notify(message)
 	}
-
-
-	message := &messaging.Message{
-		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-			{Action: "car_updated", Title: "Check It Out!"},
-		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been updated",car.Brand.Name, car.ModelName), Body: "A resource has been updated"},
-		Topic: "modsUpdates",
-	}
-	c.FirebaseCtrl.Notify(message)
-
 
 	respondJSON(writer, http.StatusOK, car)
 }

@@ -12,7 +12,7 @@ import (
 
 type UserHandlerImpl struct {
 	UserCtrl controllers.LoginController
-	Secret string
+	Secret   string
 }
 
 func GenerateJWT(username, role string, secret string) (string, error) {

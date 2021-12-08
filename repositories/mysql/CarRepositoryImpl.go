@@ -15,7 +15,6 @@ type CarRepositoryImpl struct {
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
-
 func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error) {
 	var cars []entities.Car
 	var dbCars []db.CarMods
@@ -40,25 +39,25 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	return cars, nil
 }
 
-func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error){
+func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error) {
 	dbNation := db.Nation{Name: car.Brand.Nation.Name, Code: car.Brand.Nation.Code}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	dbBrand := db.Manufacturer{Name: car.Brand.Name, IdNation: dbNation.Id}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbBrand.Name).First(&dbBrand); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	println(dbBrand.Id)
@@ -66,11 +65,11 @@ func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error)
 	dbAuthor := db.Author{Name: car.Author.Name, Link: car.Author.Link}
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil {
-		return db.Car{},res.Error
+		return db.Car{}, res.Error
 	}
 
 	return db.CarFromEntity(car, dbBrand.Id, dbAuthor.Id), nil
@@ -92,7 +91,7 @@ func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, err
 }
 
 func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
-	if dbCar,err := c.preInsertionQueries(car); err != nil{
+	if dbCar, err := c.preInsertionQueries(car); err != nil {
 		return err
 	} else {
 		if res := c.Db.Create(&dbCar); res.Error != nil {
@@ -102,19 +101,29 @@ func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
 	return nil
 }
 
-func (c CarRepositoryImpl) UpdateCar(car entities.Car) error {
-	if dbCar,err := c.preInsertionQueries(car); err != nil{
-		return err
+func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
+	if dbCar, err := c.preInsertionQueries(car); err != nil {
+		return false, err
 	} else {
-		if res := c.Db.Model(&dbCar).Select("*").Omit("UpdatedAt", "CreatedAt").Updates(&dbCar); res.Error != nil {
-			return res.Error
+
+		actualCar := dbCar
+
+		if res := c.Db.First(&actualCar, car.Id); res.Error != nil {
+			return false, res.Error
+		}
+
+		if res := c.Db.Model(&dbCar).Clauses(clause.Returning{Columns: []clause.Column{{Name: "version"}}}).Select("*").Omit("UpdatedAt", "CreatedAt").Updates(&dbCar); res.Error != nil {
+			return false, res.Error
 		}
 
 		if res := c.Db.Model(&dbCar).Association("Categories").Append(dbCar.Categories); res != nil {
-			return res
+			return false, res
 		}
+
+		return actualCar.Version != dbCar.Version, nil
+
 	}
-	return nil
+
 }
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car, error) {

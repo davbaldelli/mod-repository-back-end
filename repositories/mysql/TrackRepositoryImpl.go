@@ -36,25 +36,25 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities
 	return tracks, nil
 }
 
-func (t TrackRepositoryImpl)preInsertionQueries(track entities.Track) (db.Track, error) {
+func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (db.Track, error) {
 	dbNation := db.Nation{Name: track.Nation.Name}
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
-		return db.Track{},res.Error
+		return db.Track{}, res.Error
 	}
 
 	if res := t.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil {
-		return db.Track{},res.Error
+		return db.Track{}, res.Error
 	}
 
 	dbAuthor := db.Author{Name: track.Author.Name, Link: track.Author.Link}
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
-		return db.Track{},res.Error
+		return db.Track{}, res.Error
 	}
 
 	if res := t.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil {
-		return db.Track{},res.Error
+		return db.Track{}, res.Error
 	}
 
 	return db.TrackFromEntity(track, dbNation.Id, dbAuthor.Id), nil
@@ -68,7 +68,7 @@ func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track, er
 
 func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 
-	if dbTrack, err := t.preInsertionQueries(track); err != nil{
+	if dbTrack, err := t.preInsertionQueries(track); err != nil {
 		return err
 	} else {
 		if res := t.Db.Create(&dbTrack); res.Error != nil {
@@ -78,20 +78,26 @@ func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
 	return nil
 }
 
-func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) error {
+func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) (bool, error) {
 
-	if dbTrack, err := t.preInsertionQueries(track); err != nil{
-		return err
+	if dbTrack, err := t.preInsertionQueries(track); err != nil {
+		return false, err
 	} else {
+		oldTrack := dbTrack
+
+		if res := t.Db.First(&oldTrack, track.Id); res.Error != nil {
+			return false, res.Error
+		}
+
 		if res := t.Db.Model(&dbTrack).Select("*").Omit("UpdatedAt", "CreatedAt").Updates(&dbTrack); res.Error != nil {
-			return res.Error
+			return false, res.Error
 		}
 
 		if res := t.Db.Model(&dbTrack).Association("Tags").Append(dbTrack.Tags); res != nil {
-			return res
+			return false, res
 		}
+
+		return oldTrack.Version != track.Version, nil
 	}
-	return nil
+
 }
-
-

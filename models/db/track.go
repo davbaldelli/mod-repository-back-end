@@ -36,7 +36,7 @@ type TrackMod struct {
 	Rating       uint
 }
 
-func (t TrackMod) ToEntity() entities.Track  {
+func (t TrackMod) ToEntity() entities.Track {
 	return entities.Track{
 		Mod: entities.Mod{
 			Id:           t.Id,
@@ -52,16 +52,16 @@ func (t TrackMod) ToEntity() entities.Track  {
 			UpdatedAt: t.UpdatedAt,
 			Version:   t.Version,
 		},
-		Name:     t.Name,
-		Layouts:  mapLayouts(t.Layouts, func(layout Layout) entities.Layout {
+		Name: t.Name,
+		Layouts: mapLayouts(t.Layouts, func(layout Layout) entities.Layout {
 			return layout.toEntity()
 		}),
 		Location: t.Location,
 		Nation:   entities.Nation{Name: t.Nation, Code: t.NationCode},
-		Tags:     mapTags(t.Tags, func(tag TrackTag) entities.TrackTag {
+		Tags: mapTags(t.Tags, func(tag TrackTag) entities.TrackTag {
 			return tag.toEntity()
 		}),
-		Year:     t.Year,
+		Year: t.Year,
 	}
 }
 

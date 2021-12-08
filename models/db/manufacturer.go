@@ -9,7 +9,7 @@ type Manufacturer struct {
 	IdNation uint
 }
 
-func (m Manufacturer) ToEntity(nation Nation) entities.CarBrand  {
+func (m Manufacturer) ToEntity(nation Nation) entities.CarBrand {
 	return entities.CarBrand{
 		Name:   m.Name,
 		Nation: entities.Nation{Name: nation.Name, Code: nation.Code},

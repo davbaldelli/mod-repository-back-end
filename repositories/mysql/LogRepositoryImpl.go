@@ -12,11 +12,11 @@ type LogRepositoryImpl struct {
 func (l LogRepositoryImpl) SelectAllTrackLogs(premium bool) ([]entities.TrackLog, error) {
 	var logs []entities.TrackLog
 	if !premium {
-		if res := l.Db.Table("track_logs_view").Find(&logs, "premium = ?", premium); res.Error != nil{
+		if res := l.Db.Table("track_logs_view").Find(&logs, "premium = ?", premium); res.Error != nil {
 			return nil, res.Error
 		}
 	} else {
-		if res := l.Db.Table("track_logs_view").Find(&logs); res.Error != nil{
+		if res := l.Db.Table("track_logs_view").Find(&logs); res.Error != nil {
 			return nil, res.Error
 		}
 	}
@@ -37,6 +37,3 @@ func (l LogRepositoryImpl) SelectAllCarLogs(premium bool) ([]entities.CarLog, er
 	}
 	return logs, nil
 }
-
-
-

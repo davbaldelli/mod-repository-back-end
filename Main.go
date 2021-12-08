@@ -29,7 +29,6 @@ type Secret struct {
 
 func main() {
 
-
 	var cred Credentials
 
 	if jsonFile, err := os.Open("credentials.json"); err != nil {
@@ -70,7 +69,6 @@ func main() {
 		log.Fatalf("error getting Messaging client: %v\n", err)
 	}
 
-
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -84,18 +82,18 @@ func main() {
 	brandRepo := repo.BrandRepositoryImpl{Db: dbase}
 	userRepo := repo.UserRepositoryImpl{Db: dbase}
 	authorRepo := repo.AuthorsRepositoryImpl{Db: dbase}
-	logsRepo := repo.LogRepositoryImpl{Db : dbase}
+	logsRepo := repo.LogRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
-		CarHandler:     handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
-		TracksHandler:  handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
-		NationHandler:  handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
-		BrandsHandler:  handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
-		UsersHandler:   handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}, Secret: secret.Secret},
-		AuthorsHandler: handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
-		LogsHandler: handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo :logsRepo}},
-		Middleware: handlers.MiddlewareImpl{Secret: secret.Secret},
-		FirebaseHandler: handlers.FirebaseHandlerImpl{Ctrl : controllers.FirebaseControllerImpl{Client: client, Context: context.Background()}},
+		CarHandler:      handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
+		TracksHandler:   handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
+		NationHandler:   handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
+		BrandsHandler:   handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
+		UsersHandler:    handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}, Secret: secret.Secret},
+		AuthorsHandler:  handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
+		LogsHandler:     handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo: logsRepo}},
+		Middleware:      handlers.MiddlewareImpl{Secret: secret.Secret},
+		FirebaseHandler: handlers.FirebaseHandlerImpl{Ctrl: controllers.FirebaseControllerImpl{Client: client, Context: context.Background()}},
 	}
 	web.Listen()
 }

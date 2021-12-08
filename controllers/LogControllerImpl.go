@@ -16,4 +16,3 @@ func (l LogControllerImpl) GetTrackLogs(b bool) ([]entities.TrackLog, error) {
 func (l LogControllerImpl) GetCarLogs(b bool) ([]entities.CarLog, error) {
 	return l.Repo.SelectAllCarLogs(b)
 }
-

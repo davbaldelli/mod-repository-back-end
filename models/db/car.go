@@ -1,6 +1,8 @@
 package db
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models/entities"
+)
 
 type CarMods struct {
 	ModModel
@@ -55,11 +57,11 @@ func (CarCategory) TableName() string {
 	return "car_categories"
 }
 
-func (cat CarCategory) toEntity() entities.CarCategory  {
+func (cat CarCategory) toEntity() entities.CarCategory {
 	return entities.CarCategory{Name: entities.CarType(cat.Category)}
 }
 
-func (c CarMods) ToEntity() entities.Car{
+func (c CarMods) ToEntity() entities.Car {
 	return entities.Car{
 		Mod: entities.Mod{
 			Id:           c.Id,
@@ -79,8 +81,8 @@ func (c CarMods) ToEntity() entities.Car{
 			Name:   c.Brand,
 			Nation: entities.Nation{Name: c.Nation, Code: c.NationCode},
 		},
-		ModelName:    c.ModelName,
-		Categories:   mapCategories(c.Categories, func(category CarCategory) entities.CarCategory {
+		ModelName: c.ModelName,
+		Categories: mapCategories(c.Categories, func(category CarCategory) entities.CarCategory {
 			return category.toEntity()
 		}),
 		Drivetrain:   entities.Drivetrain(c.Drivetrain),
