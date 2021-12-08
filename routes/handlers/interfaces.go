@@ -46,3 +46,7 @@ type Middleware interface {
 	IsAuthorized(next http.HandlerFunc) http.HandlerFunc
 	IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc
 }
+
+type FirebaseHandler interface {
+	SubscribeToTopic(http.ResponseWriter, *http.Request)
+}

@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"firebase.google.com/go/v4"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	repo "github.com/davide/ModRepository/repositories/mysql"
 	"github.com/davide/ModRepository/routes"
 	"github.com/davide/ModRepository/routes/handlers"
+	"google.golang.org/api/option"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -55,6 +58,18 @@ func main() {
 		}
 	}
 
+	ctx := context.Background()
+	opt := option.WithCredentialsFile("serviceAccountKey.json")
+	app, err := firebase.NewApp(ctx, nil, opt)
+	if err != nil {
+		log.Fatal(fmt.Errorf("error initializing app: %v", err))
+	}
+
+	client, err := app.Messaging(ctx)
+	if err != nil {
+		log.Fatalf("error getting Messaging client: %v\n", err)
+	}
+
 
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -72,7 +87,7 @@ func main() {
 	logsRepo := repo.LogRepositoryImpl{Db : dbase}
 
 	web := routes.Web{
-		CarHandler:     handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}},
+		CarHandler:     handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
 		TracksHandler:  handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}},
 		NationHandler:  handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler:  handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
@@ -80,6 +95,7 @@ func main() {
 		AuthorsHandler: handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
 		LogsHandler: handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo :logsRepo}},
 		Middleware: handlers.MiddlewareImpl{Secret: secret.Secret},
+		FirebaseHandler: handlers.FirebaseHandlerImpl{Ctrl : controllers.FirebaseControllerImpl{Client: client, Context: context.Background()}},
 	}
 	web.Listen()
 }

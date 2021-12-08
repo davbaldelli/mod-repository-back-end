@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"firebase.google.com/go/v4/messaging"
 	"github.com/davide/ModRepository/models/entities"
 )
 
@@ -40,4 +41,9 @@ type AuthorController interface {
 	GetAllAuthors() ([]entities.Author, error)
 	GetAllCarAuthors() ([]entities.Author, error)
 	GetAllTrackAuthors() ([]entities.Author, error)
+}
+
+type FirebaseController interface {
+	RegisterToTopic(token string, topic string) error
+	Notify(payload *messaging.Message) error
 }

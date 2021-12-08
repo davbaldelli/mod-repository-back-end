@@ -23,6 +23,7 @@ type Web struct {
 	AuthorsHandler handlers.AuthorsHandler
 	LogsHandler handlers.LogsHandler
 	Middleware handlers.Middleware
+	FirebaseHandler handlers.FirebaseHandler
 }
 
 func (w Web) Listen() {
@@ -50,6 +51,8 @@ func (w Web) Listen() {
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
+
+	router.HandleFunc("/notification/register", w.Middleware.IsAuthorized(w.FirebaseHandler.SubscribeToTopic)).Methods("POST")
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"https://www.acmodrepository.com", "http://localhost:8080", "http://localhost:3000", "https://mods.davidebaldelli.it", "128.116.134.232"},
