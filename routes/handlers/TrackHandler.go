@@ -12,6 +12,7 @@ import (
 type TrackHandlerImpl struct {
 	TrackCtrl    controllers.TrackController
 	FirebaseCtrl controllers.FirebaseController
+	DiscordBotCtrl controllers.DiscordBotController
 }
 
 type getTracksByParam func(string) ([]entities.Track, error)
@@ -39,6 +40,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 	t.FirebaseCtrl.NotifyTrackAdded(track)
+	t.DiscordBotCtrl.NotifyTrackAdded(track)
 
 	respondJSON(writer, http.StatusCreated, track)
 }
@@ -57,6 +59,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 		return
 	} else if versionChange {
 		t.FirebaseCtrl.NotifyTrackUpdated(track)
+		t.DiscordBotCtrl.NotifyTrackUpdated(track)
 	}
 
 	respondJSON(writer, http.StatusOK, track)

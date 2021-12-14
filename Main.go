@@ -100,7 +100,11 @@ func main() {
 			FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx},
 			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channel: "903967444350173184"},
 		},
-		TracksHandler:   handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
+		TracksHandler:   handlers.TrackHandlerImpl{
+			TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo},
+			FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx},
+			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channel: "903967444350173184"},
+		},
 		NationHandler:   handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler:   handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},
 		UsersHandler:    handlers.UserHandlerImpl{UserCtrl: controllers.UserControllerImpl{Repo: userRepo}, Secret: secret.Secret},
