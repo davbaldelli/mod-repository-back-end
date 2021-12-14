@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+
 type CarsHandler interface {
 	GETAllCars(http.ResponseWriter, *http.Request)
 	GETAllCarCategories(http.ResponseWriter, *http.Request)

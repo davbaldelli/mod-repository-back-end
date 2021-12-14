@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"firebase.google.com/go/v4/messaging"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
@@ -39,15 +38,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}
-
-	message := &messaging.Message{
-		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-			{Action: "track_added", Title: "Check It Out!"},
-		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been added to repository", track.Name), Body: "A resource has been added", ImageURL: "https://imgur.com/0GuN24g"},
-		Topic:        "modsUpdates",
-	}
-	t.FirebaseCtrl.Notify(message)
+	t.FirebaseCtrl.NotifyTrackAdded(track)
 
 	respondJSON(writer, http.StatusCreated, track)
 }
@@ -65,14 +56,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	} else if versionChange {
-		message := &messaging.Message{
-			Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-				{Action: "track_updated", Title: "Check It Out!"},
-			}}},
-			Notification: &messaging.Notification{Title: fmt.Sprintf("%v has been updated", track.Name), Body: "A resource has been updated", ImageURL: "https://imgur.com/0GuN24g"},
-			Topic:        "modsUpdates",
-		}
-		t.FirebaseCtrl.Notify(message)
+		t.FirebaseCtrl.NotifyTrackUpdated(track)
 	}
 
 	respondJSON(writer, http.StatusOK, track)

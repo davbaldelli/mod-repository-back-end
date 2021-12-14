@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"firebase.google.com/go/v4/messaging"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
 	"github.com/davide/ModRepository/models/entities"
@@ -13,6 +12,7 @@ import (
 type CarsHandlerImpl struct {
 	CarCtrl      controllers.CarController
 	FirebaseCtrl controllers.FirebaseController
+	DiscordBotCtrl controllers.DiscordBotController
 }
 
 func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, _ *http.Request) {
@@ -48,14 +48,7 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	message := &messaging.Message{
-		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-			{Action: "car_added", Title: "Check It Out!"},
-		}}},
-		Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been added to repository", car.Brand.Name, car.ModelName), Body: "A resource has been added", ImageURL: "https://imgur.com/0GuN24g"},
-		Topic:        "modsUpdates",
-	}
-	c.FirebaseCtrl.Notify(message)
+	c.FirebaseCtrl.NotifyCarAdded(car)
 
 	respondJSON(writer, http.StatusCreated, car)
 }
@@ -74,15 +67,9 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	} else if versionChange {
-		message := &messaging.Message{
-			Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
-				{Action: "car_updated", Title: "Check It Out!"},
-			}}},
-			Notification: &messaging.Notification{Title: fmt.Sprintf("%v %v has been updated", car.Brand.Name, car.ModelName), Body: "A resource has been updated", ImageURL: "https://imgur.com/0GuN24g"},
-			Topic:        "modsUpdates",
-		}
-		c.FirebaseCtrl.Notify(message)
+		c.FirebaseCtrl.NotifyCarUpdated(car)
 	}
+	c.DiscordBotCtrl.NotifyCarUpdated(car)
 
 	respondJSON(writer, http.StatusOK, car)
 }

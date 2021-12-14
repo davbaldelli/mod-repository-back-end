@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"firebase.google.com/go/v4"
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 	"github.com/davide/ModRepository/controllers"
 	repo "github.com/davide/ModRepository/repositories/mysql"
 	"github.com/davide/ModRepository/routes"
@@ -69,6 +70,13 @@ func main() {
 		log.Fatalf("error getting Messaging client: %v\n", err)
 	}
 
+	dg, err := discordgo.New("Bot " + "OTIwMzI4NzUxMDMwNjA3ODgy.Ybiw8Q.iwJdBPAXE0ZgK-NAHR-iEZCfcYw")
+	if err != nil {
+		fmt.Println("error creating Discord session,", err)
+		return
+	}
+
+
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -85,7 +93,11 @@ func main() {
 	logsRepo := repo.LogRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
-		CarHandler:      handlers.CarsHandlerImpl{CarCtrl: controllers.CarControllerImpl{Repo: carRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
+		CarHandler:      handlers.CarsHandlerImpl{
+			CarCtrl: controllers.CarControllerImpl{Repo: carRepo},
+			FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx},
+			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channel: "903967444350173184"},
+		},
 		TracksHandler:   handlers.TrackHandlerImpl{TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo}, FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx}},
 		NationHandler:   handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler:   handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},

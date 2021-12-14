@@ -5,6 +5,7 @@ go 1.16
 require (
 	firebase.google.com/go v3.13.0+incompatible // indirect
 	firebase.google.com/go/v4 v4.6.1 // indirect
+	github.com/bwmarrin/discordgo v0.23.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect

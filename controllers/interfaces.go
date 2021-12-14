@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"firebase.google.com/go/v4/messaging"
 	"github.com/davide/ModRepository/models/entities"
 )
 
@@ -45,5 +44,15 @@ type AuthorController interface {
 
 type FirebaseController interface {
 	RegisterToTopic(token string, topic string) error
-	Notify(payload *messaging.Message) error
+	NotifyCarAdded(car entities.Car) error
+	NotifyCarUpdated(car entities.Car) error
+	NotifyTrackUpdated(track entities.Track) error
+	NotifyTrackAdded(track entities.Track) error
+}
+
+type DiscordBotController interface {
+	NotifyCarAdded(car entities.Car) error
+	NotifyCarUpdated(car entities.Car) error
+	NotifyTrackUpdated(track entities.Track) error
+	NotifyTrackAdded(track entities.Track) error
 }
