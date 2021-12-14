@@ -25,7 +25,8 @@ type Credentials struct {
 }
 
 type Secret struct {
-	Secret string
+	Secret  string
+	DiscordToken string
 }
 
 func main() {
@@ -46,13 +47,13 @@ func main() {
 
 	var secret Secret
 
-	if secretFile, err := os.Open("credentials.json"); err != nil {
+	if secretFile, err := os.Open("secret.json"); err != nil {
 		log.Fatal("no credentials file")
 	} else {
 		if secretByte, err := ioutil.ReadAll(secretFile); err != nil {
 			log.Fatal("err pasrsing json")
 		} else {
-			if err := json.Unmarshal(secretByte, &cred); err != nil {
+			if err := json.Unmarshal(secretByte, &secret); err != nil {
 				log.Fatal("err pasrsing json")
 			}
 		}
@@ -70,7 +71,8 @@ func main() {
 		log.Fatalf("error getting Messaging client: %v\n", err)
 	}
 
-	dg, err := discordgo.New("Bot " + "OTIwMzI4NzUxMDMwNjA3ODgy.Ybiw8Q.iwJdBPAXE0ZgK-NAHR-iEZCfcYw")
+
+	dg, err := discordgo.New("Bot " + secret.DiscordToken)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
