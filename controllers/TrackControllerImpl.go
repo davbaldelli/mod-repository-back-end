@@ -13,7 +13,7 @@ func (t TrackControllerImpl) GetAllTracks(premium bool) ([]entities.Track, error
 	return t.Repo.SelectAllTracks(premium)
 }
 
-func (t TrackControllerImpl) AddTrack(track entities.Track) error {
+func (t TrackControllerImpl) AddTrack(track *entities.Track) error {
 	return t.Repo.InsertTrack(track)
 }
 

@@ -90,13 +90,14 @@ func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, err
 	}, nil
 }
 
-func (c CarRepositoryImpl) InsertCar(car entities.Car) error {
-	if dbCar, err := c.preInsertionQueries(car); err != nil {
+func (c CarRepositoryImpl) InsertCar(car *entities.Car) error {
+	if dbCar, err := c.preInsertionQueries(*car); err != nil {
 		return err
 	} else {
 		if res := c.Db.Create(&dbCar); res.Error != nil {
 			return res.Error
 		}
+		car.Id = dbCar.Id
 	}
 	return nil
 }

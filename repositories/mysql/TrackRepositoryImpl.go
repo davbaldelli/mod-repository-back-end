@@ -66,14 +66,15 @@ func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track, er
 	}, premium)
 }
 
-func (t TrackRepositoryImpl) InsertTrack(track entities.Track) error {
+func (t TrackRepositoryImpl) InsertTrack(track *entities.Track) error {
 
-	if dbTrack, err := t.preInsertionQueries(track); err != nil {
+	if dbTrack, err := t.preInsertionQueries(*track); err != nil {
 		return err
 	} else {
 		if res := t.Db.Create(&dbTrack); res.Error != nil {
 			return res.Error
 		}
+		track.Id = dbTrack.Id
 	}
 	return nil
 }

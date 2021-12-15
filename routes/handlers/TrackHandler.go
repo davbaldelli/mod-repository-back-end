@@ -35,7 +35,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 
-	if err := t.TrackCtrl.AddTrack(track); err != nil {
+	if err := t.TrackCtrl.AddTrack(&track); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}

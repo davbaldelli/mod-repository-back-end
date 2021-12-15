@@ -43,7 +43,7 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	if err := c.CarCtrl.AddCar(car); err != nil {
+	if err := c.CarCtrl.AddCar(&car); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}

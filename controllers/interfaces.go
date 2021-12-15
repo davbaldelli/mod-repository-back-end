@@ -7,13 +7,13 @@ import (
 type CarController interface {
 	GetAllCars(premium bool) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
-	AddCar(car entities.Car) error
+	AddCar(car *entities.Car) error
 	UpdateCar(car entities.Car) (bool, error)
 }
 
 type TrackController interface {
 	GetAllTracks(bool) ([]entities.Track, error)
-	AddTrack(track entities.Track) error
+	AddTrack(track *entities.Track) error
 	UpdateTrack(track entities.Track) (bool, error)
 }
 
