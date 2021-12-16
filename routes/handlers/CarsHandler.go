@@ -69,9 +69,9 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 		return
 	} else if versionChange {
 		c.FirebaseCtrl.NotifyCarUpdated(car)
-		c.DiscordBotCtrl.NotifyCarUpdated(car)
-	}
 
+	}
+	c.DiscordBotCtrl.NotifyCarUpdated(car)
 
 	respondJSON(writer, http.StatusOK, car)
 }

@@ -15,7 +15,7 @@ func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
 	_, error := d.Session.ChannelMessageSendComplex(d.Channel, &discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Type:        "image",
-			Title:       fmt.Sprintf("%v %v has been added to repository!", car.Brand.Name, car.ModelName),
+			Title:       fmt.Sprintf("%v %v has been added to the repository!", car.Brand.Name, car.ModelName),
 			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v)",car.Id),
 			Color:       12590120,
 			Image:       &discordgo.MessageEmbedImage{URL: car.Image},
@@ -63,7 +63,7 @@ func (d DiscordBotControllerImpl) NotifyTrackUpdated(track entities.Track) error
 func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 	_, error := d.Session.ChannelMessageSendEmbed(d.Channel, &discordgo.MessageEmbed{
 		Type:        "image",
-		Title:       fmt.Sprintf("%v has been added to repository!",track.Name),
+		Title:       fmt.Sprintf("%v has been added to the repository!",track.Name),
 		Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/%v)",track.Id),
 		Color:       12590120,
 		Image:   &discordgo.MessageEmbedImage{URL: track.Image},
