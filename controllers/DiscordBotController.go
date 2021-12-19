@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/davide/ModRepository/models/entities"
+	"strconv"
 )
 
 type DiscordBotControllerImpl struct {
@@ -23,6 +24,16 @@ func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
 				Name:    "Davide",
 				IconURL: "https://i.imgur.com/M4Am9z1.jpg",
 			},
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:  "Year",
+					Value: strconv.Itoa(int(car.Year)),
+				},
+				{
+					Name: "Author",
+					Value: fmt.Sprintf("[%v](%v)", car.Author.Name, car.Author.Link),
+				},
+			},
 		},
 	})
 	return error
@@ -40,6 +51,22 @@ func (d DiscordBotControllerImpl) NotifyCarUpdated(car entities.Car) error {
 				Name:    "Davide",
 				IconURL: "https://i.imgur.com/M4Am9z1.jpg",
 			},
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:  "Year",
+					Value: strconv.Itoa(int(car.Year)),
+				},
+				{
+					Name: "Author",
+					Value: fmt.Sprintf("[%v](%v)", car.Author.Name, car.Author.Link),
+					Inline: true,
+				},
+				{
+					Name: "Version",
+					Value: car.Version,
+					Inline: true,
+				},
+			},
 		},
 	})
 	return error
@@ -56,6 +83,26 @@ func (d DiscordBotControllerImpl) NotifyTrackUpdated(track entities.Track) error
 			Name:    "Davide",
 			IconURL: "https://i.imgur.com/M4Am9z1.jpg",
 		},
+		Fields: []*discordgo.MessageEmbedField{
+			{
+				Name:   "Location",
+				Value:  fmt.Sprintf("%v, %v",track.Location, track.Nation.Name),
+			},
+			{
+				Name:  "Year",
+				Value: strconv.Itoa(int(track.Year)),
+			},
+			{
+				Name: "Author",
+				Value: fmt.Sprintf("[%v](%v)", track.Author.Name, track.Author.Link),
+				Inline: true,
+			},
+			{
+				Name: "Version",
+				Value: track.Version,
+				Inline: true,
+			},
+		},
 	})
 	return error
 }
@@ -70,6 +117,22 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 		Author: &discordgo.MessageEmbedAuthor{
 			Name:    "Davide",
 			IconURL: "https://i.imgur.com/M4Am9z1.jpg",
+		},
+		Fields: []*discordgo.MessageEmbedField{
+			{
+				Name:   "Location",
+				Value:  fmt.Sprintf("%v, %v",track.Location, track.Nation.Name),
+				Inline: true,
+			},
+			{
+				Name:  "Year",
+				Value: strconv.Itoa(int(track.Year)),
+				Inline: true,
+			},
+			{
+				Name: "Author",
+				Value: fmt.Sprintf("[%v](%v)", track.Author.Name, track.Author.Link),
+			},
 		},
 	})
 	return error
