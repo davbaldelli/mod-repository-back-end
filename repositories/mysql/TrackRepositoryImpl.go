@@ -37,7 +37,7 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities
 }
 
 func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (db.Track, error) {
-	dbNation := db.Nation{Name: track.Nation.Name}
+	dbNation := db.NationFromEntity(track.Nation)
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return db.Track{}, res.Error
@@ -47,7 +47,7 @@ func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (db.Track
 		return db.Track{}, res.Error
 	}
 
-	dbAuthor := db.Author{Name: track.Author.Name, Link: track.Author.Link}
+	dbAuthor := db.AuthorFromEntity(track.Author)
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
 		return db.Track{}, res.Error

@@ -40,7 +40,7 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 }
 
 func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error) {
-	dbNation := db.Nation{Name: car.Brand.Nation.Name, Code: car.Brand.Nation.Code}
+	dbNation := db.NationFromEntity(car.Brand.Nation)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
 		return db.Car{}, res.Error
@@ -50,7 +50,7 @@ func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error)
 		return db.Car{}, res.Error
 	}
 
-	dbBrand := db.Manufacturer{Name: car.Brand.Name, IdNation: dbNation.Id}
+	dbBrand := db.ManufacturerFromEntity(car.Brand, dbNation.Id)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
 		return db.Car{}, res.Error
@@ -62,7 +62,7 @@ func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error)
 
 	println(dbBrand.Id)
 
-	dbAuthor := db.Author{Name: car.Author.Name, Link: car.Author.Link}
+	dbAuthor := db.AuthorFromEntity(car.Author)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
 		return db.Car{}, res.Error

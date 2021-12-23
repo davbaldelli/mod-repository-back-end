@@ -17,3 +17,11 @@ func (m Manufacturer) ToEntity(nation Nation) entities.CarBrand {
 		Nation: entities.Nation{Name: nation.Name, Code: nation.Code},
 	}
 }
+
+func ManufacturerFromEntity(brand entities.CarBrand, idNation uint) Manufacturer{
+	return Manufacturer{
+		Name:     brand.Name,
+		Logo:     brand.Logo,
+		IdNation: idNation,
+	}
+}
