@@ -25,6 +25,7 @@ type CarMods struct {
 	AuthorLink   string
 	Nation       string
 	NationCode   string
+	BrandLogo string
 }
 
 type Car struct {
