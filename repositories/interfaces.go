@@ -28,7 +28,7 @@ type NationRepository interface {
 }
 
 type BrandRepository interface {
-	SelectAllBrands() ([]entities.CarBrand, error)
+	SelectAllBrands(bool) ([]entities.CarBrand, error)
 }
 
 type UserRepository interface {

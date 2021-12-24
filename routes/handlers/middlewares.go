@@ -14,7 +14,8 @@ type MiddlewareImpl struct {
 func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Header["Token"] == nil {
-			respondError(w, http.StatusUnauthorized, fmt.Errorf("token not found"))
+			r.Header.Set("Role", string(entities.Base))
+			next.ServeHTTP(w, r)
 			return
 		}
 		var mySigningKey = []byte(m.Secret)

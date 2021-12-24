@@ -23,7 +23,7 @@ type LogController interface {
 }
 
 type BrandController interface {
-	GetAllBrands() ([]entities.CarBrand, error)
+	GetAllBrands(bool) ([]entities.CarBrand, error)
 }
 
 type NationController interface {
