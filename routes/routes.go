@@ -43,7 +43,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/nation/brand/all", w.Middleware.IsAuthorized(w.NationHandler.GETAllBrandsNations)).Methods("GET")
 	router.HandleFunc("/nation/track/all", w.Middleware.IsAuthorized(w.NationHandler.GETAllTracksNations)).Methods("GET")
 
-	router.HandleFunc("/brand/all", w.Middleware.IsAuthorized(w.BrandsHandler.GETAllBrands)).Methods("GET")
+	router.HandleFunc("/brand/all", w.BrandsHandler.GETAllBrands).Methods("GET")
 
 	router.HandleFunc("/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETAllAuthors)).Methods("GET")
 	router.HandleFunc("/car/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
