@@ -10,8 +10,8 @@ import (
 )
 
 type TrackHandlerImpl struct {
-	TrackCtrl    controllers.TrackController
-	FirebaseCtrl controllers.FirebaseController
+	TrackCtrl      controllers.TrackController
+	FirebaseCtrl   controllers.FirebaseController
 	DiscordBotCtrl controllers.DiscordBotController
 }
 
@@ -39,7 +39,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	}
-	t.FirebaseCtrl.NotifyTrackAdded(track)
+	//t.FirebaseCtrl.NotifyTrackAdded(track)
 	t.DiscordBotCtrl.NotifyTrackAdded(track)
 
 	respondJSON(writer, http.StatusCreated, track)
@@ -58,7 +58,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	} else if versionChange {
-		t.FirebaseCtrl.NotifyTrackUpdated(track)
+		//t.FirebaseCtrl.NotifyTrackUpdated(track)
 		t.DiscordBotCtrl.NotifyTrackUpdated(track)
 	}
 

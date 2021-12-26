@@ -10,8 +10,8 @@ import (
 )
 
 type CarsHandlerImpl struct {
-	CarCtrl      controllers.CarController
-	FirebaseCtrl controllers.FirebaseController
+	CarCtrl        controllers.CarController
+	FirebaseCtrl   controllers.FirebaseController
 	DiscordBotCtrl controllers.DiscordBotController
 }
 
@@ -48,7 +48,7 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	c.FirebaseCtrl.NotifyCarAdded(car)
+	//c.FirebaseCtrl.NotifyCarAdded(car)
 	c.DiscordBotCtrl.NotifyCarAdded(car)
 
 	respondJSON(writer, http.StatusCreated, car)
@@ -68,10 +68,9 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	} else if versionChange {
-		c.FirebaseCtrl.NotifyCarUpdated(car)
+		//c.FirebaseCtrl.NotifyCarUpdated(car)
 		c.DiscordBotCtrl.NotifyCarUpdated(car)
 	}
-	
 
 	respondJSON(writer, http.StatusOK, car)
 }
