@@ -17,21 +17,15 @@ type selectFromTrackQuery func() *gorm.DB
 func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities.Track, error) {
 	var dbTracks []db.TrackMod
 	var tracks []entities.Track
-	if premium {
-		if result := query().Find(&dbTracks); result.Error != nil {
-			return nil, result.Error
-		} else if result.RowsAffected == 0 {
-			return nil, errors.New("not found")
-		}
-	} else {
-		if result := query().Where("premium = false").Find(&dbTracks); result.Error != nil {
-			return nil, result.Error
-		} else if result.RowsAffected == 0 {
-			return nil, errors.New("not found")
-		}
+
+	if result := query().Find(&dbTracks); result.Error != nil {
+		return nil, result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("not found")
 	}
+
 	for _, dbTrack := range dbTracks {
-		tracks = append(tracks, dbTrack.ToEntity())
+		tracks = append(tracks, dbTrack.ToEntity(premium))
 	}
 	return tracks, nil
 }

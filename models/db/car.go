@@ -9,6 +9,7 @@ type CarMods struct {
 	Rating       uint
 	Version      string
 	DownloadLink string
+	Source       string
 	ModelName    string `gorm:"column:model"`
 	Year         uint
 	Brand        string
@@ -25,7 +26,7 @@ type CarMods struct {
 	AuthorLink   string
 	Nation       string
 	NationCode   string
-	BrandLogo string
+	BrandLogo    string
 }
 
 type Car struct {
@@ -33,6 +34,7 @@ type Car struct {
 	Rating       uint
 	Version      string
 	DownloadLink string
+	Source       string
 	ModelName    string `gorm:"column:model"`
 	Year         int
 	IdBrand      uint
@@ -62,11 +64,15 @@ func (cat CarCategory) toEntity() entities.CarCategory {
 	return entities.CarCategory{Name: entities.CarType(cat.Category)}
 }
 
-func (c CarMods) ToEntity() entities.Car {
+func (c CarMods) ToEntity(premiumUser bool) entities.Car {
+	download := c.DownloadLink
+	if c.Premium && !premiumUser {
+		download = c.Source
+	}
 	return entities.Car{
 		Mod: entities.Mod{
 			Id:           c.Id,
-			DownloadLink: c.DownloadLink,
+			DownloadLink: download,
 			Premium:      c.Premium,
 			Image:        c.Image,
 			Author: entities.Author{

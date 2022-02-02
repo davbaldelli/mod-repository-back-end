@@ -12,11 +12,7 @@ type BrandRepositoryImpl struct {
 
 func (b BrandRepositoryImpl) SelectAllBrands(premium bool) ([]entities.CarBrand, error) {
 	return b.selectBrandsWithQuery(func(brands *[]db.Manufacturer) *gorm.DB {
-		if !premium {
-			return b.Db.Table("manufacturers").Distinct().Joins("JOIN cars ON cars.id_brand = manufacturers.id").Where("cars.premium = ?", false).Order("name ASC").Find(&brands)
-		} else {
-			return b.Db.Order("name ASC").Find(&brands)
-		}
+		return b.Db.Order("name ASC").Find(&brands)
 	})
 }
 

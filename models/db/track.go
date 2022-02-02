@@ -6,6 +6,7 @@ type Track struct {
 	ModModel
 	Version      string
 	DownloadLink string
+	Source       string
 	Name         string
 	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
 	Location     string
@@ -22,6 +23,7 @@ type TrackMod struct {
 	ModModel
 	Version      string
 	DownloadLink string
+	Source       string
 	Name         string
 	Layouts      []Layout   `gorm:"foreignKey:IdTrack"`
 	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
@@ -36,11 +38,15 @@ type TrackMod struct {
 	Rating       uint
 }
 
-func (t TrackMod) ToEntity() entities.Track {
+func (t TrackMod) ToEntity(premiumUser bool) entities.Track {
+	download := t.DownloadLink
+	if t.Premium && !premiumUser {
+		download = t.Source
+	}
 	return entities.Track{
 		Mod: entities.Mod{
 			Id:           t.Id,
-			DownloadLink: t.DownloadLink,
+			DownloadLink: download,
 			Premium:      t.Premium,
 			Image:        t.Image,
 			Author: entities.Author{

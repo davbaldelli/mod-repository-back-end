@@ -19,22 +19,14 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
-	if premium {
-		if result := carsQuery().Find(&dbCars); result.Error != nil {
-			return nil, result.Error
-		} else if result.RowsAffected == 0 {
-			return nil, errors.New("not found")
-		}
-	} else {
-		if result := carsQuery().Where("premium = false").Find(&dbCars); result.Error != nil {
-			return nil, result.Error
-		} else if result.RowsAffected == 0 {
-			return nil, errors.New("not found")
-		}
+	if result := carsQuery().Find(&dbCars); result.Error != nil {
+		return nil, result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("not found")
 	}
 
 	for _, dbCar := range dbCars {
-		cars = append(cars, dbCar.ToEntity())
+		cars = append(cars, dbCar.ToEntity(premium))
 	}
 	return cars, nil
 }
