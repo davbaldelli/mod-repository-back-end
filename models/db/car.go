@@ -127,6 +127,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		Drivetrain:   string(car.Drivetrain),
 		Transmission: string(car.Transmission),
 		Premium:      car.Premium,
+		Personal:     car.Personal,
 		Image:        car.Image,
 		BHP:          car.BHP,
 		Torque:       car.Torque,
