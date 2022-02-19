@@ -17,6 +17,7 @@ type CarMods struct {
 	Transmission string
 	Drivetrain   string
 	Premium      bool
+	Personal     bool
 	Image        string
 	BHP          uint
 	Torque       uint
@@ -42,6 +43,7 @@ type Car struct {
 	Transmission string
 	Drivetrain   string
 	Premium      bool
+	Personal     bool
 	Image        string
 	BHP          uint
 	Torque       uint
@@ -64,15 +66,16 @@ func (cat CarCategory) toEntity() entities.CarCategory {
 	return entities.CarCategory{Name: entities.CarType(cat.Category)}
 }
 
-func (c CarMods) ToEntity(premiumUser bool) entities.Car {
+func (c CarMods) ToEntity(userRole entities.Role) entities.Car {
 	download := c.DownloadLink
-	if c.Premium && !premiumUser {
+	if (c.Premium && userRole == entities.Base) || (c.Personal && userRole != entities.Admin) {
 		download = c.Source
 	}
 	return entities.Car{
 		Mod: entities.Mod{
 			Id:           c.Id,
 			DownloadLink: download,
+			Source:       c.Source,
 			Premium:      c.Premium,
 			Image:        c.Image,
 			Author: entities.Author{
@@ -115,6 +118,7 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		ModModel:     ModModel{Id: car.Id},
 		Rating:       car.Rating,
 		DownloadLink: car.DownloadLink,
+		Source:       car.Source,
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories, car.Id),
