@@ -77,6 +77,7 @@ func (c CarMods) ToEntity(userRole entities.Role) entities.Car {
 			DownloadLink: download,
 			Source:       c.Source,
 			Premium:      c.Premium,
+			Personal:     c.Personal,
 			Image:        c.Image,
 			Author: entities.Author{
 				Name: c.Author,
