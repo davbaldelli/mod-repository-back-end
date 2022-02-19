@@ -13,7 +13,7 @@ type BrandsHandlerImpl struct {
 }
 
 func (b BrandsHandlerImpl) GETAllBrands(writer http.ResponseWriter, request *http.Request) {
-	if brands, err := b.BrandCtrl.GetAllBrands(request.Header.Get("Role") != string(entities.Base)); err != nil {
+	if brands, err := b.BrandCtrl.GetAllBrands(); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, brands)

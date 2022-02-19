@@ -9,10 +9,10 @@ type LogControllerImpl struct {
 	Repo repositories.LogRepository
 }
 
-func (l LogControllerImpl) GetTrackLogs(b bool) ([]entities.TrackLog, error) {
-	return l.Repo.SelectAllTrackLogs(b)
+func (l LogControllerImpl) GetTrackLogs() ([]entities.TrackLog, error) {
+	return l.Repo.SelectAllTrackLogs()
 }
 
-func (l LogControllerImpl) GetCarLogs(b bool) ([]entities.CarLog, error) {
-	return l.Repo.SelectAllCarLogs(b)
+func (l LogControllerImpl) GetCarLogs() ([]entities.CarLog, error) {
+	return l.Repo.SelectAllCarLogs()
 }

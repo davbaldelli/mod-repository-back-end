@@ -15,7 +15,7 @@ type CarRepositoryImpl struct {
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]db.Manufacturer) *gorm.DB
 
-func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool) ([]entities.Car, error) {
+func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, role entities.Role) ([]entities.Car, error) {
 	var cars []entities.Car
 	var dbCars []db.CarMods
 
@@ -26,7 +26,7 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	}
 
 	for _, dbCar := range dbCars {
-		cars = append(cars, dbCar.ToEntity(premium))
+		cars = append(cars, dbCar.ToEntity(role))
 	}
 	return cars, nil
 }
@@ -123,8 +123,8 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 
 }
 
-func (c CarRepositoryImpl) SelectAllCars(premium bool) ([]entities.Car, error) {
+func (c CarRepositoryImpl) SelectAllCars(role entities.Role) ([]entities.Car, error) {
 	return c.selectCarsWithQuery(func() *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
-	}, premium)
+	}, role)
 }

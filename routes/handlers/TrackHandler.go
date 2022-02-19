@@ -18,7 +18,7 @@ type TrackHandlerImpl struct {
 type getTracksByParam func(string) ([]entities.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
-	if tracks, err := t.TrackCtrl.GetAllTracks(request.Header.Get("Role") != string(entities.Base)); err != nil {
+	if tracks, err := t.TrackCtrl.GetAllTracks(entities.Role(request.Header.Get("Role"))); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, tracks)

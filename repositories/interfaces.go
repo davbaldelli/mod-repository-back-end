@@ -6,18 +6,18 @@ import (
 
 type CarRepository interface {
 	InsertCar(car *entities.Car) error
-	SelectAllCars(premium bool) ([]entities.Car, error)
+	SelectAllCars(role entities.Role) ([]entities.Car, error)
 	SelectAllCarCategories() ([]entities.CarCategory, error)
 	UpdateCar(car entities.Car) (bool, error)
 }
 
 type LogRepository interface {
-	SelectAllTrackLogs(bool) ([]entities.TrackLog, error)
-	SelectAllCarLogs(bool) ([]entities.CarLog, error)
+	SelectAllTrackLogs() ([]entities.TrackLog, error)
+	SelectAllCarLogs() ([]entities.CarLog, error)
 }
 
 type TrackRepository interface {
-	SelectAllTracks(bool) ([]entities.Track, error)
+	SelectAllTracks(role entities.Role) ([]entities.Track, error)
 	InsertTrack(track *entities.Track) error
 	UpdateTrack(track entities.Track) (bool, error)
 }
@@ -28,7 +28,7 @@ type NationRepository interface {
 }
 
 type BrandRepository interface {
-	SelectAllBrands(bool) ([]entities.CarBrand, error)
+	SelectAllBrands() ([]entities.CarBrand, error)
 }
 
 type UserRepository interface {

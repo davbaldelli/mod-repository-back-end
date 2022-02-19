@@ -9,8 +9,8 @@ type TrackControllerImpl struct {
 	Repo repositories.TrackRepository
 }
 
-func (t TrackControllerImpl) GetAllTracks(premium bool) ([]entities.Track, error) {
-	return t.Repo.SelectAllTracks(premium)
+func (t TrackControllerImpl) GetAllTracks(role entities.Role) ([]entities.Track, error) {
+	return t.Repo.SelectAllTracks(role)
 }
 
 func (t TrackControllerImpl) AddTrack(track *entities.Track) error {

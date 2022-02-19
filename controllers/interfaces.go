@@ -5,25 +5,25 @@ import (
 )
 
 type CarController interface {
-	GetAllCars(premium bool) ([]entities.Car, error)
+	GetAllCars(role entities.Role) ([]entities.Car, error)
 	GetAllCarCategories() ([]entities.CarCategory, error)
 	AddCar(car *entities.Car) error
 	UpdateCar(car entities.Car) (bool, error)
 }
 
 type TrackController interface {
-	GetAllTracks(bool) ([]entities.Track, error)
+	GetAllTracks(role entities.Role) ([]entities.Track, error)
 	AddTrack(track *entities.Track) error
 	UpdateTrack(track entities.Track) (bool, error)
 }
 
 type LogController interface {
-	GetTrackLogs(bool) ([]entities.TrackLog, error)
-	GetCarLogs(bool) ([]entities.CarLog, error)
+	GetTrackLogs() ([]entities.TrackLog, error)
+	GetCarLogs() ([]entities.CarLog, error)
 }
 
 type BrandController interface {
-	GetAllBrands(bool) ([]entities.CarBrand, error)
+	GetAllBrands() ([]entities.CarBrand, error)
 }
 
 type NationController interface {

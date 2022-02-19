@@ -14,7 +14,7 @@ type TrackRepositoryImpl struct {
 
 type selectFromTrackQuery func() *gorm.DB
 
-func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities.Track, error) {
+func selectTracksWithQuery(query selectFromTrackQuery, role entities.Role) ([]entities.Track, error) {
 	var dbTracks []db.TrackMod
 	var tracks []entities.Track
 
@@ -25,7 +25,7 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool) ([]entities
 	}
 
 	for _, dbTrack := range dbTracks {
-		tracks = append(tracks, dbTrack.ToEntity(premium))
+		tracks = append(tracks, dbTrack.ToEntity(role))
 	}
 	return tracks, nil
 }
@@ -54,10 +54,10 @@ func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (db.Track
 	return db.TrackFromEntity(track, dbNation.Id, dbAuthor.Id), nil
 }
 
-func (t TrackRepositoryImpl) SelectAllTracks(premium bool) ([]entities.Track, error) {
+func (t TrackRepositoryImpl) SelectAllTracks(role entities.Role) ([]entities.Track, error) {
 	return selectTracksWithQuery(func() *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Preload("Tags")
-	}, premium)
+	}, role)
 }
 
 func (t TrackRepositoryImpl) InsertTrack(track *entities.Track) error {

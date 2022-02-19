@@ -26,7 +26,7 @@ func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, _ *http
 type getCarsByParam func(string) ([]entities.Car, error)
 
 func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Request) {
-	if cars, err := c.CarCtrl.GetAllCars(request.Header.Get("Role") != string(entities.Base)); err != nil {
+	if cars, err := c.CarCtrl.GetAllCars(entities.Role(request.Header.Get("Role"))); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, cars)
