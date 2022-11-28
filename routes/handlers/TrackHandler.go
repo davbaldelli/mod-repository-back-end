@@ -40,7 +40,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 	//t.FirebaseCtrl.NotifyTrackAdded(track)
-	t.DiscordBotCtrl.NotifyTrackAdded(track)
+	go t.DiscordBotCtrl.NotifyTrackAdded(track)
 
 	respondJSON(writer, http.StatusCreated, track)
 }
@@ -59,7 +59,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 		return
 	} else if versionChange {
 		//t.FirebaseCtrl.NotifyTrackUpdated(track)
-		t.DiscordBotCtrl.NotifyTrackUpdated(track)
+		go t.DiscordBotCtrl.NotifyTrackUpdated(track)
 	}
 
 	respondJSON(writer, http.StatusOK, track)

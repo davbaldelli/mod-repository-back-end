@@ -28,7 +28,7 @@ func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 		})
 
 		if err != nil {
-			respondError(w, http.StatusUnauthorized, fmt.Errorf("your Token has been expired: %v", err.Error()))
+			respondError(w, http.StatusUnauthorized, fmt.Errorf("your Token has expired: %v", err.Error()))
 			return
 		}
 
