@@ -25,8 +25,9 @@ type Credentials struct {
 }
 
 type Secret struct {
-	Secret  string
+	Secret       string
 	DiscordToken string
+	Channels     []string
 }
 
 func main() {
@@ -71,7 +72,6 @@ func main() {
 		log.Fatalf("error getting Messaging client: %v\n", err)
 	}
 
-
 	dg, err := discordgo.New("Bot " + secret.DiscordToken)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
@@ -83,7 +83,6 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
-
 
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", cred.Username, cred.Password, cred.Host, "mod_repo")
 	dbase, err3 := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -101,15 +100,15 @@ func main() {
 	logsRepo := repo.LogRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
-		CarHandler:      handlers.CarsHandlerImpl{
-			CarCtrl: controllers.CarControllerImpl{Repo: carRepo},
-			FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx},
-			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channel: "903967444350173184"},
+		CarHandler: handlers.CarsHandlerImpl{
+			CarCtrl:        controllers.CarControllerImpl{Repo: carRepo},
+			FirebaseCtrl:   controllers.FirebaseControllerImpl{Client: client, Context: ctx},
+			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channels: secret.Channels},
 		},
-		TracksHandler:   handlers.TrackHandlerImpl{
-			TrackCtrl: controllers.TrackControllerImpl{Repo: trackRepo},
-			FirebaseCtrl: controllers.FirebaseControllerImpl{Client: client, Context: ctx},
-			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channel: "903967444350173184"},
+		TracksHandler: handlers.TrackHandlerImpl{
+			TrackCtrl:      controllers.TrackControllerImpl{Repo: trackRepo},
+			FirebaseCtrl:   controllers.FirebaseControllerImpl{Client: client, Context: ctx},
+			DiscordBotCtrl: controllers.DiscordBotControllerImpl{Session: dg, Channels: secret.Channels},
 		},
 		NationHandler:   handlers.NationsHandlerImpl{CtrlNations: controllers.NationControllerImpl{Repo: nationRepo}},
 		BrandsHandler:   handlers.BrandsHandlerImpl{BrandCtrl: controllers.BrandControllerImpl{Repo: brandRepo}},

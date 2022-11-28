@@ -14,7 +14,7 @@ require (
 	github.com/lib/pq v1.10.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rs/cors v1.7.0
+	github.com/rs/cors v1.8.2
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/api v0.40.0 // indirect
