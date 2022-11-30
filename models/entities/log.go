@@ -10,7 +10,8 @@ const (
 )
 
 type CarLog struct {
-	Id         uint      `json:"id"`
+	LogId      uint      `json:"logId"`
+	CarId      uint      `json:"carId"`
 	Brand      string    `json:"brand"`
 	Model      string    `json:"model"`
 	Year       string    `json:"year"`
@@ -21,7 +22,8 @@ type CarLog struct {
 }
 
 type TrackLog struct {
-	Id         uint      `json:"id"`
+	LogId      uint      `json:"logId"`
+	TrackId    uint      `json:"trackId"`
 	Name       string    `json:"name"`
 	Version    string    `json:"version"`
 	Premium    bool      `json:"premium"`
