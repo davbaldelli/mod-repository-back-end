@@ -4,7 +4,6 @@ import (
 	"net/http"
 )
 
-
 type CarsHandler interface {
 	GETAllCars(http.ResponseWriter, *http.Request)
 	GETAllCarCategories(http.ResponseWriter, *http.Request)
@@ -35,6 +34,7 @@ type BrandsHandler interface {
 type UsersHandler interface {
 	LogIn(http.ResponseWriter, *http.Request)
 	SignIn(http.ResponseWriter, *http.Request)
+	UpdatePassword(http.ResponseWriter, *http.Request)
 }
 
 type AuthorsHandler interface {

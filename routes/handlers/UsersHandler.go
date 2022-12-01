@@ -11,7 +11,7 @@ import (
 )
 
 type UserHandlerImpl struct {
-	UserCtrl controllers.LoginController
+	UserCtrl controllers.UserController
 	Secret   string
 }
 
@@ -82,4 +82,18 @@ func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 	token := entities.Token{Username: newUser.Username, Role: string(newUser.Role), TokenString: validToken}
 
 	respondJSON(w, http.StatusAccepted, token)
+}
+
+func (u UserHandlerImpl) UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	var authDetails entities.Authentication
+	if err := json.NewDecoder(r.Body).Decode(&authDetails); err != nil {
+		respondError(w, http.StatusBadRequest, fmt.Errorf("error in request body: %v ", err))
+		return
+	}
+
+	if err := u.UserCtrl.UpdatePassword(authDetails.Username, authDetails.Password); err != nil {
+		respondError(w, http.StatusInternalServerError, fmt.Errorf("an error occured while processing your request: %v ", err))
+	}
+
+	respondJSON(w, http.StatusOK, nil)
 }

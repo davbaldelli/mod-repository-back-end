@@ -1,11 +1,9 @@
 package routes
 
 import (
-	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -51,6 +49,7 @@ func (w Web) Listen() {
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/user/updatepassword", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.UpdatePassword, []string{"admin"}))).Methods("POST")
 
 	router.HandleFunc("/notification/register", w.Middleware.IsAuthorized(w.FirebaseHandler.SubscribeToTopic)).Methods("POST")
 
@@ -61,30 +60,30 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
-	
-	certManager := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),
-		Cache:      autocert.DirCache("certs"),
-	}
+	/*
+		certManager := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),
+			Cache:      autocert.DirCache("certs"),
+		}
 
-	// create the server itself
-	server := &http.Server{
-		Addr:    ":https",
-		Handler: handler,
-		TLSConfig: &tls.Config{
-			GetCertificate: certManager.GetCertificate,
-		},
-	}
+		// create the server itself
+		server := &http.Server{
+			Addr:    ":https",
+			Handler: handler,
+			TLSConfig: &tls.Config{
+				GetCertificate: certManager.GetCertificate,
+			},
+		}
 
-	log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
-	go func() {
-		// serve HTTP, which will redirect automatically to HTTPS
-		h := certManager.HTTPHandler(nil)
-		log.Fatal(http.ListenAndServe(":http", h))
-	}()
+		log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
+		go func() {
+			// serve HTTP, which will redirect automatically to HTTPS
+			h := certManager.HTTPHandler(nil)
+			log.Fatal(http.ListenAndServe(":http", h))
+		}()
 
-	log.Fatal(server.ListenAndServeTLS("", ""))
-	//log.Fatal(http.ListenAndServe(":6316", handler))
+		log.Fatal(server.ListenAndServeTLS("", ""))*/
+	log.Fatal(http.ListenAndServe(":6316", handler))
 
 }

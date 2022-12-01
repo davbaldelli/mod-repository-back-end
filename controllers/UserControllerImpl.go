@@ -20,3 +20,7 @@ func (u UserControllerImpl) SignIn(username string, password string, role entiti
 		Role:     role,
 	})
 }
+
+func (u UserControllerImpl) UpdatePassword(username string, password string) error {
+	return u.Repo.UpdatePassword(username, password)
+}

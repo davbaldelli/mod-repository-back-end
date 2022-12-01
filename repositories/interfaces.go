@@ -34,6 +34,7 @@ type BrandRepository interface {
 type UserRepository interface {
 	Login(user entities.User) (entities.User, error)
 	SignIn(user entities.User) (entities.User, error)
+	UpdatePassword(string, string) error
 }
 
 type AuthorRepository interface {

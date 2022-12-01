@@ -31,9 +31,10 @@ type NationController interface {
 	GetAllBrandsNations() ([]entities.Nation, error)
 }
 
-type LoginController interface {
+type UserController interface {
 	Login(username string, password string) (entities.User, error)
 	SignIn(username string, password string, role entities.Role) (entities.User, error)
+	UpdatePassword(username string, password string) error
 }
 
 type AuthorController interface {

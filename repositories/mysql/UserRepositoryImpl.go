@@ -39,6 +39,18 @@ func (u UserRepositoryImpl) SignIn(user entities.User) (entities.User, error) {
 	return entities.User{Username: user.Username, Role: user.Role}, nil
 }
 
+func (u UserRepositoryImpl) UpdatePassword(username string, password string) error {
+	salt := randStringRunes(30)
+	dbUser := map[string]interface{}{
+		"Password": clause.Expr{SQL: "SHA2(CONCAT(?, ?),?)", Vars: []interface{}{password, salt, 224}},
+		"Salt":     salt,
+	}
+	if res := u.Db.Model(&db.User{}).Where("username = ?", username).Updates(&dbUser); res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 func randStringRunes(n int) string {
