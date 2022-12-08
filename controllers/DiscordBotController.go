@@ -128,7 +128,7 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 		_, error := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
 			Type:        "image",
 			Title:       fmt.Sprintf("%v has been added to the repository!", track.Name),
-			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/%v)", track.Id),
+			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
 			Color:       12590120,
 			Image:       &discordgo.MessageEmbedImage{URL: track.Image},
 			Author: &discordgo.MessageEmbedAuthor{
