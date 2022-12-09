@@ -19,7 +19,7 @@ func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
 			Embed: &discordgo.MessageEmbed{
 				Type:        "image",
 				Title:       fmt.Sprintf("%v %v has been added to the repository!", car.Brand.Name, car.ModelName),
-				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v/)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
+				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
 				Color:       12590120,
 				Image:       &discordgo.MessageEmbedImage{URL: car.Image},
 				Author: &discordgo.MessageEmbedAuthor{
@@ -51,7 +51,7 @@ func (d DiscordBotControllerImpl) NotifyCarUpdated(car entities.Car) error {
 			Embed: &discordgo.MessageEmbed{
 				Type:        "image",
 				Title:       fmt.Sprintf("%v %v has been updated!", car.Brand.Name, car.ModelName),
-				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v/)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
+				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
 				Color:       12590120,
 				Image:       &discordgo.MessageEmbedImage{URL: car.Image},
 				Author: &discordgo.MessageEmbedAuthor{
