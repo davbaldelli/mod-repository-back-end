@@ -42,3 +42,9 @@ type AuthorRepository interface {
 	SelectAllCarAuthors() ([]entities.Author, error)
 	SelectAllTrackAuthors() ([]entities.Author, error)
 }
+
+type ServersRepository interface {
+	GetAllServers() ([]entities.Server, error)
+	UpdateServer(server entities.Server) error
+	AddServer(server entities.Server) error
+}

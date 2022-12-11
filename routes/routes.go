@@ -22,6 +22,7 @@ type Web struct {
 	UsersHandler    handlers.UsersHandler
 	AuthorsHandler  handlers.AuthorsHandler
 	LogsHandler     handlers.LogsHandler
+	ServersHandler  handlers.ServersHandler
 	Middleware      handlers.Middleware
 	FirebaseHandler handlers.FirebaseHandler
 }
@@ -48,6 +49,10 @@ func (w Web) Listen() {
 	router.HandleFunc("/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETAllAuthors)).Methods("GET")
 	router.HandleFunc("/car/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
 	router.HandleFunc("/track/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
+
+	router.HandleFunc("/fsr/server/all", w.Middleware.IsAuthorized(w.ServersHandler.GETAllServers)).Methods("GET")
+	router.HandleFunc("/fsr/server/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.UPDATEServer, []string{"admin", "fsrteam"}))).Methods("POST")
+	router.HandleFunc("/fsr/server/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.ADDServer, []string{"admin", "fsrteam"}))).Methods("POST")
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")

@@ -43,6 +43,12 @@ type AuthorController interface {
 	GetAllTrackAuthors() ([]entities.Author, error)
 }
 
+type ServersController interface {
+	GetAllServers() ([]entities.Server, error)
+	AddServer(server entities.Server) error
+	UpdateServer(server entities.Server) error
+}
+
 type FirebaseController interface {
 	RegisterToTopic(token string, topic string) error
 	NotifyCarAdded(car entities.Car) error

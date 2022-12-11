@@ -43,6 +43,12 @@ type AuthorsHandler interface {
 	GETCarAuthors(http.ResponseWriter, *http.Request)
 }
 
+type ServersHandler interface {
+	GETAllServers(w http.ResponseWriter, r *http.Request)
+	ADDServer(w http.ResponseWriter, r *http.Request)
+	UPDATEServer(w http.ResponseWriter, r *http.Request)
+}
+
 type Middleware interface {
 	IsAuthorized(next http.HandlerFunc) http.HandlerFunc
 	IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc
