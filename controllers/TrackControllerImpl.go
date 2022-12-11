@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/davide/ModRepository/controllers/helpers"
 	"github.com/davide/ModRepository/models/entities"
 	"github.com/davide/ModRepository/repositories"
 )
@@ -10,7 +11,7 @@ type TrackControllerImpl struct {
 }
 
 func (t TrackControllerImpl) GetAllTracks(role entities.Role) ([]entities.Track, error) {
-	return t.Repo.SelectAllTracks(role)
+	return t.Repo.SelectAllTracks(helpers.IsPremium(role), helpers.IsAdmin(role))
 }
 
 func (t TrackControllerImpl) AddTrack(track *entities.Track) error {

@@ -40,9 +40,9 @@ type TrackMod struct {
 	Rating       uint
 }
 
-func (t TrackMod) ToEntity(userRole entities.Role) entities.Track {
+func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
 	download := t.DownloadLink
-	if (t.Premium && userRole == entities.Base) || (t.Personal && userRole != entities.Admin) {
+	if (t.Premium && !premium) || (t.Personal && !admin) {
 		download = t.Source
 	}
 	return entities.Track{
@@ -126,6 +126,7 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		ModModel:     ModModel{Id: track.Id},
 		DownloadLink: track.DownloadLink,
 		Personal:     track.Personal,
+		Source:       track.Source,
 		Name:         track.Name,
 		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
 		Location:     track.Location,

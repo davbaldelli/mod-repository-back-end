@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/davide/ModRepository/controllers/helpers"
 	"github.com/davide/ModRepository/models/entities"
 	"github.com/davide/ModRepository/repositories"
 )
@@ -14,7 +15,7 @@ func (c CarControllerImpl) GetAllCarCategories() ([]entities.CarCategory, error)
 }
 
 func (c CarControllerImpl) GetAllCars(role entities.Role) ([]entities.Car, error) {
-	return c.Repo.SelectAllCars(role)
+	return c.Repo.SelectAllCars(helpers.IsPremium(role), helpers.IsAdmin(role))
 }
 
 func (c CarControllerImpl) AddCar(car *entities.Car) error {

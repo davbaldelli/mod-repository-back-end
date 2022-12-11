@@ -6,6 +6,7 @@ const (
 	Admin   Role = "admin"
 	Premium Role = "premium"
 	Base    Role = "base"
+	FSRTeam Role = "fsrteam"
 )
 
 type User struct {

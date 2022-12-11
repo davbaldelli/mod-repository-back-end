@@ -6,7 +6,7 @@ import (
 
 type CarRepository interface {
 	InsertCar(car *entities.Car) error
-	SelectAllCars(role entities.Role) ([]entities.Car, error)
+	SelectAllCars(premium bool, admin bool) ([]entities.Car, error)
 	SelectAllCarCategories() ([]entities.CarCategory, error)
 	UpdateCar(car entities.Car) (bool, error)
 }
@@ -17,7 +17,7 @@ type LogRepository interface {
 }
 
 type TrackRepository interface {
-	SelectAllTracks(role entities.Role) ([]entities.Track, error)
+	SelectAllTracks(premium bool, admin bool) ([]entities.Track, error)
 	InsertTrack(track *entities.Track) error
 	UpdateTrack(track entities.Track) (bool, error)
 }

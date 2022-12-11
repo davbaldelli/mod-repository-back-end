@@ -66,9 +66,9 @@ func (cat CarCategory) toEntity() entities.CarCategory {
 	return entities.CarCategory{Name: entities.CarType(cat.Category)}
 }
 
-func (c CarMods) ToEntity(userRole entities.Role) entities.Car {
+func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 	download := c.DownloadLink
-	if (c.Premium && userRole == entities.Base) || (c.Personal && userRole != entities.Admin) {
+	if (c.Premium && !premium) || (c.Personal && !admin) {
 		download = c.Source
 	}
 	return entities.Car{

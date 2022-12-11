@@ -47,9 +47,9 @@ func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 					next.ServeHTTP(w, r)
 					return
 				}
-			case "base":
+			case "fsrteam":
 				{
-					r.Header.Set("Role", string(entities.Base))
+					r.Header.Set("Role", string(entities.FSRTeam))
 					next.ServeHTTP(w, r)
 					return
 				}
