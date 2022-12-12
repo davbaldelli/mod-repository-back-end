@@ -9,4 +9,12 @@ type Server struct {
 	Online      bool   `json:"online"`
 	Track       uint   `json:"track"`
 	Cars        []uint `json:"cars"`
+	OutsideCars []OutsideMod `json:"outsideCars"`
+}
+
+type OutsideMod struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+	DownloadLink string `json:"downloadLink"`
+	ServerId uint `json:"serverId"`
 }

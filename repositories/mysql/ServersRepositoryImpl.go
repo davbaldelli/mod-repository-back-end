@@ -30,12 +30,30 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 		})
 	}
 
-	if result := s.Db.Model(&db.Server{Id: server.Id}).Association("Cars").Clear(); result != nil {
+	if result := s.Db.Model(&db.Server{Id: server.Id}).Association("OutsideCars").Clear(); result != nil {
 		return result
 	}
 
-	if result := s.Db.Table("server_cars").Create(&serverCars); result.Error != nil {
+	var outsideCars []db.OutsideMod
+
+	for _, outsideCar := range server.OutsideCars{
+		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, server.Id))
+	}
+
+	if len(outsideCars) > 0 {
+		if result := s.Db.Model(&db.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
+			return result.Error
+		}
+	}
+
+	if result := s.Db.Where("server_id = ?", server.Id).Delete(&db.OutsideMod{}); result.Error != nil {
 		return result.Error
+	}
+
+	if len(serverCars) > 0 {
+		if result := s.Db.Table("server_cars").Create(&serverCars); result.Error != nil {
+			return result.Error
+		}
 	}
 
 	return nil
@@ -43,7 +61,7 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 
 func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 
-	if result := s.Db.Model(db.Server{}).Omit("Cars").Create(&server); result.Error != nil {
+	if result := s.Db.Model(db.Server{}).Omit("Cars", "OutsideCars").Create(&server); result.Error != nil {
 		return result.Error
 	}
 
@@ -54,6 +72,16 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 			CarId:    carId,
 			ServerId: server.Id,
 		})
+	}
+
+	var outsideCars []db.OutsideMod
+
+	for _, outsideCar := range server.OutsideCars{
+		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, server.Id))
+	}
+
+	if result:= s.Db.Model(&db.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil{
+		return result.Error
 	}
 
 	if result := s.Db.Table("server_cars").Create(&serverCars); result.Error != nil {

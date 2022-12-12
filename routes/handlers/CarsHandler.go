@@ -49,7 +49,9 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 	}
 
 	//c.FirebaseCtrl.NotifyCarAdded(car)
-	go c.DiscordBotCtrl.NotifyCarAdded(car)
+	if !car.Official {
+		go c.DiscordBotCtrl.NotifyCarAdded(car)
+	}
 
 	respondJSON(writer, http.StatusCreated, car)
 }
@@ -67,7 +69,7 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 	if versionChange, err := c.CarCtrl.UpdateCar(car); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
-	} else if versionChange {
+	} else if versionChange && !car.Official {
 		//c.FirebaseCtrl.NotifyCarUpdated(car)
 		go c.DiscordBotCtrl.NotifyCarUpdated(car)
 	}

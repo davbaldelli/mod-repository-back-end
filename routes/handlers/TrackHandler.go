@@ -40,7 +40,9 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 	//t.FirebaseCtrl.NotifyTrackAdded(track)
-	go t.DiscordBotCtrl.NotifyTrackAdded(track)
+	if !track.Official{
+		go t.DiscordBotCtrl.NotifyTrackAdded(track)
+	}
 
 	respondJSON(writer, http.StatusCreated, track)
 }
@@ -57,7 +59,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 	if versionChange, err := t.TrackCtrl.UpdateTrack(track); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
-	} else if versionChange {
+	} else if versionChange && !track.Official{
 		//t.FirebaseCtrl.NotifyTrackUpdated(track)
 		go t.DiscordBotCtrl.NotifyTrackUpdated(track)
 	}

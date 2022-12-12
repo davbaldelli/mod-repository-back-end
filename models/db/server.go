@@ -11,16 +11,24 @@ type Server struct {
 	Online      bool
 	TrackId     uint
 	Cars        []*Car `gorm:"many2many:server_cars;foreignKey:Id;joinForeignKey:ServerId;References:Id;joinReferences:CarId"`
+	OutsideCars []*OutsideMod `gorm:"foreignKey:ServerId"`
 }
 
-// Which creates join table: user_profiles
-//   foreign key: user_refer_id, reference: users.refer
-//   foreign key: profile_refer, reference: profiles.user_refer
+type OutsideMod struct {
+	Id string `gorm:"primaryKey"`
+	Name string
+	DownloadLink string
+	ServerId uint
+}
 
 func (s Server) ToEntity() entities.Server {
 	var cars []uint
+	var outsideCars []entities.OutsideMod
 	for _, dbCar := range s.Cars {
 		cars = append(cars, dbCar.Id)
+	}
+	for _, outsideCar := range s.OutsideCars{
+		outsideCars = append(outsideCars, outsideCar.ToEntity())
 	}
 	return entities.Server{
 		Id:          s.Id,
@@ -31,5 +39,23 @@ func (s Server) ToEntity() entities.Server {
 		Online:      s.Online,
 		Track:       s.TrackId,
 		Cars:        cars,
+		OutsideCars: outsideCars,
+	}
+}
+
+func OutsideModFromEntity(mod entities.OutsideMod, serverId uint) OutsideMod{
+	return OutsideMod{
+		Name:         mod.Name,
+		DownloadLink: mod.DownloadLink,
+		ServerId:     serverId,
+	}
+}
+
+func (o OutsideMod) ToEntity() entities.OutsideMod{
+	return entities.OutsideMod{
+		Id:           o.Id,
+		Name:         o.Name,
+		DownloadLink: o.DownloadLink,
+		ServerId:     o.ServerId,
 	}
 }
