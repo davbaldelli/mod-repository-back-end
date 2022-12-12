@@ -30,7 +30,7 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 		})
 	}
 
-	if result := s.Db.Model(&db.Server{Id: server.Id}).Association("OutsideCars").Clear(); result != nil {
+	if result := s.Db.Model(&db.Server{Id: server.Id}).Association("Cars").Clear(); result != nil {
 		return result
 	}
 
