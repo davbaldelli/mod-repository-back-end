@@ -6,19 +6,12 @@ import (
 
 type CarMods struct {
 	ModModel
-	Rating       uint
-	Version      string
-	DownloadLink string
-	Source       string
 	ModelName    string `gorm:"column:model"`
 	Year         uint
 	Brand        string
 	Categories   []CarCategory `gorm:"foreignKey:IdCar"`
 	Transmission string
 	Drivetrain   string
-	Premium      bool
-	Personal     bool
-	Image        string
 	BHP          uint
 	Torque       uint
 	Weight       uint
@@ -32,24 +25,16 @@ type CarMods struct {
 
 type Car struct {
 	ModModel
-	Rating       uint
-	Version      string
-	DownloadLink string
-	Source       string
 	ModelName    string `gorm:"column:model"`
 	Year         int
 	IdBrand      uint
 	Categories   []CarCategory `gorm:"foreignKey:IdCar"`
 	Transmission string
 	Drivetrain   string
-	Premium      bool
-	Personal     bool
-	Image        string
 	BHP          uint
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
-	IdAuthor     uint
 }
 
 type CarCategory struct {
@@ -87,6 +72,7 @@ func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 			UpdatedAt: c.UpdatedAt,
 			Rating:    c.Rating,
 			Version:   c.Version,
+			Official: c.Official,
 		},
 		Brand: entities.CarBrand{
 			Name:   c.Brand,
@@ -116,25 +102,28 @@ func mapCategories(vs []CarCategory, f func(category CarCategory) entities.CarCa
 
 func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
-		ModModel:     ModModel{Id: car.Id},
-		Rating:       car.Rating,
-		DownloadLink: car.DownloadLink,
-		Source:       car.Source,
+		ModModel:     ModModel{
+			Id:           car.Id,
+			Rating:       car.Rating,
+			Version:      car.Version,
+			DownloadLink: car.DownloadLink,
+			Source:       car.Source,
+			Premium:      car.Premium,
+			Personal:     car.Personal,
+			IdAuthor:     idAuthor,
+			Image:        car.Image,
+			Official: car.Official,
+		},
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories, car.Id),
 		Year:         int(car.Year),
 		Drivetrain:   string(car.Drivetrain),
 		Transmission: string(car.Transmission),
-		Premium:      car.Premium,
-		Personal:     car.Personal,
-		Image:        car.Image,
 		BHP:          car.BHP,
 		Torque:       car.Torque,
 		Weight:       car.Weight,
 		TopSpeed:     car.TopSpeed,
-		IdAuthor:     idAuthor,
-		Version:      car.Version,
 	}
 }
 

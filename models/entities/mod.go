@@ -14,6 +14,7 @@ type Mod struct {
 	UpdatedAt    time.Time `json:"updatedAt"`
 	Rating       uint      `json:"rating"`
 	Version      string    `json:"version"`
+	Official string `json:"official"`
 }
 
 type Author struct {

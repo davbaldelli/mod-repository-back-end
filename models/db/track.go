@@ -1,31 +1,21 @@
 package db
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models/entities"
+)
 
 type Track struct {
 	ModModel
-	Version      string
-	DownloadLink string
-	Source       string
-	Personal     bool
 	Name         string
 	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
 	Location     string
 	IdNation     uint
 	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
 	Year         uint
-	Premium      bool
-	Image        string
-	IdAuthor     uint
-	Rating       uint
 }
 
 type TrackMod struct {
 	ModModel
-	Version      string
-	DownloadLink string
-	Source       string
-	Personal     bool
 	Name         string
 	Layouts      []Layout   `gorm:"foreignKey:IdTrack"`
 	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
@@ -33,11 +23,8 @@ type TrackMod struct {
 	Nation       string
 	NationCode   string
 	Year         uint
-	Premium      bool
-	Image        string
 	Author       string
 	AuthorLink   string
-	Rating       uint
 }
 
 func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
@@ -61,6 +48,7 @@ func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
 			CreatedAt: t.CreatedAt,
 			UpdatedAt: t.UpdatedAt,
 			Version:   t.Version,
+			Official: t.Official,
 		},
 		Name: t.Name,
 		Layouts: mapLayouts(t.Layouts, func(layout Layout) entities.Layout {
@@ -123,21 +111,24 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		tags = append(tags, TrackTag{Tag: string(tag)})
 	}
 	return Track{
-		ModModel:     ModModel{Id: track.Id},
-		DownloadLink: track.DownloadLink,
-		Personal:     track.Personal,
-		Source:       track.Source,
+		ModModel:     ModModel{
+			Id:           track.Id,
+			Rating:      track.Rating,
+			Version:      track.Version,
+			DownloadLink: track.DownloadLink,
+			Source:       track.Source,
+			Premium:      track.Premium,
+			Personal:     track.Personal,
+			IdAuthor:     idAuthor,
+			Image:        track.Image,
+			Official: track.Official,
+		},
 		Name:         track.Name,
 		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
 		Location:     track.Location,
 		IdNation:     idNation,
 		Tags:         tags,
 		Year:         track.Year,
-		Premium:      track.Premium,
-		Image:        track.Image,
-		IdAuthor:     idAuthor,
-		Rating:       track.Rating,
-		Version:      track.Version,
 	}
 }
 
