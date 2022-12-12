@@ -14,5 +14,5 @@ type ModModel struct {
 	Personal     bool
 	IdAuthor     uint
 	Image        string
-	Official string
+	Official bool
 }
