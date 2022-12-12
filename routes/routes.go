@@ -61,7 +61,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/notification/register", w.Middleware.IsAuthorized(w.FirebaseHandler.SubscribeToTopic)).Methods("POST")
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://www.acmodrepository.com", "http://localhost:8080", "http://localhost:3000", "https://mods.davidebaldelli.it", "128.116.134.232"},
+		AllowedOrigins:   []string{"https://www.acmodrepository.com", "http://localhost:8080", "http://localhost:3000", "https://mods.davidebaldelli.it", "128.116.134.232", "https://fsr-dev--nuxt-acmodrepo.netlify.app"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 	})
