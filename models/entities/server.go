@@ -1,12 +1,12 @@
 package entities
 
 type Server struct {
-	Id          uint
-	Name        string
-	Description string
-	JoinLink    string
-	Password    string
-	Online      bool
-	Track       uint
-	Cars        []uint
+	Id          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	JoinLink    string `json:"joinLink"`
+	Password    string `json:"password"`
+	Online      bool   `json:"online"`
+	Track       uint   `json:"track"`
+	Cars        []uint `json:"cars"`
 }
