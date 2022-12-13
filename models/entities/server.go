@@ -9,6 +9,7 @@ type Server struct {
 	Online           bool         `json:"online"`
 	Track            uint         `json:"track"`
 	Cars             []uint       `json:"cars"`
+	OutsideTrack     bool         `json:"outsideTrack"`
 	OutsideTrackName string       `json:"outsideTrackName"`
 	OutsideTrackLink string       `json:"outsideTrackLink"`
 	OutsideCars      []OutsideMod `json:"outsideCars"`

@@ -17,7 +17,9 @@ type serverCarsAssoc struct {
 
 func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 
-	if result := s.Db.Model(db.Server{}).Where("id = ?", server.Id).Updates(&server); result.Error != nil {
+	dbServer := db.ServerFromEntity(server)
+
+	if result := s.Db.Model(db.Server{}).Where("id = ?", dbServer.Id).Select("*").Omit("OutsideCars").Updates(&dbServer); result.Error != nil {
 		return result.Error
 	}
 
@@ -30,7 +32,7 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 		})
 	}
 
-	if result := s.Db.Model(&db.Server{Id: server.Id}).Association("Cars").Clear(); result != nil {
+	if result := s.Db.Model(&db.Server{Id: dbServer.Id}).Association("Cars").Clear(); result != nil {
 		return result
 	}
 
@@ -43,10 +45,10 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 	var outsideCars []db.OutsideMod
 
 	for _, outsideCar := range server.OutsideCars {
-		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, server.Id))
+		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, dbServer.Id))
 	}
 
-	if result := s.Db.Where("server_id = ?", server.Id).Delete(&db.OutsideMod{}); result.Error != nil {
+	if result := s.Db.Where("server_id = ?", dbServer.Id).Delete(&db.OutsideMod{}); result.Error != nil {
 		return result.Error
 	}
 
@@ -61,7 +63,9 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 
 func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 
-	if result := s.Db.Model(db.Server{}).Omit("Cars", "OutsideCars").Create(&server); result.Error != nil {
+	dbServer := db.ServerFromEntity(server)
+
+	if result := s.Db.Model(db.Server{}).Omit("Cars", "OutsideCars").Create(&dbServer); result.Error != nil {
 		return result.Error
 	}
 
@@ -70,14 +74,14 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 	for _, carId := range server.Cars {
 		serverCars = append(serverCars, serverCarsAssoc{
 			CarId:    carId,
-			ServerId: server.Id,
+			ServerId: dbServer.Id,
 		})
 	}
 
 	var outsideCars []db.OutsideMod
 
 	for _, outsideCar := range server.OutsideCars {
-		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, server.Id))
+		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, dbServer.Id))
 	}
 
 	if result := s.Db.Model(&db.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {

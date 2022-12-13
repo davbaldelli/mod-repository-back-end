@@ -10,10 +10,26 @@ type Server struct {
 	Password         string
 	Online           bool
 	TrackId          uint
+	OutsideTrackName string        `gorm:"column:outside_track_name"`
+	OutsideTrackLink string        `gorm:"column:outside_track_link"`
+	OutsideTrack     bool          `gorm:"column:outside_track"`
 	Cars             []*Car        `gorm:"many2many:server_cars;foreignKey:Id;joinForeignKey:ServerId;References:Id;joinReferences:CarId"`
 	OutsideCars      []*OutsideMod `gorm:"foreignKey:ServerId"`
-	OutsideTrackName string
-	OutsideTrackLink string
+}
+
+func ServerFromEntity(server entities.Server) Server {
+	return Server{
+		Id:               server.Id,
+		Name:             server.Name,
+		Description:      server.Description,
+		JoinLink:         server.JoinLink,
+		Password:         server.Password,
+		Online:           server.Online,
+		TrackId:          server.Track,
+		OutsideTrack:     server.OutsideTrack,
+		OutsideTrackName: server.OutsideTrackName,
+		OutsideTrackLink: server.OutsideTrackLink,
+	}
 }
 
 type OutsideMod struct {
@@ -42,6 +58,7 @@ func (s Server) ToEntity() entities.Server {
 		Password:         s.Password,
 		Online:           s.Online,
 		Track:            s.TrackId,
+		OutsideTrack:     s.OutsideTrack,
 		OutsideTrackName: s.OutsideTrackName,
 		OutsideTrackLink: s.OutsideTrackLink,
 		Cars:             cars,
