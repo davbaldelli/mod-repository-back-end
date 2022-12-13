@@ -47,6 +47,7 @@ type ServersController interface {
 	GetAllServers() ([]entities.Server, error)
 	AddServer(server entities.Server) error
 	UpdateServer(server entities.Server) error
+	DeleteServer(server entities.Server) error
 }
 
 type FirebaseController interface {

@@ -47,4 +47,5 @@ type ServersRepository interface {
 	GetAllServers() ([]entities.Server, error)
 	UpdateServer(server entities.Server) error
 	AddServer(server entities.Server) error
+	DeleteServer(server entities.Server) error
 }

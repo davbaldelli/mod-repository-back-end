@@ -79,6 +79,12 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 		})
 	}
 
+	if len(serverCars) > 0 {
+		if result := s.Db.Table("server_cars").Create(&serverCars); result.Error != nil {
+			return result.Error
+		}
+	}
+
 	var outsideCars []db.OutsideMod
 	outsideCars = make([]db.OutsideMod, 0)
 
@@ -86,14 +92,19 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, dbServer.Id))
 	}
 
-	if result := s.Db.Model(&db.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
-		return result.Error
+	if len(outsideCars) > 0 {
+		if result := s.Db.Model(&db.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
+			return result.Error
+		}
 	}
 
-	if result := s.Db.Table("server_cars").Create(&serverCars); result.Error != nil {
+	return nil
+}
+
+func (s ServersRepositoryImpl) DeleteServer(server entities.Server) error {
+	if result := s.Db.Where("id = ?", server.Id).Delete(&db.Server{}); result.Error != nil {
 		return result.Error
 	}
-
 	return nil
 }
 

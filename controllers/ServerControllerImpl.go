@@ -20,3 +20,7 @@ func (s ServersControllerImpl) UpdateServer(server entities.Server) error {
 func (s ServersControllerImpl) GetAllServers() ([]entities.Server, error) {
 	return s.Repo.GetAllServers()
 }
+
+func (s ServersControllerImpl) DeleteServer(server entities.Server) error {
+	return s.Repo.DeleteServer(server)
+}
