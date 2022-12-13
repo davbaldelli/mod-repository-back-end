@@ -94,7 +94,7 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 func (s ServersRepositoryImpl) GetAllServers() ([]entities.Server, error) {
 	var servers []entities.Server
 	var dbServers []db.Server
-	if result := s.Db.Model(db.Server{}).Preload("Cars").Find(&dbServers); result.Error != nil {
+	if result := s.Db.Model(db.Server{}).Preload("Cars").Preload("OutsideCars").Find(&dbServers); result.Error != nil {
 		return nil, result.Error
 	}
 	for _, server := range dbServers {

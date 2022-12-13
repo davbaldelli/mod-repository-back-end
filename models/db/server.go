@@ -23,7 +23,9 @@ type OutsideMod struct {
 
 func (s Server) ToEntity() entities.Server {
 	var cars []uint
+	cars = make([]uint, 0)
 	var outsideCars []entities.OutsideMod
+	outsideCars = make([]entities.OutsideMod, 0)
 	for _, dbCar := range s.Cars {
 		cars = append(cars, dbCar.Id)
 	}
