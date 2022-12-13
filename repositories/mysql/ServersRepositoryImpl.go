@@ -70,6 +70,7 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 	}
 
 	var serverCars []serverCarsAssoc
+	serverCars = make([]serverCarsAssoc, 0)
 
 	for _, carId := range server.Cars {
 		serverCars = append(serverCars, serverCarsAssoc{
@@ -79,6 +80,7 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 	}
 
 	var outsideCars []db.OutsideMod
+	outsideCars = make([]db.OutsideMod, 0)
 
 	for _, outsideCar := range server.OutsideCars {
 		outsideCars = append(outsideCars, db.OutsideModFromEntity(outsideCar, dbServer.Id))
