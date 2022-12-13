@@ -53,6 +53,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/fsr/server/all", w.Middleware.IsAuthorized(w.ServersHandler.GETAllServers)).Methods("GET")
 	router.HandleFunc("/fsr/server/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.UPDATEServer, []string{"admin", "fsrteam"}))).Methods("POST")
 	router.HandleFunc("/fsr/server/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.ADDServer, []string{"admin", "fsrteam"}))).Methods("POST")
+	router.HandleFunc("/fsr/server/delete", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.DELETEServer, []string{"admin", "fsrteam"}))).Methods("POST")
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
