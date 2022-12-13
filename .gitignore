@@ -2,3 +2,4 @@ credentials.json
 secret.json
 serviceAccountKey.json
 ModRepository
+.vscode/
