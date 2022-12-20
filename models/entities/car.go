@@ -6,7 +6,7 @@ type Transmission string
 
 const (
 	EnduranceCar CarType = "Endurance"
-	Formula              = "Formula"
+	OpenWheel            = "Open Wheel"
 	GT                   = "GT"
 	Prototype            = "Prototype"
 	RallyCar             = "Rally"

@@ -5,18 +5,17 @@ type TrackTag string
 type LayoutType string
 
 const (
-	F1             TrackTag = "F1"
-	Touge          TrackTag = "Touge"
-	NASCAR         TrackTag = "NASCAR"
-	RallyTrack     TrackTag = "Rally"
-	CityTrack      TrackTag = "City Track"
-	StreetTrack    TrackTag = "Street Track"
-	Fictional      TrackTag = "Fictional"
-	EnduranceTrack TrackTag = "Endurance"
-	Drift          TrackTag = "Drift"
-	Historic       TrackTag = "Historic"
-	OpenWorld      TrackTag = "Open World"
-	Karting        TrackTag = "Karting"
+	F1          TrackTag = "F1"
+	Touge       TrackTag = "Touge"
+	NASCAR      TrackTag = "NASCAR"
+	RallyTrack  TrackTag = "Rally"
+	StreetTrack TrackTag = "Street Track"
+	Fictional   TrackTag = "Fictional"
+	Drift       TrackTag = "Drift"
+	Historic    TrackTag = "Historic"
+	OpenWorld   TrackTag = "Open World"
+	Karting     TrackTag = "Karting"
+	LaserScan   TrackTag = "Laser Scan"
 )
 
 const (
