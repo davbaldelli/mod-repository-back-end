@@ -70,7 +70,7 @@ func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (db.Car, error)
 func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
 	return []entities.CarCategory{
 		{Name: entities.EnduranceCar},
-		{Name: entities.Formula},
+		{Name: entities.OpenWheel},
 		{Name: entities.GT},
 		{Name: entities.Touring},
 		{Name: entities.Tuned},
