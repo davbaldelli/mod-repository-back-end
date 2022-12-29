@@ -109,11 +109,19 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 			return false, res.Error
 		}
 
-		if res := c.Db.Where("id_car = ?", dbCar.Id).Delete(&db.CarCategory{}); res.Error != nil {
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&db.CarCategory{}); res.Error != nil {
 			return false, res.Error
 		}
 
 		if res := c.Db.Model(&dbCar).Association("Categories").Append(dbCar.Categories); res != nil {
+			return false, res
+		}
+
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&db.CarImage{}); res.Error != nil {
+			return false, res.Error
+		}
+
+		if res := c.Db.Model(&dbCar).Association("Images").Append(dbCar.Images); res != nil {
 			return false, res
 		}
 

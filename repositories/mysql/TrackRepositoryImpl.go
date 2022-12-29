@@ -104,14 +104,6 @@ func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) (bool, error) {
 			return false, res
 		}
 
-		if res := t.Db.Where("id_track = ?", dbTrack.Id).Delete(&db.TrackTag{}); res.Error != nil {
-			return false, res.Error
-		}
-
-		if res := t.Db.Model(&dbTrack).Association("Tags").Append(dbTrack.Tags); res != nil {
-			return false, res
-		}
-
 		if res := t.Db.Where("track_id = ?", dbTrack.Id).Delete(&db.TrackImage{}); res.Error != nil {
 			return false, res.Error
 		}
