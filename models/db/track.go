@@ -6,25 +6,32 @@ import (
 
 type Track struct {
 	ModModel
-	Name         string
-	Layouts      []Layout `gorm:"foreignKey:IdTrack"`
-	Location     string
-	IdNation     uint
-	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
-	Year         uint
+	Name     string
+	Layouts  []Layout `gorm:"foreignKey:IdTrack"`
+	Location string
+	IdNation uint
+	Tags     []TrackTag `gorm:"foreignKey:IdTrack"`
+	Year     uint
+	Images   []TrackImage `gorm:"foreignKey:TrackId"`
 }
 
 type TrackMod struct {
 	ModModel
-	Name         string
-	Layouts      []Layout   `gorm:"foreignKey:IdTrack"`
-	Tags         []TrackTag `gorm:"foreignKey:IdTrack"`
-	Location     string
-	Nation       string
-	NationCode   string
-	Year         uint
-	Author       string
-	AuthorLink   string
+	Name       string
+	Layouts    []Layout   `gorm:"foreignKey:IdTrack"`
+	Tags       []TrackTag `gorm:"foreignKey:IdTrack"`
+	Location   string
+	Nation     string
+	NationCode string
+	Year       uint
+	Author     string
+	AuthorLink string
+	Images     []TrackImage `gorm:"foreignKey:TrackId"`
+}
+
+type TrackImage struct {
+	Image
+	TrackId uint
 }
 
 func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
@@ -39,7 +46,7 @@ func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
 			Source:       t.Source,
 			Premium:      t.Premium,
 			Personal:     t.Personal,
-			Image:        t.Image,
+			Images:       allTrackImagesToEntity(t.Images),
 			Author: entities.Author{
 				Name: t.Author,
 				Link: t.AuthorLink,
@@ -48,7 +55,7 @@ func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
 			CreatedAt: t.CreatedAt,
 			UpdatedAt: t.UpdatedAt,
 			Version:   t.Version,
-			Official: t.Official,
+			Official:  t.Official,
 		},
 		Name: t.Name,
 		Layouts: mapLayouts(t.Layouts, func(layout Layout) entities.Layout {
@@ -111,24 +118,24 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 		tags = append(tags, TrackTag{Tag: string(tag)})
 	}
 	return Track{
-		ModModel:     ModModel{
+		ModModel: ModModel{
 			Id:           track.Id,
-			Rating:      track.Rating,
+			Rating:       track.Rating,
 			Version:      track.Version,
 			DownloadLink: track.DownloadLink,
 			Source:       track.Source,
 			Premium:      track.Premium,
 			Personal:     track.Personal,
 			IdAuthor:     idAuthor,
-			Image:        track.Image,
-			Official: track.Official,
+			Official:     track.Official,
 		},
-		Name:         track.Name,
-		Layouts:      allLayoutFromEntity(track.Layouts, idAuthor),
-		Location:     track.Location,
-		IdNation:     idNation,
-		Tags:         tags,
-		Year:         track.Year,
+		Name:     track.Name,
+		Layouts:  allLayoutFromEntity(track.Layouts, idAuthor),
+		Location: track.Location,
+		IdNation: idNation,
+		Tags:     tags,
+		Year:     track.Year,
+		Images:   allTrackImagesFromEntity(track.Images, track.Id),
 	}
 }
 
@@ -147,4 +154,30 @@ func allLayoutFromEntity(layouts []entities.Layout, track uint) []Layout {
 		dbLayouts = append(dbLayouts, layoutFromEntity(layout, track))
 	}
 	return dbLayouts
+}
+
+func (i TrackImage) toEntity() entities.Image {
+	return i.Image.toEntity()
+}
+func allTrackImagesToEntity(dbImages []TrackImage) []entities.Image {
+	var images []entities.Image
+	for _, dbImage := range dbImages {
+		images = append(images, dbImage.toEntity())
+	}
+	return images
+}
+
+func trackImageFromEntity(image entities.Image, id uint) TrackImage {
+	return TrackImage{
+		Image:   imageFromEntity(image),
+		TrackId: id,
+	}
+}
+
+func allTrackImagesFromEntity(images []entities.Image, id uint) []TrackImage {
+	var dbImages []TrackImage
+	for _, image := range images {
+		dbImages = append(dbImages, trackImageFromEntity(image, id))
+	}
+	return dbImages
 }

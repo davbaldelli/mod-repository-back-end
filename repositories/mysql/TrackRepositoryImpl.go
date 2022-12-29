@@ -56,7 +56,7 @@ func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (db.Track
 
 func (t TrackRepositoryImpl) SelectAllTracks(premium bool, admin bool) ([]entities.Track, error) {
 	return selectTracksWithQuery(func() *gorm.DB {
-		return t.Db.Order("name ASC").Preload("Layouts").Preload("Tags")
+		return t.Db.Order("name ASC").Preload("Layouts").Preload("Tags").Preload("Images")
 	}, premium, admin)
 }
 
@@ -101,6 +101,14 @@ func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) (bool, error) {
 		}
 
 		if res := t.Db.Model(&dbTrack).Association("Tags").Append(dbTrack.Tags); res != nil {
+			return false, res
+		}
+
+		if res := t.Db.Where("track_id = ?", dbTrack.Id).Delete(&db.TrackImage{}); res.Error != nil {
+			return false, res.Error
+		}
+
+		if res := t.Db.Model(&dbTrack).Association("Images").Append(dbTrack.Images); res != nil {
 			return false, res
 		}
 

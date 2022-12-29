@@ -109,11 +109,19 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 			return false, res.Error
 		}
 
-		if res := c.Db.Where("id_car = ?", dbCar.Id).Delete(&db.CarCategory{}); res.Error != nil {
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&db.CarCategory{}); res.Error != nil {
 			return false, res.Error
 		}
 
 		if res := c.Db.Model(&dbCar).Association("Categories").Append(dbCar.Categories); res != nil {
+			return false, res
+		}
+
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&db.CarImage{}); res.Error != nil {
+			return false, res.Error
+		}
+
+		if res := c.Db.Model(&dbCar).Association("Images").Append(dbCar.Images); res != nil {
 			return false, res
 		}
 
@@ -125,6 +133,6 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool, admin bool) ([]entities.Car, error) {
 	return c.selectCarsWithQuery(func() *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
+		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories").Preload("Images")
 	}, premium, admin)
 }
