@@ -8,13 +8,13 @@ type Mod struct {
 	Source       string    `json:"source"`
 	Premium      bool      `json:"premium"`
 	Personal     bool      `json:"personal"`
-	Image        string    `json:"image"`
+	Images       []Image   `json:"images"`
 	Author       Author    `json:"author"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
 	Rating       uint      `json:"rating"`
 	Version      string    `json:"version"`
-	Official bool `json:"official"`
+	Official     bool      `json:"official"`
 }
 
 type Author struct {

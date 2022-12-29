@@ -3,9 +3,9 @@ package db
 import "time"
 
 type ModModel struct {
-	Id        uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id           uint `gorm:"primaryKey"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 	Rating       uint
 	Version      string
 	DownloadLink string
@@ -13,6 +13,5 @@ type ModModel struct {
 	Premium      bool
 	Personal     bool
 	IdAuthor     uint
-	Image        string
-	Official bool
+	Official     bool
 }

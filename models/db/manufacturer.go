@@ -3,9 +3,9 @@ package db
 import "github.com/davide/ModRepository/models/entities"
 
 type Manufacturer struct {
-	Id       uint `gorm:"primarykey"`
+	Id       uint `gorm:"primaryKey"`
 	Name     string
-	Logo string
+	Logo     string
 	Cars     []Car `gorm:"foreignKey:IdBrand"`
 	IdNation uint
 }
@@ -13,12 +13,12 @@ type Manufacturer struct {
 func (m Manufacturer) ToEntity(nation Nation) entities.CarBrand {
 	return entities.CarBrand{
 		Name:   m.Name,
-		Logo: m.Logo,
+		Logo:   m.Logo,
 		Nation: entities.Nation{Name: nation.Name, Code: nation.Code},
 	}
 }
 
-func ManufacturerFromEntity(brand entities.CarBrand, idNation uint) Manufacturer{
+func ManufacturerFromEntity(brand entities.CarBrand, idNation uint) Manufacturer {
 	return Manufacturer{
 		Name:     brand.Name,
 		Logo:     brand.Logo,

@@ -9,7 +9,7 @@ type CarMods struct {
 	ModelName    string `gorm:"column:model"`
 	Year         uint
 	Brand        string
-	Categories   []CarCategory `gorm:"foreignKey:IdCar"`
+	Categories   []CarCategory `gorm:"foreignKey:CarId"`
 	Transmission string
 	Drivetrain   string
 	BHP          uint
@@ -21,6 +21,7 @@ type CarMods struct {
 	Nation       string
 	NationCode   string
 	BrandLogo    string
+	Images       []CarImage `gorm:"foreignKey:CarId"`
 }
 
 type Car struct {
@@ -28,23 +29,33 @@ type Car struct {
 	ModelName    string `gorm:"column:model"`
 	Year         int
 	IdBrand      uint
-	Categories   []CarCategory `gorm:"foreignKey:IdCar"`
+	Categories   []CarCategory `gorm:"foreignKey:CarId"`
 	Transmission string
 	Drivetrain   string
 	BHP          uint
 	Torque       uint
 	Weight       uint
 	TopSpeed     uint
+	Images       []CarImage `gorm:"foreignKey:CarId"`
 }
 
 type CarCategory struct {
-	Id       uint `gorm:"primarykey"`
+	Id       uint `gorm:"primaryKey"`
 	Category string
-	IdCar    uint
+	CarId    uint
+}
+
+type CarImage struct {
+	Image
+	CarId uint
 }
 
 func (CarCategory) TableName() string {
 	return "car_categories"
+}
+
+func (CarImage) TableName() string {
+	return "car_images"
 }
 
 func (cat CarCategory) toEntity() entities.CarCategory {
@@ -63,7 +74,7 @@ func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 			Source:       c.Source,
 			Premium:      c.Premium,
 			Personal:     c.Personal,
-			Image:        c.Image,
+			Images:       allCarImagesToEntity(c.Images),
 			Author: entities.Author{
 				Name: c.Author,
 				Link: c.AuthorLink,
@@ -72,7 +83,7 @@ func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 			UpdatedAt: c.UpdatedAt,
 			Rating:    c.Rating,
 			Version:   c.Version,
-			Official: c.Official,
+			Official:  c.Official,
 		},
 		Brand: entities.CarBrand{
 			Name:   c.Brand,
@@ -102,7 +113,7 @@ func mapCategories(vs []CarCategory, f func(category CarCategory) entities.CarCa
 
 func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
-		ModModel:     ModModel{
+		ModModel: ModModel{
 			Id:           car.Id,
 			Rating:       car.Rating,
 			Version:      car.Version,
@@ -111,9 +122,9 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 			Premium:      car.Premium,
 			Personal:     car.Personal,
 			IdAuthor:     idAuthor,
-			Image:        car.Image,
-			Official: car.Official,
+			Official:     car.Official,
 		},
+
 		ModelName:    car.ModelName,
 		IdBrand:      idBrand,
 		Categories:   allCarCategoryFromEntity(car.Categories, car.Id),
@@ -124,12 +135,13 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 		Torque:       car.Torque,
 		Weight:       car.Weight,
 		TopSpeed:     car.TopSpeed,
+		Images:       allCarImagesFromEntity(car.Images, car.Id),
 	}
 }
 
 func carCategoryFromEntity(category entities.CarCategory, id uint) CarCategory {
 	return CarCategory{
-		IdCar:    id,
+		CarId:    id,
 		Category: string(category.Name),
 	}
 }
@@ -140,4 +152,30 @@ func allCarCategoryFromEntity(categories []entities.CarCategory, id uint) []CarC
 		dbCats = append(dbCats, carCategoryFromEntity(cat, id))
 	}
 	return dbCats
+}
+
+func (i CarImage) toEntity() entities.Image {
+	return i.Image.toEntity()
+}
+func allCarImagesToEntity(dbImages []CarImage) []entities.Image {
+	var images []entities.Image
+	for _, dbImage := range dbImages {
+		images = append(images, dbImage.toEntity())
+	}
+	return images
+}
+
+func carImageFromEntity(image entities.Image, id uint) CarImage {
+	return CarImage{
+		Image: imageFromEntity(image),
+		CarId: id,
+	}
+}
+
+func allCarImagesFromEntity(images []entities.Image, id uint) []CarImage {
+	var dbImages []CarImage
+	for _, image := range images {
+		dbImages = append(dbImages, carImageFromEntity(image, id))
+	}
+	return dbImages
 }

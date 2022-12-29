@@ -125,6 +125,6 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 
 func (c CarRepositoryImpl) SelectAllCars(premium bool, admin bool) ([]entities.Car, error) {
 	return c.selectCarsWithQuery(func() *gorm.DB {
-		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories")
+		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories").Preload("Images")
 	}, premium, admin)
 }
