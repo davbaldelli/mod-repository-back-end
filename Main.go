@@ -99,6 +99,7 @@ func main() {
 	authorRepo := repo.AuthorsRepositoryImpl{Db: dbase}
 	logsRepo := repo.LogRepositoryImpl{Db: dbase}
 	serversRepo := repo.ServersRepositoryImpl{Db: dbase}
+	skinsRepo := repo.SkinRepositoryImpl{Db: dbase}
 
 	web := routes.Web{
 		CarHandler: handlers.CarsHandlerImpl{
@@ -117,6 +118,7 @@ func main() {
 		AuthorsHandler:  handlers.AuthorHandlerImpl{AuthorsCtrl: controllers.AuthorsControllerImpl{Repo: authorRepo}},
 		LogsHandler:     handlers.LogsHandlerImpl{Ctrl: controllers.LogControllerImpl{Repo: logsRepo}},
 		ServersHandler:  handlers.ServersHandlerImpl{Ctrl: controllers.ServersControllerImpl{Repo: serversRepo}},
+		SkinsHandler:    handlers.SkinsHandlerImpl{Ctrl: controllers.SkinControllerImpl{Repo: skinsRepo}},
 		Middleware:      handlers.MiddlewareImpl{Secret: secret.Secret},
 		FirebaseHandler: handlers.FirebaseHandlerImpl{Ctrl: controllers.FirebaseControllerImpl{Client: client, Context: context.Background()}},
 	}

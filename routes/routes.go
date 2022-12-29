@@ -25,6 +25,7 @@ type Web struct {
 	ServersHandler  handlers.ServersHandler
 	Middleware      handlers.Middleware
 	FirebaseHandler handlers.FirebaseHandler
+	SkinsHandler    handlers.SkinHandler
 }
 
 func (w Web) Listen() {
@@ -50,6 +51,10 @@ func (w Web) Listen() {
 	router.HandleFunc("/car/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETCarAuthors)).Methods("GET")
 	router.HandleFunc("/track/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
 
+	router.HandleFunc("/skin", w.Middleware.IsAuthorized(w.SkinsHandler.GETCarSkins)).Methods("GET")
+	router.HandleFunc("/skin/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.ADDSkin, []string{"admin"}))).Methods("POST")
+	router.HandleFunc("/skin/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.UPDATESkin, []string{"admin"}))).Methods("POST")
+
 	router.HandleFunc("/fsr/server/all", w.Middleware.IsAuthorized(w.ServersHandler.GETAllServers)).Methods("GET")
 	router.HandleFunc("/fsr/server/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.UPDATEServer, []string{"admin", "fsrteam"}))).Methods("POST")
 	router.HandleFunc("/fsr/server/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.ADDServer, []string{"admin", "fsrteam"}))).Methods("POST")
@@ -68,7 +73,7 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
-
+	
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),

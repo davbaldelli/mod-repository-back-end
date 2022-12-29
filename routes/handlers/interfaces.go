@@ -50,6 +50,12 @@ type ServersHandler interface {
 	DELETEServer(w http.ResponseWriter, r *http.Request)
 }
 
+type SkinHandler interface {
+	GETCarSkins(w http.ResponseWriter, r *http.Request)
+	ADDSkin(w http.ResponseWriter, r *http.Request)
+	UPDATESkin(w http.ResponseWriter, r *http.Request)
+}
+
 type Middleware interface {
 	IsAuthorized(next http.HandlerFunc) http.HandlerFunc
 	IsAllowed(next http.HandlerFunc, allowedRoles []string) http.HandlerFunc

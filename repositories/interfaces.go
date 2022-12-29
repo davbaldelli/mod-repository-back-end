@@ -49,3 +49,9 @@ type ServersRepository interface {
 	AddServer(server entities.Server) error
 	DeleteServer(server entities.Server) error
 }
+
+type SkinRepository interface {
+	SelectCarSkins(carId uint) ([]entities.Skin, error)
+	AddSkin(skin entities.Skin) error
+	UpdateSkin(skin entities.Skin) error
+}

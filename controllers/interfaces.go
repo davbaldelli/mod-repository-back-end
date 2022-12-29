@@ -50,6 +50,12 @@ type ServersController interface {
 	DeleteServer(server entities.Server) error
 }
 
+type SkinController interface {
+	SelectCarSkins(carId uint) ([]entities.Skin, error)
+	AddSkin(skin entities.Skin) error
+	UpdateSkin(skin entities.Skin) error
+}
+
 type FirebaseController interface {
 	RegisterToTopic(token string, topic string) error
 	NotifyCarAdded(car entities.Car) error
