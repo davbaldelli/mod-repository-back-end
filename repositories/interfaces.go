@@ -52,6 +52,7 @@ type ServersRepository interface {
 
 type SkinRepository interface {
 	SelectCarSkins(carId uint) ([]entities.Skin, error)
+	GetAllSkins() ([]entities.Skin, error)
 	AddSkin(skin entities.Skin) error
 	UpdateSkin(skin entities.Skin) error
 }

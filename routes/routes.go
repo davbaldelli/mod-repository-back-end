@@ -52,6 +52,7 @@ func (w Web) Listen() {
 	router.HandleFunc("/track/author/all", w.Middleware.IsAuthorized(w.AuthorsHandler.GETTrackAuthors)).Methods("GET")
 
 	router.HandleFunc("/skin", w.Middleware.IsAuthorized(w.SkinsHandler.GETCarSkins)).Methods("GET")
+	router.HandleFunc("/skin/all", w.Middleware.IsAuthorized(w.SkinsHandler.GETAllSkins)).Methods("GET")
 	router.HandleFunc("/skin/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.ADDSkin, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/skin/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.UPDATESkin, []string{"admin"}))).Methods("POST")
 
@@ -73,7 +74,7 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
-	
+
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),

@@ -10,6 +10,16 @@ type SkinRepositoryImpl struct {
 	Db *gorm.DB
 }
 
+func (s SkinRepositoryImpl) GetAllSkins() ([]entities.Skin, error) {
+	var skins []entities.Skin
+	if result := s.Db.Model(&entities.Skin{}).Find(&skins); result.Error != nil {
+		return nil, result.Error
+	} else if result.RowsAffected == 0 {
+		return nil, errors.New("not found")
+	}
+	return skins, nil
+}
+
 func (s SkinRepositoryImpl) SelectCarSkins(carId uint) ([]entities.Skin, error) {
 	var skins []entities.Skin
 	if result := s.Db.Model(&entities.Skin{}).Where("car_id = ?", carId).Find(&skins); result.Error != nil {

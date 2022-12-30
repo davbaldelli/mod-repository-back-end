@@ -13,6 +13,10 @@ func (s SkinControllerImpl) SelectCarSkins(carId uint) ([]entities.Skin, error) 
 	return s.Repo.SelectCarSkins(carId)
 }
 
+func (s SkinControllerImpl) GetAllSkins() ([]entities.Skin, error) {
+	return s.Repo.GetAllSkins()
+}
+
 func (s SkinControllerImpl) AddSkin(skin entities.Skin) error {
 	return s.Repo.AddSkin(skin)
 }

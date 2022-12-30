@@ -49,7 +49,7 @@ func main() {
 	var secret Secret
 
 	if secretFile, err := os.Open("secret.json"); err != nil {
-		log.Fatal("no credentials file")
+		log.Fatal("no secret file")
 	} else {
 		if secretByte, err := ioutil.ReadAll(secretFile); err != nil {
 			log.Fatal("err pasrsing json")

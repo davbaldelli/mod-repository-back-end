@@ -52,6 +52,7 @@ type ServersHandler interface {
 
 type SkinHandler interface {
 	GETCarSkins(w http.ResponseWriter, r *http.Request)
+	GETAllSkins(w http.ResponseWriter, r *http.Request)
 	ADDSkin(w http.ResponseWriter, r *http.Request)
 	UPDATESkin(w http.ResponseWriter, r *http.Request)
 }

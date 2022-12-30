@@ -30,6 +30,15 @@ func (s SkinsHandlerImpl) GETCarSkins(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s SkinsHandlerImpl) GETAllSkins(w http.ResponseWriter, r *http.Request) {
+	if skins, err := s.Ctrl.GetAllSkins(); err != nil {
+		respondError(w, http.StatusInternalServerError, fmt.Errorf("Error proccessing request: %v ", err))
+		return
+	} else {
+		respondJSON(w, http.StatusOK, skins)
+	}
+}
+
 func (s SkinsHandlerImpl) ADDSkin(w http.ResponseWriter, r *http.Request) {
 	skin := entities.Skin{}
 
