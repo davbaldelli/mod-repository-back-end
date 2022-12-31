@@ -21,7 +21,7 @@ func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
 				Title:       fmt.Sprintf("%v %v has been added to the repository!", car.Brand.Name, car.ModelName),
 				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
 				Color:       12590120,
-				Image:       &discordgo.MessageEmbedImage{URL: car.Images[0].Url},
+				Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(car.Images)},
 				Author: &discordgo.MessageEmbedAuthor{
 					Name:    "Davide",
 					IconURL: "https://i.imgur.com/M4Am9z1.jpg",
@@ -53,7 +53,7 @@ func (d DiscordBotControllerImpl) NotifyCarUpdated(car entities.Car) error {
 				Title:       fmt.Sprintf("%v %v has been updated!", car.Brand.Name, car.ModelName),
 				Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/cars/%v/%v/%v)", url.PathEscape(car.Brand.Name), url.PathEscape(car.ModelName), car.Year),
 				Color:       12590120,
-				Image:       &discordgo.MessageEmbedImage{URL: car.Images[0].Url},
+				Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(car.Images)},
 				Author: &discordgo.MessageEmbedAuthor{
 					Name:    "Davide",
 					IconURL: "https://i.imgur.com/M4Am9z1.jpg",
@@ -90,7 +90,7 @@ func (d DiscordBotControllerImpl) NotifyTrackUpdated(track entities.Track) error
 			Title:       fmt.Sprintf("%v has been updated!", track.Name),
 			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
 			Color:       12590120,
-			Image:       &discordgo.MessageEmbedImage{URL: track.Images[0].Url},
+			Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(track.Images)},
 			Author: &discordgo.MessageEmbedAuthor{
 				Name:    "Davide",
 				IconURL: "https://i.imgur.com/M4Am9z1.jpg",
@@ -130,7 +130,7 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 			Title:       fmt.Sprintf("%v has been added to the repository!", track.Name),
 			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
 			Color:       12590120,
-			Image:       &discordgo.MessageEmbedImage{URL: track.Images[0].Url},
+			Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(track.Images)},
 			Author: &discordgo.MessageEmbedAuthor{
 				Name:    "Davide",
 				IconURL: "https://i.imgur.com/M4Am9z1.jpg",
@@ -157,4 +157,13 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 		}
 	}
 	return nil
+}
+
+func getFavImageUrl(images []entities.Image) string {
+	for _, image := range images {
+		if image.Favorite {
+			return image.Url
+		}
+	}
+	return ""
 }

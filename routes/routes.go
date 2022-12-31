@@ -1,11 +1,9 @@
 package routes
 
 import (
-	"crypto/tls"
 	"github.com/davide/ModRepository/routes/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
 )
@@ -74,31 +72,31 @@ func (w Web) Listen() {
 	})
 
 	handler := c.Handler(router)
+	/*
+		certManager := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),
+			Cache:      autocert.DirCache("certs"),
+		}
 
-	certManager := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("api.mod.davidebaldelli.it", "api.acmodrepository.com"),
-		Cache:      autocert.DirCache("certs"),
-	}
+		// create the server itself
+		server := &http.Server{
+			Addr:    ":https",
+			Handler: handler,
+			TLSConfig: &tls.Config{
+				GetCertificate: certManager.GetCertificate,
+			},
+		}
 
-	// create the server itself
-	server := &http.Server{
-		Addr:    ":https",
-		Handler: handler,
-		TLSConfig: &tls.Config{
-			GetCertificate: certManager.GetCertificate,
-		},
-	}
+		log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
+		go func() {
+			// serve HTTP, which will redirect automatically to HTTPS
+			h := certManager.HTTPHandler(nil)
+			log.Fatal(http.ListenAndServe(":http", h))
+		}()
 
-	log.Printf("Serving http/https for domains: api.mod.davidebaldelli.it")
-	go func() {
-		// serve HTTP, which will redirect automatically to HTTPS
-		h := certManager.HTTPHandler(nil)
-		log.Fatal(http.ListenAndServe(":http", h))
-	}()
+		log.Fatal(server.ListenAndServeTLS("", ""))*/
 
-	log.Fatal(server.ListenAndServeTLS("", ""))
-
-	//log.Fatal(http.ListenAndServe(":6316", handler))
+	log.Fatal(http.ListenAndServe(":6316", handler))
 
 }

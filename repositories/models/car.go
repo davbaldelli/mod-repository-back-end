@@ -1,4 +1,4 @@
-package db
+package models
 
 import (
 	"github.com/davide/ModRepository/models/entities"

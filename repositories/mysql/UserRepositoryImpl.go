@@ -2,8 +2,8 @@ package mysql
 
 import (
 	"errors"
-	"github.com/davide/ModRepository/models/db"
 	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"math/rand"
@@ -14,7 +14,7 @@ type UserRepositoryImpl struct {
 }
 
 func (u UserRepositoryImpl) Login(user entities.User) (entities.User, error) {
-	var dbUser db.User
+	var dbUser models.User
 	res := u.Db.Find(&dbUser, "username = ? AND password = SHA2(CONCAT(?, salt),?)", user.Username, user.Password, 224)
 	if res.Error != nil {
 		return entities.User{}, res.Error
@@ -33,7 +33,7 @@ func (u UserRepositoryImpl) SignIn(user entities.User) (entities.User, error) {
 		"Role":     string(user.Role),
 		"Salt":     salt,
 	}
-	if res := u.Db.Model(db.User{}).Create(&dbUser); res.Error != nil {
+	if res := u.Db.Model(models.User{}).Create(&dbUser); res.Error != nil {
 		return entities.User{}, res.Error
 	}
 	return entities.User{Username: user.Username, Role: user.Role}, nil
@@ -45,7 +45,7 @@ func (u UserRepositoryImpl) UpdatePassword(username string, password string) err
 		"Password": clause.Expr{SQL: "SHA2(CONCAT(?, ?),?)", Vars: []interface{}{password, salt, 224}},
 		"Salt":     salt,
 	}
-	if res := u.Db.Model(&db.User{}).Where("username = ?", username).Updates(&dbUser); res.Error != nil {
+	if res := u.Db.Model(&models.User{}).Where("username = ?", username).Updates(&dbUser); res.Error != nil {
 		return res.Error
 	}
 	return nil
