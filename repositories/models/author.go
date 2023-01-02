@@ -1,6 +1,8 @@
 package models
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models"
+)
 
 type Author struct {
 	Id     uint `gorm:"primarykey"`
@@ -10,7 +12,7 @@ type Author struct {
 	Tracks []Track `gorm:"foreignKey:IdAuthor"`
 }
 
-func AuthorFromEntity(author entities.Author) Author {
+func AuthorFromEntity(author models.Author) Author {
 	return Author{
 		Name: author.Name,
 		Link: author.Link,

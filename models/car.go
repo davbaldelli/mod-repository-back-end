@@ -1,4 +1,4 @@
-package entities
+package models
 
 type Drivetrain string
 type CarType string

@@ -1,4 +1,4 @@
-package entities
+package models
 
 type Skin struct {
 	Id           uint   `json:"id"`

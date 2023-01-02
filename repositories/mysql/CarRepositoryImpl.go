@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"errors"
-	"github.com/davide/ModRepository/models/entities"
+	models2 "github.com/davide/ModRepository/models"
 	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,8 +15,8 @@ type CarRepositoryImpl struct {
 type carsQuery func() *gorm.DB
 type selectFromBrandsQuery func(*[]models.Manufacturer) *gorm.DB
 
-func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool, admin bool) ([]entities.Car, error) {
-	var cars []entities.Car
+func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool, admin bool) ([]models2.Car, error) {
+	var cars []models2.Car
 	var dbCars []models.CarMods
 
 	if result := carsQuery().Find(&dbCars); result.Error != nil {
@@ -31,7 +31,7 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	return cars, nil
 }
 
-func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (models.Car, error) {
+func (c CarRepositoryImpl) preInsertionQueries(car models2.Car) (models.Car, error) {
 	dbNation := models.NationFromEntity(car.Brand.Nation)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
@@ -67,22 +67,22 @@ func (c CarRepositoryImpl) preInsertionQueries(car entities.Car) (models.Car, er
 	return models.CarFromEntity(car, dbBrand.Id, dbAuthor.Id), nil
 }
 
-func (c CarRepositoryImpl) SelectAllCarCategories() ([]entities.CarCategory, error) {
-	return []entities.CarCategory{
-		{Name: entities.EnduranceCar},
-		{Name: entities.OpenWheel},
-		{Name: entities.GT},
-		{Name: entities.Touring},
-		{Name: entities.Tuned},
-		{Name: entities.Vintage},
-		{Name: entities.StockCar},
-		{Name: entities.Street},
-		{Name: entities.RallyCar},
-		{Name: entities.Prototype},
+func (c CarRepositoryImpl) SelectAllCarCategories() ([]models2.CarCategory, error) {
+	return []models2.CarCategory{
+		{Name: models2.EnduranceCar},
+		{Name: models2.OpenWheel},
+		{Name: models2.GT},
+		{Name: models2.Touring},
+		{Name: models2.Tuned},
+		{Name: models2.Vintage},
+		{Name: models2.StockCar},
+		{Name: models2.Street},
+		{Name: models2.RallyCar},
+		{Name: models2.Prototype},
 	}, nil
 }
 
-func (c CarRepositoryImpl) InsertCar(car *entities.Car) error {
+func (c CarRepositoryImpl) InsertCar(car *models2.Car) error {
 	if dbCar, err := c.preInsertionQueries(*car); err != nil {
 		return err
 	} else {
@@ -94,7 +94,7 @@ func (c CarRepositoryImpl) InsertCar(car *entities.Car) error {
 	return nil
 }
 
-func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
+func (c CarRepositoryImpl) UpdateCar(car models2.Car) (bool, error) {
 	if dbCar, err := c.preInsertionQueries(car); err != nil {
 		return false, err
 	} else {
@@ -131,7 +131,7 @@ func (c CarRepositoryImpl) UpdateCar(car entities.Car) (bool, error) {
 
 }
 
-func (c CarRepositoryImpl) SelectAllCars(premium bool, admin bool) ([]entities.Car, error) {
+func (c CarRepositoryImpl) SelectAllCars(premium bool, admin bool) ([]models2.Car, error) {
 	return c.selectCarsWithQuery(func() *gorm.DB {
 		return c.Db.Order("concat(brand,' ',model) ASC").Preload("Categories").Preload("Images")
 	}, premium, admin)

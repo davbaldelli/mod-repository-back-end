@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"github.com/golang-jwt/jwt"
 	"net/http"
 )
@@ -14,7 +14,7 @@ type MiddlewareImpl struct {
 func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Header["Token"] == nil {
-			r.Header.Set("Role", string(entities.Base))
+			r.Header.Set("Role", string(models.Base))
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -36,20 +36,20 @@ func (m MiddlewareImpl) IsAuthorized(next http.HandlerFunc) http.HandlerFunc {
 			switch claims["role"] {
 			case "admin":
 				{
-					r.Header.Set("Role", string(entities.Admin))
+					r.Header.Set("Role", string(models.Admin))
 					next.ServeHTTP(w, r)
 					return
 				}
 
 			case "premium":
 				{
-					r.Header.Set("Role", string(entities.Premium))
+					r.Header.Set("Role", string(models.Premium))
 					next.ServeHTTP(w, r)
 					return
 				}
 			case "fsrteam":
 				{
-					r.Header.Set("Role", string(entities.FSRTeam))
+					r.Header.Set("Role", string(models.FSRTeam))
 					next.ServeHTTP(w, r)
 					return
 				}

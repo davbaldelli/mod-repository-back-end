@@ -1,73 +1,73 @@
 package controllers
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 )
 
 type CarController interface {
-	GetAllCars(role entities.Role) ([]entities.Car, error)
-	GetAllCarCategories() ([]entities.CarCategory, error)
-	AddCar(car *entities.Car) error
-	UpdateCar(car entities.Car) (bool, error)
+	GetAllCars(role models.Role) ([]models.Car, error)
+	GetAllCarCategories() ([]models.CarCategory, error)
+	AddCar(car *models.Car) error
+	UpdateCar(car models.Car) (bool, error)
 }
 
 type TrackController interface {
-	GetAllTracks(role entities.Role) ([]entities.Track, error)
-	AddTrack(track *entities.Track) error
-	UpdateTrack(track entities.Track) (bool, error)
+	GetAllTracks(role models.Role) ([]models.Track, error)
+	AddTrack(track *models.Track) error
+	UpdateTrack(track models.Track) (bool, error)
 }
 
 type LogController interface {
-	GetTrackLogs() ([]entities.TrackLog, error)
-	GetCarLogs() ([]entities.CarLog, error)
+	GetTrackLogs() ([]models.TrackLog, error)
+	GetCarLogs() ([]models.CarLog, error)
 }
 
 type BrandController interface {
-	GetAllBrands() ([]entities.CarBrand, error)
+	GetAllBrands() ([]models.CarBrand, error)
 }
 
 type NationController interface {
-	GetAllTracksNations() ([]entities.Nation, error)
-	GetAllBrandsNations() ([]entities.Nation, error)
+	GetAllTracksNations() ([]models.Nation, error)
+	GetAllBrandsNations() ([]models.Nation, error)
 }
 
 type UserController interface {
-	Login(username string, password string) (entities.User, error)
-	SignIn(username string, password string, role entities.Role) (entities.User, error)
+	Login(username string, password string) (models.User, error)
+	SignIn(username string, password string, role models.Role) (models.User, error)
 	UpdatePassword(username string, password string) error
 }
 
 type AuthorController interface {
-	GetAllAuthors() ([]entities.Author, error)
-	GetAllCarAuthors() ([]entities.Author, error)
-	GetAllTrackAuthors() ([]entities.Author, error)
+	GetAllAuthors() ([]models.Author, error)
+	GetAllCarAuthors() ([]models.Author, error)
+	GetAllTrackAuthors() ([]models.Author, error)
 }
 
 type ServersController interface {
-	GetAllServers() ([]entities.Server, error)
-	AddServer(server entities.Server) error
-	UpdateServer(server entities.Server) error
-	DeleteServer(server entities.Server) error
+	GetAllServers() ([]models.Server, error)
+	AddServer(server models.Server) error
+	UpdateServer(server models.Server) error
+	DeleteServer(server models.Server) error
 }
 
 type SkinController interface {
-	SelectCarSkins(carId uint) ([]entities.Skin, error)
-	GetAllSkins() ([]entities.Skin, error)
-	AddSkin(skin entities.Skin) error
-	UpdateSkin(skin entities.Skin) error
+	SelectCarSkins(carId uint) ([]models.Skin, error)
+	GetAllSkins() ([]models.Skin, error)
+	AddSkin(skin models.Skin) error
+	UpdateSkin(skin models.Skin) error
 }
 
 type FirebaseController interface {
 	RegisterToTopic(token string, topic string) error
-	NotifyCarAdded(car entities.Car) error
-	NotifyCarUpdated(car entities.Car) error
-	NotifyTrackUpdated(track entities.Track) error
-	NotifyTrackAdded(track entities.Track) error
+	NotifyCarAdded(car models.Car) error
+	NotifyCarUpdated(car models.Car) error
+	NotifyTrackUpdated(track models.Track) error
+	NotifyTrackAdded(track models.Track) error
 }
 
 type DiscordBotController interface {
-	NotifyCarAdded(car entities.Car) error
-	NotifyCarUpdated(car entities.Car) error
-	NotifyTrackUpdated(track entities.Track) error
-	NotifyTrackAdded(track entities.Track) error
+	NotifyCarAdded(car models.Car) error
+	NotifyCarUpdated(car models.Car) error
+	NotifyTrackUpdated(track models.Track) error
+	NotifyTrackAdded(track models.Track) error
 }

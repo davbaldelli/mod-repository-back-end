@@ -1,8 +1,7 @@
-package entities
+package models
 
 type CarBrand struct {
 	Name   string `json:"name"`
 	Nation Nation `json:"nation"`
-	Logo string `json:"logo"`
+	Logo   string `json:"logo"`
 }
-

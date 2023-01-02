@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	models2 "github.com/davide/ModRepository/models"
 	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 )
@@ -10,15 +10,15 @@ type BrandRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func (b BrandRepositoryImpl) SelectAllBrands() ([]entities.CarBrand, error) {
+func (b BrandRepositoryImpl) SelectAllBrands() ([]models2.CarBrand, error) {
 	return b.selectBrandsWithQuery(func(brands *[]models.Manufacturer) *gorm.DB {
 		return b.Db.Order("name ASC").Find(&brands)
 	})
 }
 
-func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) ([]entities.CarBrand, error) {
+func (b BrandRepositoryImpl) selectBrandsWithQuery(query selectFromBrandsQuery) ([]models2.CarBrand, error) {
 	var dbBrands []models.Manufacturer
-	var brands []entities.CarBrand
+	var brands []models2.CarBrand
 	if result := query(&dbBrands); result.Error != nil {
 		return nil, result.Error
 	}

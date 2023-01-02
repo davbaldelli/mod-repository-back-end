@@ -1,4 +1,4 @@
-package entities
+package models
 
 type Server struct {
 	Id               uint         `json:"id"`

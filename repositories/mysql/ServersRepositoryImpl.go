@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	models2 "github.com/davide/ModRepository/models"
 	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 )
@@ -15,7 +15,7 @@ type serverCarsAssoc struct {
 	ServerId uint
 }
 
-func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
+func (s ServersRepositoryImpl) UpdateServer(server models2.Server) error {
 
 	dbServer := models.ServerFromEntity(server)
 
@@ -61,7 +61,7 @@ func (s ServersRepositoryImpl) UpdateServer(server entities.Server) error {
 	return nil
 }
 
-func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
+func (s ServersRepositoryImpl) AddServer(server models2.Server) error {
 
 	dbServer := models.ServerFromEntity(server)
 
@@ -101,15 +101,15 @@ func (s ServersRepositoryImpl) AddServer(server entities.Server) error {
 	return nil
 }
 
-func (s ServersRepositoryImpl) DeleteServer(server entities.Server) error {
+func (s ServersRepositoryImpl) DeleteServer(server models2.Server) error {
 	if result := s.Db.Where("id = ?", server.Id).Delete(&models.Server{}); result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (s ServersRepositoryImpl) GetAllServers() ([]entities.Server, error) {
-	var servers []entities.Server
+func (s ServersRepositoryImpl) GetAllServers() ([]models2.Server, error) {
+	var servers []models2.Server
 	var dbServers []models.Server
 	if result := s.Db.Model(models.Server{}).Preload("Cars").Preload("OutsideCars").Find(&dbServers); result.Error != nil {
 		return nil, result.Error

@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"errors"
-	"github.com/davide/ModRepository/models/entities"
+	models2 "github.com/davide/ModRepository/models"
 	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,19 +13,19 @@ type UserRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func (u UserRepositoryImpl) Login(user entities.User) (entities.User, error) {
+func (u UserRepositoryImpl) Login(user models2.User) (models2.User, error) {
 	var dbUser models.User
 	res := u.Db.Find(&dbUser, "username = ? AND password = SHA2(CONCAT(?, salt),?)", user.Username, user.Password, 224)
 	if res.Error != nil {
-		return entities.User{}, res.Error
+		return models2.User{}, res.Error
 	}
 	if res.RowsAffected == 0 {
-		return entities.User{}, errors.New("username or password not valid")
+		return models2.User{}, errors.New("username or password not valid")
 	}
-	return entities.User{Username: dbUser.Username, Role: entities.Role(dbUser.Role)}, nil
+	return models2.User{Username: dbUser.Username, Role: models2.Role(dbUser.Role)}, nil
 }
 
-func (u UserRepositoryImpl) SignIn(user entities.User) (entities.User, error) {
+func (u UserRepositoryImpl) SignIn(user models2.User) (models2.User, error) {
 	salt := randStringRunes(30)
 	dbUser := map[string]interface{}{
 		"Username": user.Username,
@@ -34,9 +34,9 @@ func (u UserRepositoryImpl) SignIn(user entities.User) (entities.User, error) {
 		"Salt":     salt,
 	}
 	if res := u.Db.Model(models.User{}).Create(&dbUser); res.Error != nil {
-		return entities.User{}, res.Error
+		return models2.User{}, res.Error
 	}
-	return entities.User{Username: user.Username, Role: user.Role}, nil
+	return models2.User{Username: user.Username, Role: user.Role}, nil
 }
 
 func (u UserRepositoryImpl) UpdatePassword(username string, password string) error {

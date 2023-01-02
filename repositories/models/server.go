@@ -1,6 +1,8 @@
 package models
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models"
+)
 
 type Server struct {
 	Id               uint `gorm:"primaryKey"`
@@ -17,7 +19,7 @@ type Server struct {
 	OutsideCars      []*OutsideMod `gorm:"foreignKey:ServerId"`
 }
 
-func ServerFromEntity(server entities.Server) Server {
+func ServerFromEntity(server models.Server) Server {
 	return Server{
 		Id:               server.Id,
 		Name:             server.Name,
@@ -39,18 +41,18 @@ type OutsideMod struct {
 	ServerId     uint
 }
 
-func (s Server) ToEntity() entities.Server {
+func (s Server) ToEntity() models.Server {
 	var cars []uint
 	cars = make([]uint, 0)
-	var outsideCars []entities.OutsideMod
-	outsideCars = make([]entities.OutsideMod, 0)
+	var outsideCars []models.OutsideMod
+	outsideCars = make([]models.OutsideMod, 0)
 	for _, dbCar := range s.Cars {
 		cars = append(cars, dbCar.Id)
 	}
 	for _, outsideCar := range s.OutsideCars {
 		outsideCars = append(outsideCars, outsideCar.ToEntity())
 	}
-	return entities.Server{
+	return models.Server{
 		Id:               s.Id,
 		Name:             s.Name,
 		Description:      s.Description,
@@ -66,7 +68,7 @@ func (s Server) ToEntity() entities.Server {
 	}
 }
 
-func OutsideModFromEntity(mod entities.OutsideMod, serverId uint) OutsideMod {
+func OutsideModFromEntity(mod models.OutsideMod, serverId uint) OutsideMod {
 	return OutsideMod{
 		Name:         mod.Name,
 		DownloadLink: mod.DownloadLink,
@@ -74,8 +76,8 @@ func OutsideModFromEntity(mod entities.OutsideMod, serverId uint) OutsideMod {
 	}
 }
 
-func (o OutsideMod) ToEntity() entities.OutsideMod {
-	return entities.OutsideMod{
+func (o OutsideMod) ToEntity() models.OutsideMod {
+	return models.OutsideMod{
 		Id:           o.Id,
 		Name:         o.Name,
 		DownloadLink: o.DownloadLink,

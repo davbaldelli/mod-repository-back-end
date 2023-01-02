@@ -1,58 +1,58 @@
 package repositories
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 )
 
 type CarRepository interface {
-	InsertCar(car *entities.Car) error
-	SelectAllCars(premium bool, admin bool) ([]entities.Car, error)
-	SelectAllCarCategories() ([]entities.CarCategory, error)
-	UpdateCar(car entities.Car) (bool, error)
+	InsertCar(car *models.Car) error
+	SelectAllCars(premium bool, admin bool) ([]models.Car, error)
+	SelectAllCarCategories() ([]models.CarCategory, error)
+	UpdateCar(car models.Car) (bool, error)
 }
 
 type LogRepository interface {
-	SelectAllTrackLogs() ([]entities.TrackLog, error)
-	SelectAllCarLogs() ([]entities.CarLog, error)
+	SelectAllTrackLogs() ([]models.TrackLog, error)
+	SelectAllCarLogs() ([]models.CarLog, error)
 }
 
 type TrackRepository interface {
-	SelectAllTracks(premium bool, admin bool) ([]entities.Track, error)
-	InsertTrack(track *entities.Track) error
-	UpdateTrack(track entities.Track) (bool, error)
+	SelectAllTracks(premium bool, admin bool) ([]models.Track, error)
+	InsertTrack(track *models.Track) error
+	UpdateTrack(track models.Track) (bool, error)
 }
 
 type NationRepository interface {
-	SelectAllBrandsNations() ([]entities.Nation, error)
-	SelectAllTrackNations() ([]entities.Nation, error)
+	SelectAllBrandsNations() ([]models.Nation, error)
+	SelectAllTrackNations() ([]models.Nation, error)
 }
 
 type BrandRepository interface {
-	SelectAllBrands() ([]entities.CarBrand, error)
+	SelectAllBrands() ([]models.CarBrand, error)
 }
 
 type UserRepository interface {
-	Login(user entities.User) (entities.User, error)
-	SignIn(user entities.User) (entities.User, error)
+	Login(user models.User) (models.User, error)
+	SignIn(user models.User) (models.User, error)
 	UpdatePassword(string, string) error
 }
 
 type AuthorRepository interface {
-	SelectAllAuthors() ([]entities.Author, error)
-	SelectAllCarAuthors() ([]entities.Author, error)
-	SelectAllTrackAuthors() ([]entities.Author, error)
+	SelectAllAuthors() ([]models.Author, error)
+	SelectAllCarAuthors() ([]models.Author, error)
+	SelectAllTrackAuthors() ([]models.Author, error)
 }
 
 type ServersRepository interface {
-	GetAllServers() ([]entities.Server, error)
-	UpdateServer(server entities.Server) error
-	AddServer(server entities.Server) error
-	DeleteServer(server entities.Server) error
+	GetAllServers() ([]models.Server, error)
+	UpdateServer(server models.Server) error
+	AddServer(server models.Server) error
+	DeleteServer(server models.Server) error
 }
 
 type SkinRepository interface {
-	SelectCarSkins(carId uint) ([]entities.Skin, error)
-	GetAllSkins() ([]entities.Skin, error)
-	AddSkin(skin entities.Skin) error
-	UpdateSkin(skin entities.Skin) error
+	SelectCarSkins(carId uint) ([]models.Skin, error)
+	GetAllSkins() ([]models.Skin, error)
+	AddSkin(skin models.Skin) error
+	UpdateSkin(skin models.Skin) error
 }

@@ -1,6 +1,8 @@
 package models
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models"
+)
 
 type Nation struct {
 	Id     uint `gorm:"primaryKey"`
@@ -10,7 +12,7 @@ type Nation struct {
 	Tracks []Track        `gorm:"foreignKey:IdNation"`
 }
 
-func NationFromEntity(nation entities.Nation) Nation {
+func NationFromEntity(nation models.Nation) Nation {
 	return Nation{
 		Name: nation.Name,
 		Code: nation.Code,

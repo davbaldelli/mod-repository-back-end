@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"net/http"
 	"strconv"
 )
@@ -30,7 +30,7 @@ func (s SkinsHandlerImpl) GETCarSkins(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s SkinsHandlerImpl) GETAllSkins(w http.ResponseWriter, r *http.Request) {
+func (s SkinsHandlerImpl) GETAllSkins(w http.ResponseWriter, _ *http.Request) {
 	if skins, err := s.Ctrl.GetAllSkins(); err != nil {
 		respondError(w, http.StatusInternalServerError, fmt.Errorf("Error proccessing request: %v ", err))
 		return
@@ -40,7 +40,7 @@ func (s SkinsHandlerImpl) GETAllSkins(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s SkinsHandlerImpl) ADDSkin(w http.ResponseWriter, r *http.Request) {
-	skin := entities.Skin{}
+	skin := models.Skin{}
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -58,7 +58,7 @@ func (s SkinsHandlerImpl) ADDSkin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s SkinsHandlerImpl) UPDATESkin(w http.ResponseWriter, r *http.Request) {
-	skin := entities.Skin{}
+	skin := models.Skin{}
 
 	decoder := json.NewDecoder(r.Body)
 

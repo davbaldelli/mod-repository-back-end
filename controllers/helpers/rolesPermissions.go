@@ -1,11 +1,13 @@
 package helpers
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models"
+)
 
-func IsAdmin(role entities.Role) bool {
-	return role == entities.Admin
+func IsAdmin(role models.Role) bool {
+	return role == models.Admin
 }
 
-func IsPremium(role entities.Role) bool {
-	return role == entities.Premium || role == entities.FSRTeam || role == entities.Admin
+func IsPremium(role models.Role) bool {
+	return role == models.Premium || role == models.FSRTeam || role == models.Admin
 }

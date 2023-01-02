@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"errors"
-	"github.com/davide/ModRepository/models/entities"
+	models2 "github.com/davide/ModRepository/models"
 	"github.com/davide/ModRepository/repositories/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -14,9 +14,9 @@ type TrackRepositoryImpl struct {
 
 type selectFromTrackQuery func() *gorm.DB
 
-func selectTracksWithQuery(query selectFromTrackQuery, premium bool, admin bool) ([]entities.Track, error) {
+func selectTracksWithQuery(query selectFromTrackQuery, premium bool, admin bool) ([]models2.Track, error) {
 	var dbTracks []models.TrackMod
-	var tracks []entities.Track
+	var tracks []models2.Track
 
 	if result := query().Find(&dbTracks); result.Error != nil {
 		return nil, result.Error
@@ -30,7 +30,7 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool, admin bool)
 	return tracks, nil
 }
 
-func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (models.Track, error) {
+func (t TrackRepositoryImpl) preInsertionQueries(track models2.Track) (models.Track, error) {
 	dbNation := models.NationFromEntity(track.Nation)
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
@@ -54,13 +54,13 @@ func (t TrackRepositoryImpl) preInsertionQueries(track entities.Track) (models.T
 	return models.TrackFromEntity(track, dbNation.Id, dbAuthor.Id), nil
 }
 
-func (t TrackRepositoryImpl) SelectAllTracks(premium bool, admin bool) ([]entities.Track, error) {
+func (t TrackRepositoryImpl) SelectAllTracks(premium bool, admin bool) ([]models2.Track, error) {
 	return selectTracksWithQuery(func() *gorm.DB {
 		return t.Db.Order("name ASC").Preload("Layouts").Preload("Tags").Preload("Images")
 	}, premium, admin)
 }
 
-func (t TrackRepositoryImpl) InsertTrack(track *entities.Track) error {
+func (t TrackRepositoryImpl) InsertTrack(track *models2.Track) error {
 
 	if dbTrack, err := t.preInsertionQueries(*track); err != nil {
 		return err
@@ -73,7 +73,7 @@ func (t TrackRepositoryImpl) InsertTrack(track *entities.Track) error {
 	return nil
 }
 
-func (t TrackRepositoryImpl) UpdateTrack(track entities.Track) (bool, error) {
+func (t TrackRepositoryImpl) UpdateTrack(track models2.Track) (bool, error) {
 
 	if dbTrack, err := t.preInsertionQueries(track); err != nil {
 		return false, err

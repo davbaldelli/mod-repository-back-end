@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 )
 
 type CarMods struct {
@@ -58,24 +58,24 @@ func (CarImage) TableName() string {
 	return "car_images"
 }
 
-func (cat CarCategory) toEntity() entities.CarCategory {
-	return entities.CarCategory{Name: entities.CarType(cat.Category)}
+func (cat CarCategory) toEntity() models.CarCategory {
+	return models.CarCategory{Name: models.CarType(cat.Category)}
 }
 
-func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
+func (c CarMods) ToEntity(premium bool, admin bool) models.Car {
 	download := c.DownloadLink
 	if (c.Premium && !premium) || (c.Personal && !admin) {
 		download = c.Source
 	}
-	return entities.Car{
-		Mod: entities.Mod{
+	return models.Car{
+		Mod: models.Mod{
 			Id:           c.Id,
 			DownloadLink: download,
 			Source:       c.Source,
 			Premium:      c.Premium,
 			Personal:     c.Personal,
 			Images:       allCarImagesToEntity(c.Images),
-			Author: entities.Author{
+			Author: models.Author{
 				Name: c.Author,
 				Link: c.AuthorLink,
 			},
@@ -85,16 +85,16 @@ func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 			Version:   c.Version,
 			Official:  c.Official,
 		},
-		Brand: entities.CarBrand{
+		Brand: models.CarBrand{
 			Name:   c.Brand,
-			Nation: entities.Nation{Name: c.Nation, Code: c.NationCode},
+			Nation: models.Nation{Name: c.Nation, Code: c.NationCode},
 		},
 		ModelName: c.ModelName,
-		Categories: mapCategories(c.Categories, func(category CarCategory) entities.CarCategory {
+		Categories: mapCategories(c.Categories, func(category CarCategory) models.CarCategory {
 			return category.toEntity()
 		}),
-		Drivetrain:   entities.Drivetrain(c.Drivetrain),
-		Transmission: entities.Transmission(c.Transmission),
+		Drivetrain:   models.Drivetrain(c.Drivetrain),
+		Transmission: models.Transmission(c.Transmission),
 		Year:         c.Year,
 		Torque:       c.Torque,
 		TopSpeed:     c.TopSpeed,
@@ -103,15 +103,15 @@ func (c CarMods) ToEntity(premium bool, admin bool) entities.Car {
 	}
 }
 
-func mapCategories(vs []CarCategory, f func(category CarCategory) entities.CarCategory) []entities.CarCategory {
-	vsm := make([]entities.CarCategory, len(vs))
+func mapCategories(vs []CarCategory, f func(category CarCategory) models.CarCategory) []models.CarCategory {
+	vsm := make([]models.CarCategory, len(vs))
 	for i, v := range vs {
 		vsm[i] = f(v)
 	}
 	return vsm
 }
 
-func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
+func CarFromEntity(car models.Car, idBrand uint, idAuthor uint) Car {
 	return Car{
 		ModModel: ModModel{
 			Id:           car.Id,
@@ -139,14 +139,14 @@ func CarFromEntity(car entities.Car, idBrand uint, idAuthor uint) Car {
 	}
 }
 
-func carCategoryFromEntity(category entities.CarCategory, id uint) CarCategory {
+func carCategoryFromEntity(category models.CarCategory, id uint) CarCategory {
 	return CarCategory{
 		CarId:    id,
 		Category: string(category.Name),
 	}
 }
 
-func allCarCategoryFromEntity(categories []entities.CarCategory, id uint) []CarCategory {
+func allCarCategoryFromEntity(categories []models.CarCategory, id uint) []CarCategory {
 	var dbCats []CarCategory
 	for _, cat := range categories {
 		dbCats = append(dbCats, carCategoryFromEntity(cat, id))
@@ -154,25 +154,25 @@ func allCarCategoryFromEntity(categories []entities.CarCategory, id uint) []CarC
 	return dbCats
 }
 
-func (i CarImage) toEntity() entities.Image {
+func (i CarImage) toEntity() models.Image {
 	return i.Image.toEntity()
 }
-func allCarImagesToEntity(dbImages []CarImage) []entities.Image {
-	var images []entities.Image
+func allCarImagesToEntity(dbImages []CarImage) []models.Image {
+	var images []models.Image
 	for _, dbImage := range dbImages {
 		images = append(images, dbImage.toEntity())
 	}
 	return images
 }
 
-func carImageFromEntity(image entities.Image, id uint) CarImage {
+func carImageFromEntity(image models.Image, id uint) CarImage {
 	return CarImage{
 		Image: imageFromEntity(image),
 		CarId: id,
 	}
 }
 
-func allCarImagesFromEntity(images []entities.Image, id uint) []CarImage {
+func allCarImagesFromEntity(images []models.Image, id uint) []CarImage {
 	var dbImages []CarImage
 	for _, image := range images {
 		dbImages = append(dbImages, carImageFromEntity(image, id))

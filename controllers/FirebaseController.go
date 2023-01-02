@@ -4,7 +4,7 @@ import (
 	"context"
 	"firebase.google.com/go/v4/messaging"
 	"fmt"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 )
 
 type FirebaseControllerImpl struct {
@@ -19,7 +19,7 @@ func (f FirebaseControllerImpl) RegisterToTopic(token string, topic string) erro
 	return nil
 }
 
-func (f FirebaseControllerImpl) NotifyCarUpdated(car entities.Car) error {
+func (f FirebaseControllerImpl) NotifyCarUpdated(car models.Car) error {
 	payload := &messaging.Message{
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "car_updated", Title: "Check It Out!"},
@@ -33,7 +33,7 @@ func (f FirebaseControllerImpl) NotifyCarUpdated(car entities.Car) error {
 	return nil
 }
 
-func (f FirebaseControllerImpl) NotifyCarAdded(car entities.Car) error {
+func (f FirebaseControllerImpl) NotifyCarAdded(car models.Car) error {
 	payload := &messaging.Message{
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "car_added", Title: "Check It Out!"},
@@ -47,7 +47,7 @@ func (f FirebaseControllerImpl) NotifyCarAdded(car entities.Car) error {
 	return nil
 }
 
-func (f FirebaseControllerImpl) NotifyTrackAdded(track entities.Track) error {
+func (f FirebaseControllerImpl) NotifyTrackAdded(track models.Track) error {
 	payload := &messaging.Message{
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "track_added", Title: "Check It Out!"},
@@ -60,7 +60,7 @@ func (f FirebaseControllerImpl) NotifyTrackAdded(track entities.Track) error {
 	}
 	return nil
 }
-func (f FirebaseControllerImpl) NotifyTrackUpdated(track entities.Track) error {
+func (f FirebaseControllerImpl) NotifyTrackUpdated(track models.Track) error {
 	payload := &messaging.Message{
 		Webpush: &messaging.WebpushConfig{Notification: &messaging.WebpushNotification{Actions: []*messaging.WebpushNotificationAction{
 			{Action: "track_updated", Title: "Check It Out!"},

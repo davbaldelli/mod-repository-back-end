@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -23,10 +23,10 @@ func (c CarsHandlerImpl) GETAllCarCategories(writer http.ResponseWriter, _ *http
 	}
 }
 
-type getCarsByParam func(string) ([]entities.Car, error)
+type getCarsByParam func(string) ([]models.Car, error)
 
 func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Request) {
-	if cars, err := c.CarCtrl.GetAllCars(entities.Role(request.Header.Get("Role"))); err != nil {
+	if cars, err := c.CarCtrl.GetAllCars(models.Role(request.Header.Get("Role"))); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, cars)
@@ -34,7 +34,7 @@ func (c CarsHandlerImpl) GETAllCars(writer http.ResponseWriter, request *http.Re
 }
 
 func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Request) {
-	car := entities.Car{}
+	car := models.Car{}
 
 	decoder := json.NewDecoder(request.Body)
 
@@ -57,7 +57,7 @@ func (c CarsHandlerImpl) POSTNewCar(writer http.ResponseWriter, request *http.Re
 }
 
 func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Request) {
-	car := entities.Car{}
+	car := models.Car{}
 
 	decoder := json.NewDecoder(request.Body)
 
@@ -70,7 +70,6 @@ func (c CarsHandlerImpl) UPDATECar(writer http.ResponseWriter, request *http.Req
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
 	} else if versionChange && !car.Official {
-		//c.FirebaseCtrl.NotifyCarUpdated(car)
 		go c.DiscordBotCtrl.NotifyCarUpdated(car)
 	}
 

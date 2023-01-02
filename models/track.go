@@ -1,21 +1,18 @@
-package entities
+package models
 
 type TrackTag string
 
 type LayoutType string
 
 const (
-	F1          TrackTag = "F1"
-	Touge       TrackTag = "Touge"
-	NASCAR      TrackTag = "NASCAR"
-	RallyTrack  TrackTag = "Rally"
-	StreetTrack TrackTag = "Street Track"
-	Fictional   TrackTag = "Fictional"
-	Drift       TrackTag = "Drift"
-	Historic    TrackTag = "Historic"
-	OpenWorld   TrackTag = "Open World"
-	Karting     TrackTag = "Karting"
-	LaserScan   TrackTag = "Laser Scan"
+	RallyTrack    TrackTag = "Rally"
+	StreetCircuit TrackTag = "Street Circuit"
+	Fictional     TrackTag = "Fictional"
+	Drift         TrackTag = "Drift"
+	Historic      TrackTag = "Historic"
+	Freeroam      TrackTag = "Freeroam"
+	Kart          TrackTag = "Kart"
+	LaserScan     TrackTag = "Laser Scan"
 )
 
 const (

@@ -1,6 +1,8 @@
 package models
 
-import "github.com/davide/ModRepository/models/entities"
+import (
+	"github.com/davide/ModRepository/models"
+)
 
 type Skin struct {
 	Id           uint `gorm:"primaryKey"`
@@ -12,8 +14,8 @@ type Skin struct {
 
 type Skins []Skin
 
-func (s Skin) toEntity() entities.Skin {
-	return entities.Skin{
+func (s Skin) toEntity() models.Skin {
+	return models.Skin{
 		Id:           s.Id,
 		Name:         s.Name,
 		DownloadLink: s.DownloadLink,
@@ -22,28 +24,10 @@ func (s Skin) toEntity() entities.Skin {
 	}
 }
 
-func (s Skins) toEntities() []entities.Skin {
-	var skins []entities.Skin
+func (s Skins) toEntities() []models.Skin {
+	var skins []models.Skin
 	for _, dbSkin := range s {
 		skins = append(skins, dbSkin.toEntity())
 	}
 	return skins
-}
-
-func SkinFromEntity(skin entities.Skin) Skin {
-	return Skin{
-		Id:           skin.Id,
-		Name:         skin.Name,
-		DownloadLink: skin.DownloadLink,
-		ImageUrl:     skin.ImageUrl,
-		CarId:        skin.CarId,
-	}
-}
-
-func SkinsFromEntities(skins []entities.Skin) []Skin {
-	var dbSkins []Skin
-	for _, skin := range skins {
-		dbSkins = append(dbSkins, SkinFromEntity(skin))
-	}
-	return dbSkins
 }

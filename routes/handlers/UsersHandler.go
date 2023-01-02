@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"github.com/golang-jwt/jwt"
 	"net/http"
 	"time"
@@ -34,7 +34,7 @@ func GenerateJWT(username, role string, secret string) (string, error) {
 
 func (u UserHandlerImpl) LogIn(w http.ResponseWriter, r *http.Request) {
 
-	var authdetails entities.Authentication
+	var authdetails models.Authentication
 	err := json.NewDecoder(r.Body).Decode(&authdetails)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, fmt.Errorf("error in request body: %v ", err))
@@ -53,14 +53,14 @@ func (u UserHandlerImpl) LogIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := entities.Token{Username: authuser.Username, Role: string(authuser.Role), TokenString: validToken}
+	token := models.Token{Username: authuser.Username, Role: string(authuser.Role), TokenString: validToken}
 
 	respondJSON(w, http.StatusAccepted, token)
 }
 
 func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 
-	var user entities.User
+	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, fmt.Errorf("error in request body: %v ", err))
@@ -79,13 +79,13 @@ func (u UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := entities.Token{Username: newUser.Username, Role: string(newUser.Role), TokenString: validToken}
+	token := models.Token{Username: newUser.Username, Role: string(newUser.Role), TokenString: validToken}
 
 	respondJSON(w, http.StatusAccepted, token)
 }
 
 func (u UserHandlerImpl) UpdatePassword(w http.ResponseWriter, r *http.Request) {
-	var authDetails entities.Authentication
+	var authDetails models.Authentication
 	if err := json.NewDecoder(r.Body).Decode(&authDetails); err != nil {
 		respondError(w, http.StatusBadRequest, fmt.Errorf("error in request body: %v ", err))
 		return

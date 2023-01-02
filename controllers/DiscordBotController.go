@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"net/url"
 	"strconv"
 )
@@ -13,9 +13,9 @@ type DiscordBotControllerImpl struct {
 	Channels []string
 }
 
-func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
+func (d DiscordBotControllerImpl) NotifyCarAdded(car models.Car) error {
 	for _, channel := range d.Channels {
-		_, error := d.Session.ChannelMessageSendComplex(channel, &discordgo.MessageSend{
+		_, err := d.Session.ChannelMessageSendComplex(channel, &discordgo.MessageSend{
 			Embed: &discordgo.MessageEmbed{
 				Type:        "image",
 				Title:       fmt.Sprintf("%v %v has been added to the repository!", car.Brand.Name, car.ModelName),
@@ -38,16 +38,16 @@ func (d DiscordBotControllerImpl) NotifyCarAdded(car entities.Car) error {
 				},
 			},
 		})
-		if error != nil {
-			return error
+		if err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-func (d DiscordBotControllerImpl) NotifyCarUpdated(car entities.Car) error {
+func (d DiscordBotControllerImpl) NotifyCarUpdated(car models.Car) error {
 	for _, channel := range d.Channels {
-		_, error := d.Session.ChannelMessageSendComplex(channel, &discordgo.MessageSend{
+		_, err := d.Session.ChannelMessageSendComplex(channel, &discordgo.MessageSend{
 			Embed: &discordgo.MessageEmbed{
 				Type:        "image",
 				Title:       fmt.Sprintf("%v %v has been updated!", car.Brand.Name, car.ModelName),
@@ -76,16 +76,16 @@ func (d DiscordBotControllerImpl) NotifyCarUpdated(car entities.Car) error {
 				},
 			},
 		})
-		if error != nil {
-			return error
+		if err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-func (d DiscordBotControllerImpl) NotifyTrackUpdated(track entities.Track) error {
+func (d DiscordBotControllerImpl) NotifyTrackUpdated(track models.Track) error {
 	for _, channel := range d.Channels {
-		_, error := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
+		_, err := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
 			Type:        "image",
 			Title:       fmt.Sprintf("%v has been updated!", track.Name),
 			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
@@ -116,16 +116,16 @@ func (d DiscordBotControllerImpl) NotifyTrackUpdated(track entities.Track) error
 				},
 			},
 		})
-		if error != nil {
-			return error
+		if err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
+func (d DiscordBotControllerImpl) NotifyTrackAdded(track models.Track) error {
 	for _, channel := range d.Channels {
-		_, error := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
+		_, err := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
 			Type:        "image",
 			Title:       fmt.Sprintf("%v has been added to the repository!", track.Name),
 			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
@@ -152,14 +152,14 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track entities.Track) error {
 				},
 			},
 		})
-		if error != nil {
-			return error
+		if err != nil {
+			return err
 		}
 	}
 	return nil
 }
 
-func getFavImageUrl(images []entities.Image) string {
+func getFavImageUrl(images []models.Image) string {
 	for _, image := range images {
 		if image.Favorite {
 			return image.Url

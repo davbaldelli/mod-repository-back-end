@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 )
 
 type Track struct {
@@ -34,20 +34,20 @@ type TrackImage struct {
 	TrackId uint
 }
 
-func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
+func (t TrackMod) ToEntity(premium bool, admin bool) models.Track {
 	download := t.DownloadLink
 	if (t.Premium && !premium) || (t.Personal && !admin) {
 		download = t.Source
 	}
-	return entities.Track{
-		Mod: entities.Mod{
+	return models.Track{
+		Mod: models.Mod{
 			Id:           t.Id,
 			DownloadLink: download,
 			Source:       t.Source,
 			Premium:      t.Premium,
 			Personal:     t.Personal,
 			Images:       allTrackImagesToEntity(t.Images),
-			Author: entities.Author{
+			Author: models.Author{
 				Name: t.Author,
 				Link: t.AuthorLink,
 			},
@@ -58,12 +58,12 @@ func (t TrackMod) ToEntity(premium bool, admin bool) entities.Track {
 			Official:  t.Official,
 		},
 		Name: t.Name,
-		Layouts: mapLayouts(t.Layouts, func(layout Layout) entities.Layout {
+		Layouts: mapLayouts(t.Layouts, func(layout Layout) models.Layout {
 			return layout.toEntity()
 		}),
 		Location: t.Location,
-		Nation:   entities.Nation{Name: t.Nation, Code: t.NationCode},
-		Tags: mapTags(t.Tags, func(tag TrackTag) entities.TrackTag {
+		Nation:   models.Nation{Name: t.Nation, Code: t.NationCode},
+		Tags: mapTags(t.Tags, func(tag TrackTag) models.TrackTag {
 			return tag.toEntity()
 		}),
 		Year: t.Year,
@@ -76,8 +76,8 @@ type TrackTag struct {
 	Tag     string
 }
 
-func (t TrackTag) toEntity() entities.TrackTag {
-	return entities.TrackTag(t.Tag)
+func (t TrackTag) toEntity() models.TrackTag {
+	return models.TrackTag(t.Tag)
 }
 
 type Layout struct {
@@ -88,31 +88,31 @@ type Layout struct {
 	IdTrack  uint
 }
 
-func (l Layout) toEntity() entities.Layout {
-	return entities.Layout{
+func (l Layout) toEntity() models.Layout {
+	return models.Layout{
 		Name:     l.Name,
 		LengthM:  l.LengthM,
-		Category: entities.LayoutType(l.Category),
+		Category: models.LayoutType(l.Category),
 	}
 }
 
-func mapLayouts(vs []Layout, f func(layout Layout) entities.Layout) []entities.Layout {
-	vsm := make([]entities.Layout, len(vs))
+func mapLayouts(vs []Layout, f func(layout Layout) models.Layout) []models.Layout {
+	vsm := make([]models.Layout, len(vs))
 	for i, v := range vs {
 		vsm[i] = f(v)
 	}
 	return vsm
 }
 
-func mapTags(vs []TrackTag, f func(tag TrackTag) entities.TrackTag) []entities.TrackTag {
-	vsm := make([]entities.TrackTag, len(vs))
+func mapTags(vs []TrackTag, f func(tag TrackTag) models.TrackTag) []models.TrackTag {
+	vsm := make([]models.TrackTag, len(vs))
 	for i, v := range vs {
 		vsm[i] = f(v)
 	}
 	return vsm
 }
 
-func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
+func TrackFromEntity(track models.Track, idNation uint, idAuthor uint) Track {
 	var tags []TrackTag
 	for _, tag := range track.Tags {
 		tags = append(tags, TrackTag{Tag: string(tag)})
@@ -139,7 +139,7 @@ func TrackFromEntity(track entities.Track, idNation uint, idAuthor uint) Track {
 	}
 }
 
-func layoutFromEntity(layout entities.Layout, idTrack uint) Layout {
+func layoutFromEntity(layout models.Layout, idTrack uint) Layout {
 	return Layout{
 		Name:     layout.Name,
 		LengthM:  layout.LengthM,
@@ -148,7 +148,7 @@ func layoutFromEntity(layout entities.Layout, idTrack uint) Layout {
 	}
 }
 
-func allLayoutFromEntity(layouts []entities.Layout, track uint) []Layout {
+func allLayoutFromEntity(layouts []models.Layout, track uint) []Layout {
 	var dbLayouts []Layout
 	for _, layout := range layouts {
 		dbLayouts = append(dbLayouts, layoutFromEntity(layout, track))
@@ -156,25 +156,25 @@ func allLayoutFromEntity(layouts []entities.Layout, track uint) []Layout {
 	return dbLayouts
 }
 
-func (i TrackImage) toEntity() entities.Image {
+func (i TrackImage) toEntity() models.Image {
 	return i.Image.toEntity()
 }
-func allTrackImagesToEntity(dbImages []TrackImage) []entities.Image {
-	var images []entities.Image
+func allTrackImagesToEntity(dbImages []TrackImage) []models.Image {
+	var images []models.Image
 	for _, dbImage := range dbImages {
 		images = append(images, dbImage.toEntity())
 	}
 	return images
 }
 
-func trackImageFromEntity(image entities.Image, id uint) TrackImage {
+func trackImageFromEntity(image models.Image, id uint) TrackImage {
 	return TrackImage{
 		Image:   imageFromEntity(image),
 		TrackId: id,
 	}
 }
 
-func allTrackImagesFromEntity(images []entities.Image, id uint) []TrackImage {
+func allTrackImagesFromEntity(images []models.Image, id uint) []TrackImage {
 	var dbImages []TrackImage
 	for _, image := range images {
 		dbImages = append(dbImages, trackImageFromEntity(image, id))

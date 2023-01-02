@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -15,10 +15,10 @@ type TrackHandlerImpl struct {
 	DiscordBotCtrl controllers.DiscordBotController
 }
 
-type getTracksByParam func(string) ([]entities.Track, error)
+type getTracksByParam func(string) ([]models.Track, error)
 
 func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http.Request) {
-	if tracks, err := t.TrackCtrl.GetAllTracks(entities.Role(request.Header.Get("Role"))); err != nil {
+	if tracks, err := t.TrackCtrl.GetAllTracks(models.Role(request.Header.Get("Role"))); err != nil {
 		respondError(writer, http.StatusInternalServerError, err)
 	} else {
 		respondJSON(writer, http.StatusOK, tracks)
@@ -27,7 +27,7 @@ func (t TrackHandlerImpl) GETAllTracks(writer http.ResponseWriter, request *http
 }
 
 func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http.Request) {
-	track := entities.Track{}
+	track := models.Track{}
 
 	decoder := json.NewDecoder(request.Body)
 	if err := decoder.Decode(&track); err != nil {
@@ -40,7 +40,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 		return
 	}
 	//t.FirebaseCtrl.NotifyTrackAdded(track)
-	if !track.Official{
+	if !track.Official {
 		go t.DiscordBotCtrl.NotifyTrackAdded(track)
 	}
 
@@ -48,7 +48,7 @@ func (t TrackHandlerImpl) POSTNewTrack(writer http.ResponseWriter, request *http
 }
 
 func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.Request) {
-	track := entities.Track{}
+	track := models.Track{}
 
 	decoder := json.NewDecoder(request.Body)
 	if err := decoder.Decode(&track); err != nil {
@@ -59,7 +59,7 @@ func (t TrackHandlerImpl) UPDATETrack(writer http.ResponseWriter, request *http.
 	if versionChange, err := t.TrackCtrl.UpdateTrack(track); err != nil {
 		respondError(writer, http.StatusInternalServerError, fmt.Errorf("cannot insert new entity: %v ", err))
 		return
-	} else if versionChange && !track.Official{
+	} else if versionChange && !track.Official {
 		//t.FirebaseCtrl.NotifyTrackUpdated(track)
 		go t.DiscordBotCtrl.NotifyTrackUpdated(track)
 	}

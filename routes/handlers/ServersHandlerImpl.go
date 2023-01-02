@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/davide/ModRepository/controllers"
-	"github.com/davide/ModRepository/models/entities"
+	"github.com/davide/ModRepository/models"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ type ServersHandlerImpl struct {
 }
 
 func (s ServersHandlerImpl) ADDServer(w http.ResponseWriter, r *http.Request) {
-	server := entities.Server{}
+	server := models.Server{}
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -30,7 +30,7 @@ func (s ServersHandlerImpl) ADDServer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s ServersHandlerImpl) UPDATEServer(w http.ResponseWriter, r *http.Request) {
-	server := entities.Server{}
+	server := models.Server{}
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -47,7 +47,7 @@ func (s ServersHandlerImpl) UPDATEServer(w http.ResponseWriter, r *http.Request)
 }
 
 func (s ServersHandlerImpl) DELETEServer(w http.ResponseWriter, r *http.Request) {
-	server := entities.Server{}
+	server := models.Server{}
 
 	decoder := json.NewDecoder(r.Body)
 
