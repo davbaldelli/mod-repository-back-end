@@ -1,4 +1,4 @@
-package models
+package entities
 
 import (
 	"github.com/davide/ModRepository/models"
@@ -20,6 +20,7 @@ type CarMods struct {
 	AuthorLink   string
 	Nation       string
 	NationCode   string
+	NationFlag   string
 	BrandLogo    string
 	Images       []CarImage `gorm:"foreignKey:CarId"`
 }
@@ -86,8 +87,12 @@ func (c CarMods) ToEntity(premium bool, admin bool) models.Car {
 			Official:  c.Official,
 		},
 		Brand: models.CarBrand{
-			Name:   c.Brand,
-			Nation: models.Nation{Name: c.Nation, Code: c.NationCode},
+			Name: c.Brand,
+			Nation: models.Nation{
+				Name: c.Nation,
+				Code: c.NationCode,
+				Flag: c.NationFlag,
+			},
 		},
 		ModelName: c.ModelName,
 		Categories: mapCategories(c.Categories, func(category CarCategory) models.CarCategory {

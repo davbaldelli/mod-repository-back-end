@@ -3,7 +3,7 @@ package mysql
 import (
 	"errors"
 	models2 "github.com/davide/ModRepository/models"
-	"github.com/davide/ModRepository/repositories/models"
+	"github.com/davide/ModRepository/repositories/entities"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -15,7 +15,7 @@ type TrackRepositoryImpl struct {
 type selectFromTrackQuery func() *gorm.DB
 
 func selectTracksWithQuery(query selectFromTrackQuery, premium bool, admin bool) ([]models2.Track, error) {
-	var dbTracks []models.TrackMod
+	var dbTracks []entities.TrackMod
 	var tracks []models2.Track
 
 	if result := query().Find(&dbTracks); result.Error != nil {
@@ -30,28 +30,28 @@ func selectTracksWithQuery(query selectFromTrackQuery, premium bool, admin bool)
 	return tracks, nil
 }
 
-func (t TrackRepositoryImpl) preInsertionQueries(track models2.Track) (models.Track, error) {
-	dbNation := models.NationFromEntity(track.Nation)
+func (t TrackRepositoryImpl) preInsertionQueries(track models2.Track) (entities.Track, error) {
+	dbNation := entities.NationFromEntity(track.Nation)
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
-		return models.Track{}, res.Error
+		return entities.Track{}, res.Error
 	}
 
 	if res := t.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil {
-		return models.Track{}, res.Error
+		return entities.Track{}, res.Error
 	}
 
-	dbAuthor := models.AuthorFromEntity(track.Author)
+	dbAuthor := entities.AuthorFromEntity(track.Author)
 
 	if res := t.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
-		return models.Track{}, res.Error
+		return entities.Track{}, res.Error
 	}
 
 	if res := t.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil {
-		return models.Track{}, res.Error
+		return entities.Track{}, res.Error
 	}
 
-	return models.TrackFromEntity(track, dbNation.Id, dbAuthor.Id), nil
+	return entities.TrackFromEntity(track, dbNation.Id, dbAuthor.Id), nil
 }
 
 func (t TrackRepositoryImpl) SelectAllTracks(premium bool, admin bool) ([]models2.Track, error) {
@@ -88,7 +88,7 @@ func (t TrackRepositoryImpl) UpdateTrack(track models2.Track) (bool, error) {
 			return false, res.Error
 		}
 
-		if res := t.Db.Where("id_track = ?", dbTrack.Id).Delete(&models.Layout{}); res.Error != nil {
+		if res := t.Db.Where("id_track = ?", dbTrack.Id).Delete(&entities.Layout{}); res.Error != nil {
 			return false, res.Error
 		}
 
@@ -96,7 +96,7 @@ func (t TrackRepositoryImpl) UpdateTrack(track models2.Track) (bool, error) {
 			return false, res
 		}
 
-		if res := t.Db.Where("id_track = ?", dbTrack.Id).Delete(&models.TrackTag{}); res.Error != nil {
+		if res := t.Db.Where("id_track = ?", dbTrack.Id).Delete(&entities.TrackTag{}); res.Error != nil {
 			return false, res.Error
 		}
 
@@ -104,7 +104,7 @@ func (t TrackRepositoryImpl) UpdateTrack(track models2.Track) (bool, error) {
 			return false, res
 		}
 
-		if res := t.Db.Where("track_id = ?", dbTrack.Id).Delete(&models.TrackImage{}); res.Error != nil {
+		if res := t.Db.Where("track_id = ?", dbTrack.Id).Delete(&entities.TrackImage{}); res.Error != nil {
 			return false, res.Error
 		}
 

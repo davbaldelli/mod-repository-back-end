@@ -3,7 +3,7 @@ package mysql
 import (
 	"errors"
 	models2 "github.com/davide/ModRepository/models"
-	"github.com/davide/ModRepository/repositories/models"
+	"github.com/davide/ModRepository/repositories/entities"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -13,11 +13,11 @@ type CarRepositoryImpl struct {
 }
 
 type carsQuery func() *gorm.DB
-type selectFromBrandsQuery func(*[]models.Manufacturer) *gorm.DB
+type selectFromBrandsQuery func(*[]entities.Manufacturer) *gorm.DB
 
 func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool, admin bool) ([]models2.Car, error) {
 	var cars []models2.Car
-	var dbCars []models.CarMods
+	var dbCars []entities.CarMods
 
 	if result := carsQuery().Find(&dbCars); result.Error != nil {
 		return nil, result.Error
@@ -31,40 +31,40 @@ func (c CarRepositoryImpl) selectCarsWithQuery(carsQuery carsQuery, premium bool
 	return cars, nil
 }
 
-func (c CarRepositoryImpl) preInsertionQueries(car models2.Car) (models.Car, error) {
-	dbNation := models.NationFromEntity(car.Brand.Nation)
+func (c CarRepositoryImpl) preInsertionQueries(car models2.Car) (entities.Car, error) {
+	dbNation := entities.NationFromEntity(car.Brand.Nation)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbNation); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbNation.Name).First(&dbNation); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
-	dbBrand := models.ManufacturerFromEntity(car.Brand, dbNation.Id)
+	dbBrand := entities.ManufacturerFromEntity(car.Brand, dbNation.Id)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbBrand); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbBrand.Name).First(&dbBrand); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
 	println(dbBrand.Id)
 
-	dbAuthor := models.AuthorFromEntity(car.Author)
+	dbAuthor := entities.AuthorFromEntity(car.Author)
 
 	if res := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(&dbAuthor); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
 	if res := c.Db.Where("name = ?", dbAuthor.Name).First(&dbAuthor); res.Error != nil {
-		return models.Car{}, res.Error
+		return entities.Car{}, res.Error
 	}
 
-	return models.CarFromEntity(car, dbBrand.Id, dbAuthor.Id), nil
+	return entities.CarFromEntity(car, dbBrand.Id, dbAuthor.Id), nil
 }
 
 func (c CarRepositoryImpl) SelectAllCarCategories() ([]models2.CarCategory, error) {
@@ -109,7 +109,7 @@ func (c CarRepositoryImpl) UpdateCar(car models2.Car) (bool, error) {
 			return false, res.Error
 		}
 
-		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&models.CarCategory{}); res.Error != nil {
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&entities.CarCategory{}); res.Error != nil {
 			return false, res.Error
 		}
 
@@ -117,7 +117,7 @@ func (c CarRepositoryImpl) UpdateCar(car models2.Car) (bool, error) {
 			return false, res
 		}
 
-		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&models.CarImage{}); res.Error != nil {
+		if res := c.Db.Where("car_id = ?", dbCar.Id).Delete(&entities.CarImage{}); res.Error != nil {
 			return false, res.Error
 		}
 

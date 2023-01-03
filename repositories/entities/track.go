@@ -1,4 +1,4 @@
-package models
+package entities
 
 import (
 	"github.com/davide/ModRepository/models"
@@ -23,6 +23,7 @@ type TrackMod struct {
 	Location   string
 	Nation     string
 	NationCode string
+	NationFlag string
 	Year       uint
 	Author     string
 	AuthorLink string
@@ -62,7 +63,7 @@ func (t TrackMod) ToEntity(premium bool, admin bool) models.Track {
 			return layout.toEntity()
 		}),
 		Location: t.Location,
-		Nation:   models.Nation{Name: t.Nation, Code: t.NationCode},
+		Nation:   models.Nation{Name: t.Nation, Code: t.NationCode, Flag: t.NationFlag},
 		Tags: mapTags(t.Tags, func(tag TrackTag) models.TrackTag {
 			return tag.toEntity()
 		}),

@@ -2,7 +2,7 @@ package mysql
 
 import (
 	models2 "github.com/davide/ModRepository/models"
-	"github.com/davide/ModRepository/repositories/models"
+	"github.com/davide/ModRepository/repositories/entities"
 	"gorm.io/gorm"
 )
 
@@ -17,9 +17,9 @@ type serverCarsAssoc struct {
 
 func (s ServersRepositoryImpl) UpdateServer(server models2.Server) error {
 
-	dbServer := models.ServerFromEntity(server)
+	dbServer := entities.ServerFromEntity(server)
 
-	if result := s.Db.Model(models.Server{}).Where("id = ?", dbServer.Id).Select("*").Omit("OutsideCars").Updates(&dbServer); result.Error != nil {
+	if result := s.Db.Model(entities.Server{}).Where("id = ?", dbServer.Id).Select("*").Omit("OutsideCars").Updates(&dbServer); result.Error != nil {
 		return result.Error
 	}
 
@@ -32,7 +32,7 @@ func (s ServersRepositoryImpl) UpdateServer(server models2.Server) error {
 		})
 	}
 
-	if result := s.Db.Model(&models.Server{Id: dbServer.Id}).Association("Cars").Clear(); result != nil {
+	if result := s.Db.Model(&entities.Server{Id: dbServer.Id}).Association("Cars").Clear(); result != nil {
 		return result
 	}
 
@@ -42,18 +42,18 @@ func (s ServersRepositoryImpl) UpdateServer(server models2.Server) error {
 		}
 	}
 
-	var outsideCars []models.OutsideMod
+	var outsideCars []entities.OutsideMod
 
 	for _, outsideCar := range server.OutsideCars {
-		outsideCars = append(outsideCars, models.OutsideModFromEntity(outsideCar, dbServer.Id))
+		outsideCars = append(outsideCars, entities.OutsideModFromEntity(outsideCar, dbServer.Id))
 	}
 
-	if result := s.Db.Where("server_id = ?", dbServer.Id).Delete(&models.OutsideMod{}); result.Error != nil {
+	if result := s.Db.Where("server_id = ?", dbServer.Id).Delete(&entities.OutsideMod{}); result.Error != nil {
 		return result.Error
 	}
 
 	if len(outsideCars) > 0 {
-		if result := s.Db.Debug().Model(&models.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
+		if result := s.Db.Debug().Model(&entities.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
 			return result.Error
 		}
 	}
@@ -63,9 +63,9 @@ func (s ServersRepositoryImpl) UpdateServer(server models2.Server) error {
 
 func (s ServersRepositoryImpl) AddServer(server models2.Server) error {
 
-	dbServer := models.ServerFromEntity(server)
+	dbServer := entities.ServerFromEntity(server)
 
-	if result := s.Db.Model(models.Server{}).Omit("Cars", "OutsideCars").Create(&dbServer); result.Error != nil {
+	if result := s.Db.Model(entities.Server{}).Omit("Cars", "OutsideCars").Create(&dbServer); result.Error != nil {
 		return result.Error
 	}
 
@@ -85,15 +85,15 @@ func (s ServersRepositoryImpl) AddServer(server models2.Server) error {
 		}
 	}
 
-	var outsideCars []models.OutsideMod
-	outsideCars = make([]models.OutsideMod, 0)
+	var outsideCars []entities.OutsideMod
+	outsideCars = make([]entities.OutsideMod, 0)
 
 	for _, outsideCar := range server.OutsideCars {
-		outsideCars = append(outsideCars, models.OutsideModFromEntity(outsideCar, dbServer.Id))
+		outsideCars = append(outsideCars, entities.OutsideModFromEntity(outsideCar, dbServer.Id))
 	}
 
 	if len(outsideCars) > 0 {
-		if result := s.Db.Model(&models.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
+		if result := s.Db.Model(&entities.OutsideMod{}).Omit("Id").Create(&outsideCars); result.Error != nil {
 			return result.Error
 		}
 	}
@@ -102,7 +102,7 @@ func (s ServersRepositoryImpl) AddServer(server models2.Server) error {
 }
 
 func (s ServersRepositoryImpl) DeleteServer(server models2.Server) error {
-	if result := s.Db.Where("id = ?", server.Id).Delete(&models.Server{}); result.Error != nil {
+	if result := s.Db.Where("id = ?", server.Id).Delete(&entities.Server{}); result.Error != nil {
 		return result.Error
 	}
 	return nil
@@ -110,8 +110,8 @@ func (s ServersRepositoryImpl) DeleteServer(server models2.Server) error {
 
 func (s ServersRepositoryImpl) GetAllServers() ([]models2.Server, error) {
 	var servers []models2.Server
-	var dbServers []models.Server
-	if result := s.Db.Model(models.Server{}).Preload("Cars").Preload("OutsideCars").Find(&dbServers); result.Error != nil {
+	var dbServers []entities.Server
+	if result := s.Db.Model(entities.Server{}).Preload("Cars").Preload("OutsideCars").Find(&dbServers); result.Error != nil {
 		return nil, result.Error
 	}
 	for _, server := range dbServers {
