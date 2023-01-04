@@ -162,7 +162,8 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track models.Track) error {
 func getFavImageUrl(images []models.Image) string {
 	for _, image := range images {
 		if image.Favorite {
-			return image.Url
+			println(image.Url[0:27] + ".jpg")
+			return image.Url[0:27] + ".jpg"
 		}
 	}
 	return ""
