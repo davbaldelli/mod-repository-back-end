@@ -88,7 +88,7 @@ func (d DiscordBotControllerImpl) NotifyTrackUpdated(track models.Track) error {
 		_, err := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
 			Type:        "image",
 			Title:       fmt.Sprintf("%v has been updated!", track.Name),
-			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
+			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/%v/%v/%v)", track.Nation.Name, track.Name, track.Year),
 			Color:       12590120,
 			Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(track.Images)},
 			Author: &discordgo.MessageEmbedAuthor{
@@ -128,7 +128,7 @@ func (d DiscordBotControllerImpl) NotifyTrackAdded(track models.Track) error {
 		_, err := d.Session.ChannelMessageSendEmbed(channel, &discordgo.MessageEmbed{
 			Type:        "image",
 			Title:       fmt.Sprintf("%v has been added to the repository!", track.Name),
-			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/detail/%v)", track.Id),
+			Description: fmt.Sprintf("[Click here for more](https://www.acmodrepository.com/tracks/%v/%v/%v)", track.Nation.Name, track.Name, track.Year),
 			Color:       12590120,
 			Image:       &discordgo.MessageEmbedImage{URL: getFavImageUrl(track.Images)},
 			Author: &discordgo.MessageEmbedAuthor{
