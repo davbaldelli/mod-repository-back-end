@@ -26,6 +26,7 @@ type TrackLog struct {
 	TrackId    uint      `json:"trackId"`
 	Name       string    `json:"name"`
 	Year       string    `json:"year"`
+	Nation     string    `json:"nation"`
 	Version    string    `json:"version"`
 	Premium    bool      `json:"premium"`
 	Action     Action    `json:"action"`
