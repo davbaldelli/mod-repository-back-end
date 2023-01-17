@@ -13,7 +13,6 @@ import (
 	"google.golang.org/api/option"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -34,29 +33,21 @@ func main() {
 
 	var cred Credentials
 
-	if jsonFile, err := os.Open("credentials.json"); err != nil {
+	if jsonFile, err := os.ReadFile("credentials.json"); err != nil {
 		log.Fatal("no credentials file")
 	} else {
-		if byteValue, err := ioutil.ReadAll(jsonFile); err != nil {
+		if err := json.Unmarshal(jsonFile, &cred); err != nil {
 			log.Fatal("err pasrsing json")
-		} else {
-			if err := json.Unmarshal(byteValue, &cred); err != nil {
-				log.Fatal("err pasrsing json")
-			}
 		}
 	}
 
 	var secret Secret
 
-	if secretFile, err := os.Open("secret.json"); err != nil {
+	if secretFile, err := os.ReadFile("secret.json"); err != nil {
 		log.Fatal("no secret file")
 	} else {
-		if secretByte, err := ioutil.ReadAll(secretFile); err != nil {
+		if err := json.Unmarshal(secretFile, &secret); err != nil {
 			log.Fatal("err pasrsing json")
-		} else {
-			if err := json.Unmarshal(secretByte, &secret); err != nil {
-				log.Fatal("err pasrsing json")
-			}
 		}
 	}
 
