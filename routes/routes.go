@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 	"log"
 	"net/http"
+	"sync"
 )
 
 type Route interface {
@@ -56,10 +57,10 @@ func (w Web) Listen() {
 	router.HandleFunc("/skin/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.ADDSkin, []string{"admin"}))).Methods("POST")
 	router.HandleFunc("/skin/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.SkinsHandler.UPDATESkin, []string{"admin"}))).Methods("POST")
 
-	router.HandleFunc("/fsr/server/all", w.Middleware.IsAuthorized(w.ServersHandler.GETAllServers)).Methods("GET")
-	router.HandleFunc("/fsr/server/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.UPDATEServer, []string{"admin", "fsrteam"}))).Methods("POST")
-	router.HandleFunc("/fsr/server/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.ADDServer, []string{"admin", "fsrteam"}))).Methods("POST")
-	router.HandleFunc("/fsr/server/delete", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.DELETEServer, []string{"admin", "fsrteam"}))).Methods("POST")
+	router.HandleFunc("/fsr/server1/all", w.Middleware.IsAuthorized(w.ServersHandler.GETAllServers)).Methods("GET")
+	router.HandleFunc("/fsr/server1/update", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.UPDATEServer, []string{"admin", "fsrteam"}))).Methods("POST")
+	router.HandleFunc("/fsr/server1/add", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.ADDServer, []string{"admin", "fsrteam"}))).Methods("POST")
+	router.HandleFunc("/fsr/server1/delete", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.ServersHandler.DELETEServer, []string{"admin", "fsrteam"}))).Methods("POST")
 
 	router.HandleFunc("/login", w.UsersHandler.LogIn).Methods("POST")
 	router.HandleFunc("/signin", w.Middleware.IsAuthorized(w.Middleware.IsAllowed(w.UsersHandler.SignIn, []string{"admin"}))).Methods("POST")
@@ -81,8 +82,16 @@ func (w Web) Listen() {
 		Cache:      autocert.DirCache("certs"),
 	}
 
-	// create the server itself
-	server := &http.Server{
+	// create the server1 itself
+	server1 := &http.Server{
+		Addr:    ":443",
+		Handler: handler,
+		TLSConfig: &tls.Config{
+			GetCertificate: certManager.GetCertificate,
+		},
+	}
+
+	server2 := &http.Server{
 		Addr:    ":6316",
 		Handler: handler,
 		TLSConfig: &tls.Config{
@@ -90,9 +99,30 @@ func (w Web) Listen() {
 		},
 	}
 
+	var wg sync.WaitGroup
+
+	wg.Add(3)
+
 	log.Printf("Serving :6316 for domains: home.davidebaldelli.it , api.acmodrepository.com")
 
-	log.Fatal(server.ListenAndServeTLS("", ""))
+	go func() {
+		defer wg.Done()
+		log.Fatal(server1.ListenAndServeTLS("", ""))
+	}()
+
+	go func() {
+		defer wg.Done()
+		// serve HTTP, which will redirect automatically to HTTPS
+		h := certManager.HTTPHandler(nil)
+		log.Fatal(http.ListenAndServe(":http", h))
+	}()
+
+	go func() {
+		defer wg.Done()
+		log.Fatal(server2.ListenAndServeTLS("", ""))
+	}()
+
+	wg.Wait()
 
 	//log.Fatal(http.ListenAndServe(":6316", handler))
 
